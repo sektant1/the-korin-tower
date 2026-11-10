@@ -5,7 +5,7 @@ import { GIFS } from "@/lib/gifs";
 import { Blink, FlameTitle } from "@/components/Retro";
 import { getCurrentUser } from "@/lib/auth/session";
 import { hallOfFame } from "@/lib/progress";
-import { HINT_PENALTY } from "@/lib/scoring";
+import { DAILY_BONUS, HINT_PENALTY } from "@/lib/scoring";
 
 export const metadata: Metadata = { title: "Hall of Fame" };
 
@@ -46,7 +46,7 @@ export default async function HallOfFamePage() {
               <tr key={i} className={e && e.username === me?.username ? "hs-me" : undefined}>
                 <td>{ordinal(i + 1)}</td>
                 <td>{String(e?.points ?? 0).padStart(6, "0")}</td>
-                <td>{e ? e.username.toUpperCase() : "---"}</td>
+                <td>{e ? <Link href={`/jogador/${e.username}`}>{e.username.toUpperCase()}</Link> : "---"}</td>
                 <td>{e?.solved ?? "-"}</td>
               </tr>
             ))}
@@ -58,7 +58,7 @@ export default async function HallOfFamePage() {
       </div>
       <p className="center dim small">
         Cada desafio vale 100 × dificuldade. Cada dica revelada antes de resolver tira {HINT_PENALTY * 100}% (até sobrar 20%). Quem desiste não
-        pontua naquele desafio.{" "}
+        pontua naquele desafio. O desafio do dia, resolvido no dia, vale +{DAILY_BONUS * 100}%.{" "}
         {!me && (
           <>
             <Link href="/entrar?next=/hall-da-fama">Entre</Link> para aparecer aqui.

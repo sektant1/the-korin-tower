@@ -3,13 +3,15 @@ import { ChallengeList } from "@/components/ChallengeList";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
 import { getFanart } from "@/lib/fanart";
-import { Blink, FlameTitle, RainbowHr, UnderConstruction, Window } from "@/components/Retro";
+import { Blink, Difficulty, FlameTitle, RainbowHr, Window } from "@/components/Retro";
 import { latestChallenges, listCategories } from "@/lib/challenges";
+import { getDaily } from "@/lib/daily";
+import { DAILY_BONUS } from "@/lib/scoring";
 import { renderMarkdown } from "@/lib/markdown";
 import { FACTS, NEWS } from "@/lib/site-content";
 
 export default async function Home() {
-  const [categories, latest] = await Promise.all([listCategories(), latestChallenges(6)]);
+  const [categories, latest, daily] = await Promise.all([listCategories(), latestChallenges(6), getDaily()]);
   const names = Object.fromEntries(categories.map((c) => [c.id, c.name]));
   const { mascot } = await getFanart();
   const fact = await renderMarkdown(FACTS[Math.floor(Math.random() * FACTS.length)]);
@@ -65,6 +67,27 @@ export default async function Home() {
         </Window>
       </div>
 
+      {daily && (
+        <Window title="Desafio do dia" className="daily">
+          <div className="daily-row">
+            <Gif gif={GIFS.trunks} height={70} />
+            <div className="daily-body">
+              <h2 className="daily-title">
+                <Link href={`/desafio/${daily.slug}`}>{daily.title}</Link>
+              </h2>
+              <Difficulty level={daily.difficulty} />
+              <p>
+                Resolva <b>hoje</b> e leve <b>+{DAILY_BONUS * 100}% de pontos</b>. Um por dia, sorteado à meia-noite (horário de Brasília). Dias
+                seguidos resolvendo qualquer desafio viram sequência no seu perfil.
+              </p>
+            </div>
+            <Link href={`/desafio/${daily.slug}`} className="btn98 play" aria-label={`Jogar o desafio do dia: ${daily.title}`}>
+              LUTAR <span className="arrow" aria-hidden="true">►</span>
+            </Link>
+          </div>
+        </Window>
+      )}
+
       <Window title="Últimos lançamentos">
         <ChallengeList items={latest} categoryNames={names} />
       </Window>
@@ -115,7 +138,10 @@ export default async function Home() {
             </li>
           </ol>
           <p className="dim small">Psiu... dizem que existe um código secreto que libera um golpe especial... (fora do editor)</p>
-          <UnderConstruction what="Guestbook e comentários chegam na Fase 3" />
+          <p className="small">
+            Zerou? Compare seu código com o dos outros, comente (com <code>||spoiler||</code>) e{" "}
+            <Link href="/guestbook">assine o guestbook</Link>.
+          </p>
         </Window>
       </div>
     </>

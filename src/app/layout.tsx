@@ -7,6 +7,7 @@ import { AccountProvider, type AccountData } from "@/components/Account";
 import { PlayerOne, SanityToggle, SettingsApplier, StarTrail, VisitCounter } from "@/components/ClientEffects";
 import { Bookmark, Clock, DragonBalls, FlyingCloud, KonamiCode } from "@/components/PortalWidgets";
 import { Gif } from "@/components/Gif";
+import { MobileMenu } from "@/components/MobileMenu";
 import { GIFS } from "@/lib/gifs";
 import { Marquee, RainbowHr } from "@/components/Retro";
 import { logout } from "@/app/entrar/actions";
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
   title: { default: "The Korin Tower", template: "%s :: The Korin Tower" },
   description: "Desafios de programação para devs de baixo nível. Best viewed in Netscape Navigator 4.0.",
   icons: { icon: GIFS.sphere.src },
+  alternates: { types: { "application/rss+xml": "/feed.xml" } },
 };
 
 const MENU = [
@@ -115,6 +117,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Gif gif={GIFS.sphere} height={18} className="marquee-gif" /> Seus rascunhos são salvos automaticamente{account ? " na sua conta" : ""} &nbsp;&nbsp;
           </span>
         </Marquee>
+
+        <MobileMenu items={menu} />
 
         <div className="frame">
           <nav className="sidebar" aria-label="Navegação principal">
@@ -239,7 +243,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
           <p className="best-viewed">
             Feito com &hearts; e muito Ki · Best viewed in Netscape Navigator 4.0 at 800x600 · © 1998–{new Date().getFullYear()} The Korin Tower ·{" "}
-            <Link href="/guestbook">assine o guestbook</Link>
+            <Link href="/guestbook">assine o guestbook</Link> · <a href="/feed.xml">feed RSS</a>
           </p>
         </footer>
         </AccountProvider>

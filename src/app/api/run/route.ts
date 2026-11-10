@@ -4,7 +4,9 @@ import { isLanguageId } from "@/lib/languages";
 import { judge, type TestOutcome } from "@/lib/judge/judge";
 import { getRunner, sanitizeFlags } from "@/lib/runner";
 import { getCurrentUser } from "@/lib/auth/session";
+import { getDaily } from "@/lib/daily";
 import { recordSolve } from "@/lib/progress";
+import { recordSubmission } from "@/lib/records";
 import { clientKey, rateLimit, Semaphore } from "@/lib/rate-limit";
 import type { RunResponse } from "@/lib/run-api";
 
@@ -67,7 +69,10 @@ export async function POST(req: Request) {
         ? { mode, compile: result.compile, run: result.tests[0] ?? null, warnings }
         : { mode, compile: result.compile, tests: result.tests.map(redact), allPassed: result.allPassed, warnings };
     if (mode === "submit" && result.allPassed && user && response.mode === "submit") {
-      response.awarded = (await recordSolve(user.id, challenge)) ?? 0;
+      const daily = await getDaily();
+      response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
+      // Guarda o código aprovado: "soluções dos outros" e recordes de tamanho e tempo.
+      await recordSubmission(user.id, challenge.id, language, source, result.tests.map((t) => t.timeMs));
     }
     return NextResponse.json(response);
   } catch (e) {

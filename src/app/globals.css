@@ -2320,3 +2320,317 @@ body:has(.challenge-page) .flying-cloud {
 .table-scroll {
   overflow-x: auto;
 }
+
+/* ---------- celular: navegação no topo, sem rolagem aninhada, alvos de toque ---------- */
+.mobile-menu {
+  display: none;
+}
+@media (max-width: 760px) {
+  .mobile-menu {
+    display: block;
+    margin: 8px 8px 0;
+    background: #000020;
+    border: 2px outset #6666cc;
+  }
+  .mobile-menu summary {
+    padding: 10px 12px;
+    font-family: var(--font-pixel-stack);
+    font-size: 12px;
+    color: var(--lime);
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobile-menu[open] summary {
+    border-bottom: 1px dashed #6666cc;
+  }
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .mobile-menu a {
+    display: block;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  .mobile-menu a[aria-current="page"] {
+    color: var(--fg);
+    background: #ffffff14;
+  }
+
+  /* O enunciado cresce com a página (nada de caixa com rolagem dentro da rolagem). */
+  .statement {
+    max-height: none;
+  }
+
+  /* Alvos de toque de pelo menos ~32px. */
+  .nav-list a {
+    padding: 6px 0;
+  }
+  .btn98,
+  .btn98.small {
+    min-height: 32px;
+  }
+  .fkey {
+    padding: 8px 10px;
+  }
+  .tab98 {
+    min-height: 36px;
+  }
+  .check98 input {
+    width: 18px;
+    height: 18px;
+  }
+}
+.mobile-only {
+  display: none;
+}
+@media (max-width: 760px) {
+  .mobile-only {
+    display: inline-flex;
+    margin: 4px 0 8px;
+  }
+  #editor {
+    scroll-margin-top: 8px;
+  }
+}
+
+/* ---------- Fase 3: guestbook, comentários, trilhas e medalhas ---------- */
+.post-form {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+.post-form label {
+  display: grid;
+  gap: 4px;
+}
+.post-form .btn98 {
+  justify-self: start;
+}
+.posts {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.post {
+  padding: 8px;
+  background: var(--panel-bg-2);
+  border: 1px solid var(--panel-border);
+  min-width: 0;
+}
+.post-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--panel-dim);
+}
+.post-head form {
+  margin-left: auto;
+}
+.post-author {
+  font-weight: bold;
+}
+.user-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.user-text code {
+  padding: 0 3px;
+  background: var(--code-bg);
+}
+.user-text .code-block {
+  margin: 6px 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+.spoiler {
+  font: inherit;
+  padding: 0 2px;
+  color: transparent;
+  background: var(--panel-dim);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: pre-wrap;
+  text-align: left;
+}
+.spoiler > span {
+  visibility: hidden;
+}
+.spoiler:hover,
+.spoiler:focus-visible {
+  background: var(--panel-heading);
+}
+.spoiler.open {
+  color: inherit;
+  background: #ffffff14;
+  cursor: auto;
+}
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+.track-title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  color: var(--panel-heading);
+}
+.track-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.track-progress .xp-bar {
+  flex: 1;
+  max-width: 320px;
+}
+.track-count {
+  font-family: var(--font-pixel-stack);
+  font-size: 9px;
+  color: var(--lime);
+  white-space: nowrap;
+}
+.track-steps {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.track-steps li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 6px 4px;
+  border-top: 1px dashed var(--panel-border);
+}
+.track-steps li > a {
+  flex: 1;
+  min-width: 12ch;
+}
+.badge-shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px;
+}
+.medal {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--panel-dim);
+  border: 1px dashed var(--panel-border);
+}
+.medal-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  font-family: var(--font-pixel-stack);
+  font-size: 10px;
+  color: #555;
+  background: #222;
+  border: 3px solid #444;
+  border-radius: 50%;
+}
+.medal.on {
+  color: var(--panel-fg);
+  border: 1px solid #cc9900;
+  background: #ffd70012;
+}
+.medal.on .medal-icon {
+  color: #402800;
+  background: radial-gradient(circle at 35% 30%, #fff6b0, #ffd700 55%, #c88a00);
+  border-color: #ff9900;
+  box-shadow: 0 0 6px #ff990088;
+}
+.others {
+  margin: 12px 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--panel-border);
+}
+.others .section-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+.others summary {
+  cursor: pointer;
+}
+.records caption {
+  text-align: left;
+  font-weight: bold;
+  padding-bottom: 4px;
+}
+
+/* ---------- Fase 4: canvas WASM (raylib / SDL2) ---------- */
+.wasm-box {
+  text-align: left;
+}
+.wasm-frame {
+  padding: 0;
+}
+.wasm-idle {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: var(--font-pixel-stack);
+  font-size: 12px;
+  line-height: 2;
+  color: var(--lime);
+}
+.wasm-idle small {
+  font-size: 8px;
+  color: var(--panel-dim);
+}
+.wasm-tip {
+  margin: 4px 0;
+}
+
+/* ---------- Fase 5: desafio do dia ---------- */
+.daily-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.daily-body {
+  flex: 1;
+  min-width: 220px;
+}
+.daily-title {
+  margin: 0 0 2px;
+  font-size: 22px;
+}
+.daily-flag {
+  margin: 6px 0;
+  padding: 4px 8px;
+  color: #000;
+  background: #ffd700;
+  border: 2px outset #fff6b0;
+  font-weight: bold;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-sanity="on"]) .medal.on .medal-icon {
+    animation: star-pulse 2.4s ease-in-out infinite;
+  }
+}

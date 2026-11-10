@@ -1,4 +1,4 @@
-# docker compose up -d --build                       app + PostgreSQL + Piston
+# docker compose up -d --build                       app + PostgreSQL + Piston + construtor WASM
 # docker compose exec app npx tsx scripts/invite.ts --admin   primeiro convite de admin
 # docker compose --profile test run --rm test         typecheck + testes + verificação das soluções
 # App em http://localhost:3000. O Piston NÃO é exposto para fora da rede interna.
@@ -13,6 +13,7 @@ services:
       DATABASE_URL: postgresql://korin:${POSTGRES_PASSWORD:-korin}@db:5432/korin
       RUNNER: piston
       PISTON_URL: http://piston:2000
+      WASM_BUILDER_URL: http://wasm-builder:2100
       APP_URL: ${APP_URL:-http://localhost:${APP_PORT:-3000}}
       ADMIN_BOOTSTRAP_CODE: ${ADMIN_BOOTSTRAP_CODE:-}
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
@@ -26,6 +27,8 @@ services:
         condition: service_healthy
       piston-init:
         condition: service_completed_successfully
+      wasm-builder:
+        condition: service_started
 
   # Mesmo motor do Supabase. Dev local com o app fora do container:
   #   docker compose up -d db   e no .env: DATABASE_URL="postgresql://korin:korin@localhost:5432/korin"
@@ -63,7 +66,20 @@ services:
       PISTON_MAX_PROCESS_COUNT: "64"
       PISTON_OUTPUT_MAX_SIZE: "2097152"
 
-  # Instala gcc/rust/go/zig/nasm no Piston na primeira subida (depois é instantâneo).
+  # Fase 4: compila C/C++ (raylib, SDL2) para WASM com emcc. Só compila; quem executa é o navegador.
+  # Não é exposto para fora da rede interna. A primeira build da imagem demora (compila a raylib).
+  wasm-builder:
+    build: ./wasm-builder
+    restart: unless-stopped
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 256
+    mem_limit: 2g
+    environment:
+      BUILD_MAX_CONCURRENCY: "2"
+      BUILD_TIMEOUT_MS: "60000"
+
+  # Instala gcc/rust/go/zig/nasm/pascal no Piston na primeira subida (depois é instantâneo).
   piston-init:
     image: node:24-alpine
     command: node /piston-install.mjs

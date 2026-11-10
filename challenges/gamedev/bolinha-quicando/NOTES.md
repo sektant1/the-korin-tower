@@ -1,0 +1,4 @@
+- Primeiro contato com game loop: entrada, atualização, desenho. Vale desenhar o ciclo no quadro antes de abrir o editor.
+- O ponto central é `dt`: sem ele a bola anda mais rápido em monitor de 144 Hz. Peça para trocarem `SetTargetFPS(60)` por `30` e verem que a velocidade na tela não muda.
+- Erro clássico: só inverter a velocidade. Com um `dt` grande a bola atravessa a parede e fica presa vibrando; por isso a solução recoloca a posição.
+- No navegador o laço `while (!WindowShouldClose())` só funciona porque o site compila com `-sASYNCIFY`: cada volta devolve o controle ao navegador.

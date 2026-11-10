@@ -28,7 +28,7 @@ export function ChallengeList({ items, categoryNames }: { items: ChallengeSummar
           <p className="cart-meta">
             {categoryNames && categoryNames[c.categoryId] !== langs(c) && <span>{categoryNames[c.categoryId]} · </span>}
             {langs(c)}
-            {c.kind === "shader" && " · roda no navegador"}
+            {c.kind !== "stdio" && " · roda no navegador"}
           </p>
           <p className="tags">
             {c.tags.map((t) => (

@@ -1,7 +1,7 @@
 "use client";
 import { startTransition, useActionState, useState } from "react";
 import type { ChallengeInput } from "@/lib/admin-challenges";
-import { LANGUAGES, type LanguageId } from "@/lib/languages";
+import { LANGUAGES, isCanvasLanguage, type LanguageId } from "@/lib/languages";
 import { saveChallenge } from "../actions";
 
 const STDIO_LANGS = (Object.keys(LANGUAGES) as LanguageId[]).filter((l) => l !== "glsl");
@@ -10,10 +10,14 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
   const [v, setV] = useState(initial);
   const [state, dispatch, pending] = useActionState(saveChallenge, undefined);
   const set = <K extends keyof ChallengeInput>(k: K, value: ChallengeInput[K]) => setV((s) => ({ ...s, [k]: value }));
-  const langs = v.kind === "shader" ? (["glsl"] as LanguageId[]) : STDIO_LANGS;
+  const langs = v.kind === "shader" ? (["glsl"] as LanguageId[]) : v.kind === "canvas" ? STDIO_LANGS.filter(isCanvasLanguage) : STDIO_LANGS;
 
   const setKind = (kind: ChallengeInput["kind"]) =>
-    setV((s) => ({ ...s, kind, languages: kind === "shader" ? ["glsl"] : s.languages.filter((l) => l !== "glsl") }));
+    setV((s) => ({
+      ...s,
+      kind,
+      languages: kind === "shader" ? ["glsl"] : s.languages.filter((l) => (kind === "canvas" ? isCanvasLanguage(l) : l !== "glsl")),
+    }));
   const toggleLang = (l: LanguageId, on: boolean) =>
     set("languages", on ? [...v.languages, l] : v.languages.filter((x) => x !== l));
   const setCode = (field: "templates" | "solutions", l: LanguageId, code: string) => set(field, { ...v[field], [l]: code });
@@ -83,19 +87,22 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
           <select className="select98" value={v.kind} onChange={(e) => setKind(e.target.value as ChallengeInput["kind"])}>
             <option value="stdio">stdio (compila no servidor, testes de entrada/saída)</option>
             <option value="shader">shader (GLSL no navegador, sem testes)</option>
+            <option value="canvas">canvas (C/C++ com raylib ou SDL2 em WASM, sem testes)</option>
           </select>
         </label>
+        {v.kind !== "shader" && (
+          <div role="group" aria-label="Linguagens" className="admin-inline">
+            Linguagens:
+            {langs.map((l) => (
+              <label key={l} className="check98">
+                <input type="checkbox" checked={v.languages.includes(l)} onChange={(e) => toggleLang(l, e.target.checked)} />{" "}
+                {LANGUAGES[l].label}
+              </label>
+            ))}
+          </div>
+        )}
         {v.kind === "stdio" && (
           <>
-            <div role="group" aria-label="Linguagens" className="admin-inline">
-              Linguagens:
-              {langs.map((l) => (
-                <label key={l} className="check98">
-                  <input type="checkbox" checked={v.languages.includes(l)} onChange={(e) => toggleLang(l, e.target.checked)} />{" "}
-                  {LANGUAGES[l].label}
-                </label>
-              ))}
-            </div>
             <label>
               Tempo (ms){" "}
               <input className="input98 narrow" type="number" min={1} max={10000} value={v.timeLimitMs} onChange={(e) => set("timeLimitMs", Number(e.target.value))} />

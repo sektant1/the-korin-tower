@@ -7,7 +7,7 @@ import { prisma } from "@/lib/db";
 
 async function main() {
   const prune = process.argv.includes("--prune");
-  const { categories, challenges, errors } = await loadAll(process.cwd());
+  const { categories, challenges, tracks, errors } = await loadAll(process.cwd());
   if (errors.length) {
     console.error("❌ Erros em /challenges:\n" + errors.map((e) => "  - " + e).join("\n"));
     process.exit(1);
@@ -28,6 +28,10 @@ async function main() {
     console.log(`✔ ${c.slug} (${tests.filter((t) => !t.hidden).length} públicos, ${tests.filter((t) => t.hidden).length} ocultos)`);
   }
 
+  // Trilhas espelham tracks.yml: as que saíram do arquivo somem do banco.
+  for (const t of tracks) await prisma.track.upsert({ where: { id: t.id }, create: t, update: t });
+  await prisma.track.deleteMany({ where: { id: { notIn: tracks.map((t) => t.id) } } });
+
   // Só desafios vindos do disco (sourceDir != null) são candidatos a remoção.
   const orphans = await prisma.challenge.findMany({
     where: { sourceDir: { not: null }, slug: { notIn: challenges.map((c) => c.slug) } },
@@ -41,7 +45,7 @@ async function main() {
       console.warn(`⚠ no banco mas não em /challenges: ${orphans.map((o) => o.slug).join(", ")} (use --prune para remover)`);
     }
   }
-  console.log(`\n${challenges.length} desafio(s), ${categories.length} categoria(s) importados.`);
+  console.log(`\n${challenges.length} desafio(s), ${categories.length} categoria(s), ${tracks.length} trilha(s) importados.`);
 }
 
 main()

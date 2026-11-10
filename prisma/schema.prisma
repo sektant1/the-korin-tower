@@ -19,14 +19,14 @@ model Category {
 }
 
 model Challenge {
-  id            String     @id @default(cuid())
-  slug          String     @unique
+  id            String           @id @default(cuid())
+  slug          String           @unique
   title         String
   categoryId    String
-  category      Category   @relation(fields: [categoryId], references: [id])
+  category      Category         @relation(fields: [categoryId], references: [id])
   tags          Json // string[]
   difficulty    Int // 1..5
-  kind          String // "stdio" | "shader"
+  kind          String // "stdio" | "shader" | "canvas"
   checker       Json // { type: "exact" } | { type: "ppm", tolerance, maxBadRatio }
   statement     String // Markdown
   notes         String? // Markdown: notas do professor
@@ -36,13 +36,16 @@ model Challenge {
   solutions     Json // Record<LanguageId, string>
   timeLimitMs   Int
   memoryLimitMb Int
-  order         Int        @default(0)
+  order         Int              @default(0)
   sourceDir     String? // diretório em /challenges (null = criado pela web)
   tests         TestCase[]
   progress      Progress[]
   drafts        Draft[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  comments      Comment[]
+  submissions   Submission[]
+  dailies       DailyChallenge[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
   @@index([categoryId])
 }
@@ -68,18 +71,21 @@ model Counter {
 // ---- Fase 2: contas, convites, progresso e rascunhos
 
 model User {
-  id           String     @id @default(cuid())
-  username     String     @unique // minúsculo, [a-z0-9_-]{3,20}
+  id           String           @id @default(cuid())
+  username     String           @unique // minúsculo, [a-z0-9_-]{3,20}
   passwordHash String? // null = só entra pelo GitHub
-  githubId     String?    @unique
-  isAdmin      Boolean    @default(false)
+  githubId     String?          @unique
+  isAdmin      Boolean          @default(false)
   settings     Json? // preferências do editor (ver src/lib/client/store.ts)
-  createdAt    DateTime   @default(now())
+  createdAt    DateTime         @default(now())
   sessions     Session[]
   progress     Progress[]
   drafts       Draft[]
-  invitesMade  Invite[]   @relation("InviteCreator")
-  inviteUsed   Invite?    @relation("InviteUser")
+  guestbook    GuestbookEntry[]
+  comments     Comment[]
+  submissions  Submission[]
+  invitesMade  Invite[]         @relation("InviteCreator")
+  inviteUsed   Invite?          @relation("InviteUser")
 }
 
 model Session {
@@ -113,6 +119,7 @@ model Progress {
   hintsRevealed Int       @default(0)
   gaveUp        Boolean   @default(false) // já viu a solução antes de resolver
   points        Int       @default(0)
+  dailyBonus    Boolean   @default(false) // resolvido no dia em que era o desafio do dia (Fase 5)
   solvedAt      DateTime?
   updatedAt     DateTime  @updatedAt
 
@@ -130,4 +137,61 @@ model Draft {
   updatedAt   DateTime  @updatedAt
 
   @@id([userId, challengeId, language])
+}
+
+// ---- Fase 3: trilhas, guestbook, comentários e soluções dos jogadores
+
+model Track {
+  id          String @id // slug, vem de challenges/tracks.yml
+  title       String
+  description String
+  steps       Json // string[]: slugs dos desafios, na ordem
+  order       Int    @default(0)
+}
+
+model GuestbookEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String // texto puro (ver src/components/UserText.tsx)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Comment {
+  id          String    @id @default(cuid())
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body        String // texto puro; ||assim|| vira spoiler
+  createdAt   DateTime  @default(now())
+
+  @@index([challengeId, createdAt])
+}
+
+// Último código aprovado de cada jogador, por desafio e linguagem.
+// Alimenta "soluções dos outros" (Fase 3) e os recordes (Fase 5).
+model Submission {
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  language    String
+  code        String
+  bytes       Int // tamanho do código em bytes UTF-8
+  timeMs      Int? // pior tempo entre os testes (null se o runner não mede)
+  updatedAt   DateTime  @updatedAt
+
+  @@id([userId, challengeId, language])
+  @@index([challengeId])
+}
+
+// ---- Fase 5: desafio do dia (sorteado na primeira visita de cada dia)
+
+model DailyChallenge {
+  day         String    @id // "AAAA-MM-DD" no fuso do site
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 }

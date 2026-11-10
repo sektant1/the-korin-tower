@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Gif } from "@/components/Gif";
-import { FlameTitle, UnderConstruction, Window } from "@/components/Retro";
+import { FlameTitle, Window } from "@/components/Retro";
+import { TrackProgress } from "@/components/TrackProgress";
 import { GIFS } from "@/lib/gifs";
+import { listTracks } from "@/lib/tracks";
 
 export const metadata: Metadata = { title: "Detonados" };
 
-// Fase 3: trilhas definidas em /challenges/tracks.yml.
-const PLANNED = ["Do zero ao Ray Tracer", "Escreva seu próprio malloc", "Emulador CHIP-8 em 10 passos"];
-
-export default function TracksPage() {
+export default async function TracksPage() {
+  const tracks = await listTracks();
   return (
     <>
       <FlameTitle>DETONADOS</FlameTitle>
@@ -16,14 +17,21 @@ export default function TracksPage() {
         <Gif gif={GIFS.gokuDuo} height={90} /> <Gif gif={GIFS.friezaDisc} height={70} />
       </p>
       <p>Trilhas são sequências de desafios, como um detonado de revista: siga passo a passo até zerar.</p>
-      <Window title="Em breve">
-        <ul className="star-list">
-          {PLANNED.map((t) => (
-            <li key={t}>{t}</li>
-          ))}
-        </ul>
-        <UnderConstruction what="Trilhas chegam na Fase 3" />
-      </Window>
+      {tracks.length === 0 && <p className="dim">Nenhuma trilha ainda. Elas ficam em challenges/tracks.yml.</p>}
+      {tracks.map((t) => (
+        <Window key={t.id} title={`${t.title}.txt`}>
+          <h2 className="track-title">
+            <Link href={`/trilhas/${t.id}`}>{t.title}</Link>
+          </h2>
+          <p>{t.description}</p>
+          <TrackProgress slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)} />
+          <p>
+            <Link href={`/trilhas/${t.id}`} className="btn98 play">
+              ABRIR DETONADO <span className="arrow" aria-hidden="true">►</span>
+            </Link>
+          </p>
+        </Window>
+      ))}
     </>
   );
 }

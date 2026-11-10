@@ -1,5 +1,5 @@
 // Formato do editor de desafios do painel admin (cliente ↔ Server Function).
-import type { LanguageId } from "@/lib/languages";
+import type { ChallengeKind, LanguageId } from "@/lib/languages";
 
 export interface ChallengeInput {
   /** slug antes da edição; null = desafio novo */
@@ -8,7 +8,7 @@ export interface ChallengeInput {
   title: string;
   category: string;
   difficulty: number;
-  kind: "stdio" | "shader";
+  kind: ChallengeKind;
   languages: LanguageId[];
   tags: string; // separadas por vírgula
   checker: "exact" | "ppm";

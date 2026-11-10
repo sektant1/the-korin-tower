@@ -2,7 +2,7 @@
 
 Repositório de desafios de programação para devs de baixo nível (C, C++, Rust, ray tracing, shaders...), com cara de homepage pessoal de 1998 e site de games da época, mas funcionando como app moderno: editor com Vim, compilação de verdade em sandbox e testes automáticos.
 
-> Status: **Fase 2 completa** (contas, convites, progresso no banco, admin, Hall of Fame). Veja o [roadmap](#roadmap).
+> Status: **Fase 5 completa** (trilhas, guestbook, comentários, medalhas, canvas WASM com raylib/SDL2, desafio do dia, recordes). Veja o [roadmap](#roadmap).
 
 ---
 
@@ -15,8 +15,10 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 │ CodeMirror 6 + Vim   │         │  ├ /api/run  → judge → Runner ───┼──────▶ │ (isolate,    │
 │ terminal de saída    │ ◀────── │  │   rate limit + semáforo       │        │  sem rede)   │
 │ PPM → <canvas>       │         │  ├ Prisma → PostgreSQL           │        └──────────────┘
-│ GLSL → WebGL2        │         │  └ markdown → HTML (KaTeX, hljs) │
-└──────────────────────┘         └──────────────▲───────────────────┘
+│ GLSL → WebGL2        │         │  ├ markdown → HTML (KaTeX, hljs) │  HTTP  ┌──────────────┐
+│ WASM → <iframe>      │         │  └ /api/build ───────────────────┼──────▶ │ wasm-builder │
+└──────────────────────┘         └──────────────▲───────────────────┘        │ (emcc)       │
+                                                │                            └──────────────┘
                                                 │ npm run seed
                                    /challenges (Markdown + YAML + testes, no git)
 ```
@@ -30,13 +32,17 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 - **GLSL** roda inteiro no navegador (WebGL2, uniforms `iTime`/`iResolution`/`iMouse`).
 - **Contas (Fase 2):** usuário/senha (scrypt) ou GitHub OAuth, cadastro só com convite. Sessão em banco: o cookie `httpOnly` leva um token aleatório e o banco guarda só o sha256. Sem login dá para jogar tudo, com progresso no `localStorage`, mas sem pontos nem solução.
 - **Progresso no servidor:** só `/api/run` (submit aprovado) marca "resolvido". A solução de referência só sai de `/api/challenges/<slug>/solution` para quem resolveu ou desistiu. Rascunhos, dicas reveladas e preferências do editor ficam na conta.
-- **Pontos:** 100 × dificuldade; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
+- **Canvas (Fase 4):** desafios `kind: canvas` são C/C++ com raylib ou SDL2. `/api/build` manda o código para o serviço `wasm-builder` (emcc), que devolve um único JS com o WASM embutido. O servidor só compila; quem executa é o navegador, num `<iframe sandbox="allow-scripts">` sem acesso a cookies nem ao DOM do site.
+- **Comunidade (Fase 3):** trilhas vêm de `challenges/tracks.yml` pelo seed. Guestbook e comentários aceitam texto puro com `` `código` ``, blocos ```` ``` ```` e `||spoiler||`; só quem tem conta escreve. Cada submit aprovado guarda o código (`Submission`), que alimenta "soluções dos outros" (mesma regra da solução de referência) e os recordes. Medalhas não têm tabela: são calculadas do progresso (`src/lib/badges.ts`).
+- **Torneio (Fase 5):** desafio do dia com bônus, sequências de dias, recordes de menor código e mais rápido, perfil público (`/jogador/<nome>`) e `/feed.xml`. Design em [docs/fase-5.md](docs/fase-5.md).
+- **Pontos:** 100 × dificuldade; resolver o desafio do dia no próprio dia vale +50%; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
 
 ## Estrutura de pastas
 
 ```
 challenges/                    ← desafios (edite aqui)
   categories.yml               ← categorias e ordem do menu
+  tracks.yml                   ← trilhas ("Detonados"): listas ordenadas de slugs
   <categoria>/<slug>/
     README.md                  ← frontmatter YAML + enunciado em Markdown
     NOTES.md                   ← notas do professor (opcional)
@@ -50,18 +56,26 @@ scripts/
   seed.ts                      ← importa /challenges para o banco
   verify-challenges.ts         ← roda as soluções contra os testes
   piston-install.mjs           ← instala compiladores no Piston
+wasm-builder/                  ← serviço emcc (raylib + SDL2) dos desafios canvas
+  build.mjs                    ← compila um fonte; também roda sozinho em dev
+  server.mjs, Dockerfile       ← HTTP mínimo e imagem
+docs/fase-5.md                 ← design da fase 5
 src/
   app/                         ← páginas e rotas de API (App Router)
     api/run/                   ← compilar/executar/testar
+    api/build/                 ← compilar desafios canvas para WASM
     api/challenges/[slug]/     ← dicas (uma por vez) e solução
     desafio/[slug]/            ← página do desafio
   components/
-    workspace/                 ← editor Vim, terminal de saída, PPM, shader
+    workspace/                 ← editor Vim, terminal de saída, PPM, shader, canvas WASM
     Retro.tsx, PixelSprite.tsx ← marquee, blink, under construction, sprites
   lib/
     languages.ts               ← lista única de linguagens
     challenge-loader.ts        ← lê e valida /challenges
     judge/                     ← correção e checkers
+    tracks.ts, social.ts       ← trilhas; guestbook e comentários
+    badges.ts, profile.ts      ← medalhas e cartão do jogador
+    daily.ts, records.ts       ← desafio do dia; códigos aprovados e recordes
     runner/                    ← Piston e runner local
     client/                    ← estado no navegador e parser de .vimrc
 ```
@@ -105,7 +119,7 @@ npm run verify        # compila cada solução de referência e roda todos os te
 docker compose up -d --build
 ```
 
-Sobe `app` (porta 3000), `piston` (só na rede interna) e `piston-init`. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
+Sobe `app` (porta 3000), `piston` e `wasm-builder` (só na rede interna) e `piston-init`. A primeira build do `wasm-builder` demora: baixa o emsdk e compila a raylib. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
 
 Testes dentro do Docker (typecheck, unitários e as soluções de referência rodando no Piston):
 
@@ -132,6 +146,7 @@ O app Next.js inteiro (páginas, `/api`, login) roda na Vercel; o Supabase é s�
 
 Limites desse arranjo:
 - **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
+- **O `wasm-builder` também não roda na Vercel.** Suba-o na mesma VM do Piston (`docker compose up -d wasm-builder`), atrás do mesmo proxy com token, e defina `WASM_BUILDER_URL` (e `WASM_BUILDER_TOKEN`). Sem ele, só os desafios `canvas` falham ("construtor indisponível"); o resto do site funciona. A resposta leva o JS com o WASM embutido (em geral menos de 2 MB; o teto de resposta de uma função na Vercel é 4,5 MB).
 - Rate limit e limite de execuções simultâneas são em memória, por instância. Na Vercel cada instância tem o seu, então valem como teto aproximado.
 
 ## CI/CD (GitHub Actions)
@@ -166,7 +181,7 @@ Migrações rodam **antes** do código novo subir: prefira migrações que só a
    timeLimitMs: 2000          # padrão 2000
    memoryLimitMb: 128         # padrão 256
    checker: exact             # ou: { type: ppm, tolerance: 2, maxBadRatio: 0.01 }
-   kind: stdio                # ou "shader" (GLSL no navegador, sem testes)
+   kind: stdio                # "shader" (GLSL no navegador) ou "canvas" (C/C++ com raylib/SDL2 em WASM); ambos sem testes
    order: 1                   # ordem dentro da categoria
    hints:
      - "Primeira dica (Markdown)"
@@ -176,11 +191,15 @@ Migrações rodam **antes** do código novo subir: prefira migrações que só a
    Enunciado em **Markdown**, com `código`, $fórmulas$ KaTeX e ![imagens](./assets/fig.svg).
    ```
 
-2. Adicione `template.<ext>` para cada linguagem (`c`, `cpp`, `rs`, `go`, `zig`, `asm`, `frag`) e, se quiser, `solution.<ext>` e `NOTES.md`.
+2. Adicione `template.<ext>` para cada linguagem (`c`, `cpp`, `rs`, `go`, `zig`, `asm`, `d`, `pas`, `f90`, `frag`) e, se quiser, `solution.<ext>` e `NOTES.md`.
 3. Crie os testes: `tests/public/01.in` + `01.out`, `tests/hidden/02.in` + `02.out`...
 4. Rode `npm run verify -- <slug>` (a solução precisa passar) e `npm run seed`.
 
 Categoria nova: adicione em `challenges/categories.yml` e crie a pasta.
+
+Desafio `canvas`: `languages` só aceita `c` e `cpp`, e não há pasta `tests/`. A biblioteca é escolhida pelo `#include` do código (`raylib.h` ou `SDL2/SDL.h`). O laço `while (!WindowShouldClose())` de sempre funciona, porque o site compila com `-sASYNCIFY`; com SDL2, mantenha um `SDL_Delay` no laço para devolver o controle ao navegador.
+
+Trilha nova: acrescente um item em `challenges/tracks.yml` (`id`, `title`, `description`, `steps`) e rode `npm run seed`. Só desafios `stdio` contam para zerar a trilha, e toda trilha precisa de pelo menos um.
 
 Também dá para criar desafios em `/admin → Novo desafio`. Eles ficam só no banco (`sourceDir` nulo) e são editáveis lá. Os de `/challenges` só se editam no git. Se um slug criado pela web aparecer depois em `/challenges`, o seed sobrescreve. `npm run seed -- --prune` apaga desafios que sumiram do disco, junto com o progresso deles.
 
@@ -210,14 +229,23 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 - Rate limit por usuário logado, ou por IP sem login (`RUN_RATE_PER_MINUTE`); login e cadastro: 10/min por IP e limite de execuções simultâneas (`RUN_MAX_CONCURRENCY`), em memória.
 - Server Functions do admin conferem `isAdmin` uma a uma; quem não é admin recebe 404. Cookies `SameSite=Lax`, e revelar dica é `POST`, então um link externo não gasta dicas de ninguém.
 - Dicas continuam públicas sem login (é um jogo entre convidados: dá para fugir da penalidade abrindo uma aba anônima).
-- O Markdown dos desafios é tratado como confiável (vem do repositório e, na Fase 2, do admin). HTML cru é descartado. Antes de aceitar Markdown de usuários (comentários e guestbook na Fase 3), adicione `rehype-sanitize`.
+- O Markdown dos desafios é tratado como confiável (vem do repositório e, na Fase 2, do admin). HTML cru é descartado.
+- Guestbook e comentários **não** passam pelo Markdown: `src/lib/user-text.ts` quebra o texto em pedaços e o React desenha cada um como texto, então não existe HTML de usuário para sanitizar. Só contas escrevem, com limite de 5 mensagens por minuto; autor e admin apagam.
+- O `wasm-builder` compila código de usuário, mas nunca o executa. Ele não guarda segredos (o compilador consegue ler arquivos do container com `#include`), roda sem capabilities e não é exposto. O JS gerado roda num iframe com `sandbox="allow-scripts"`: origem opaca, sem cookies da sessão.
+- "Soluções dos outros" segue a regra da solução de referência. O placar de recordes é público, mas só mostra nome, linguagem e número.
 
 ## Roadmap
 
 - [x] **Fase 1:** layout retrô, lista por categoria, página do desafio com editor Vim, execução C/C++/Rust com testes stdin/stdout, seed de `/challenges`. Também entraram o preview PPM e o canvas GLSL, necessários para os desafios de exemplo.
 - [x] **Fase 2:** login (usuário/senha ou GitHub) e convites, progresso e rascunhos no banco, painel admin, Hall of Fame com pontos, solução liberada pelo servidor.
-- [ ] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, badges, ver soluções dos outros.
-- [ ] **Fase 4:** C/C++ com raylib/SDL via Emscripten (WASM) no canvas, mais linguagens.
+- [x] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, medalhas, soluções dos outros jogadores.
+- [x] **Fase 4:** C/C++ com raylib/SDL2 via Emscripten (WASM) no canvas; D, Pascal e Fortran.
+- [x] **Fase 5:** torneio: desafio do dia com bônus, sequências, recordes (menor código, mais rápido), perfil público e feed RSS. Design em [docs/fase-5.md](docs/fase-5.md).
+
+Limitações conhecidas das Fases 3 a 5:
+- Desafios `shader` e `canvas` não têm "resolvido": não pontuam, não entram no desafio do dia e são passos livres nas trilhas.
+- Recordes usam o **último** código aprovado de cada jogador por linguagem; o tempo vem do runner e é ruidoso.
+- D e Pascal não têm solução de referência no repositório: o `npm run verify` do CI (runner local) só cobre C, C++, Rust e Fortran.
 
 Limitações conhecidas da Fase 1:
 - O Piston não informa memória em versões antigas (aparece `n/d`), e o runner local não mede memória.

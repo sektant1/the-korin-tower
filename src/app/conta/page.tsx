@@ -6,6 +6,8 @@ import { FlameTitle, Window } from "@/components/Retro";
 import { githubConfig } from "@/lib/auth/github";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
+import { BadgeShelf } from "@/components/Badges";
+import { getPlayerProfile } from "@/lib/profile";
 import { getProgressSummary } from "@/lib/progress";
 import { PasswordForm } from "./PasswordForm";
 
@@ -14,9 +16,10 @@ export const metadata: Metadata = { title: "Minha conta" };
 export default async function AccountPage() {
   const me = await getCurrentUser();
   if (!me) redirect("/entrar?next=/conta");
-  const [user, summary] = await Promise.all([
+  const [user, summary, profile] = await Promise.all([
     prisma.user.findUniqueOrThrow({ where: { id: me.id }, select: { passwordHash: true, githubId: true, createdAt: true } }),
     getProgressSummary(me.id),
+    getPlayerProfile(me.username),
   ]);
   const solved = Object.values(summary.map).filter((s) => s === "solved").length;
   const gaveUp = Object.values(summary.map).filter((s) => s === "gaveup").length;
@@ -33,6 +36,10 @@ export default async function AccountPage() {
             <dd>{solved}</dd>
             <dt>Desistências</dt>
             <dd>{gaveUp}</dd>
+            <dt>Sequência</dt>
+            <dd>
+              {profile?.streak.current ?? 0} dia(s) (melhor: {profile?.streak.best ?? 0})
+            </dd>
             <dt>Na torre desde</dt>
             <dd>{user.createdAt.toLocaleDateString("pt-BR")}</dd>
             <dt>GitHub</dt>
@@ -49,6 +56,8 @@ export default async function AccountPage() {
             </dd>
           </dl>
           <p>
+            <Link href={`/jogador/${me.username}`}>Meu perfil público</Link>
+            {" · "}
             <Link href="/hall-da-fama">Ver o Hall of Fame</Link>
             {me.isAdmin && (
               <>
@@ -62,6 +71,9 @@ export default async function AccountPage() {
               Sair (logout)
             </button>
           </form>
+        </Window>
+        <Window title={`Medalhas (${profile?.badges.length ?? 0})`}>
+          <BadgeShelf earned={profile?.badges ?? []} />
         </Window>
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
           {!user.passwordHash && <p className="dim small">Você entra pelo GitHub. Crie uma senha para entrar também com usuário e senha.</p>}

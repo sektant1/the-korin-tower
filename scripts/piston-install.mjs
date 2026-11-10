@@ -2,8 +2,8 @@
 // Uso: PISTON_URL=http://localhost:2000 node scripts/piston-install.mjs
 // No docker-compose roda automaticamente pelo serviço `piston-init`.
 const BASE = process.env.PISTON_URL ?? "http://localhost:2000";
-// gcc cobre C e C++.
-const WANTED = (process.env.PISTON_PACKAGES ?? "gcc,rust,go,zig,nasm").split(",");
+// gcc cobre C, C++, D e Fortran.
+const WANTED = (process.env.PISTON_PACKAGES ?? "gcc,rust,go,zig,nasm,pascal").split(",");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

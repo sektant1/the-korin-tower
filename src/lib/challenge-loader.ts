@@ -5,7 +5,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import YAML from "yaml";
-import { LANGUAGES, isLanguageId, type Checker, type ChallengeKind, type LanguageId } from "./languages";
+import { CHALLENGE_KINDS, LANGUAGES, isCanvasLanguage, isLanguageId, type Checker, type ChallengeKind, type LanguageId } from "./languages";
 
 export interface LoadedCategory {
   id: string;
@@ -122,7 +122,7 @@ export function parseMeta(
     throw new ChallengeError(`${where}: 'difficulty' deve ser inteiro de 1 a 5`);
   }
   const kind = (fm.kind ?? "stdio") as ChallengeKind;
-  if (kind !== "stdio" && kind !== "shader") throw new ChallengeError(`${where}: kind deve ser 'stdio' ou 'shader'`);
+  if (!CHALLENGE_KINDS.includes(kind)) throw new ChallengeError(`${where}: kind deve ser 'stdio', 'shader' ou 'canvas'`);
 
   const languages: unknown[] = Array.isArray(fm.languages) ? fm.languages : [];
   if (!languages.length) throw new ChallengeError(`${where}: 'languages' deve listar ao menos uma linguagem`);
@@ -130,6 +130,9 @@ export function parseMeta(
     if (!isLanguageId(l)) throw new ChallengeError(`${where}: linguagem desconhecida '${l}' (veja src/lib/languages.ts)`);
     if ((kind === "shader") !== (l === "glsl")) {
       throw new ChallengeError(`${where}: desafios 'shader' usam só glsl, e glsl só existe em desafios 'shader'`);
+    }
+    if (kind === "canvas" && !isCanvasLanguage(l)) {
+      throw new ChallengeError(`${where}: desafios 'canvas' (WASM) aceitam só c e cpp`);
     }
   }
   const langs = [...new Set(languages)] as LanguageId[];
@@ -171,6 +174,7 @@ export async function loadChallenge(dir: string, repoRoot: string, categories: S
   }
 
   const tests = [...(await loadTests(dir, false, where)), ...(await loadTests(dir, true, where))];
+  if (kind !== "stdio" && tests.length) throw new ChallengeError(`${where}: só desafios stdio têm testes (remova tests/)`);
   if (kind === "stdio" && !tests.length) throw new ChallengeError(`${where}: desafio stdio precisa de testes em tests/public ou tests/hidden`);
 
   return {
@@ -182,6 +186,45 @@ export async function loadChallenge(dir: string, repoRoot: string, categories: S
     sourceDir: where,
     tests,
   };
+}
+
+export interface LoadedTrack {
+  id: string;
+  title: string;
+  description: string;
+  steps: string[]; // slugs, na ordem
+  order: number;
+}
+
+/**
+ * Trilhas ("detonados"): challenges/tracks.yml, uma lista de { id, title, description, steps }.
+ * @param kinds slug -> tipo de cada desafio existente
+ */
+export async function loadTracks(root: string, kinds: Map<string, ChallengeKind>): Promise<{ tracks: LoadedTrack[]; errors: string[] }> {
+  const raw = await readOptional(path.join(root, "tracks.yml"));
+  if (raw === null) return { tracks: [], errors: [] };
+  const list = YAML.parse(raw) ?? [];
+  if (!Array.isArray(list)) return { tracks: [], errors: ["tracks.yml deve ser uma lista"] };
+  const tracks: LoadedTrack[] = [];
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  list.forEach((t, i) => {
+    const where = `tracks.yml item ${i}${t?.id ? ` (${t.id})` : ""}`;
+    if (typeof t?.id !== "string" || !SLUG_RE.test(t.id) || typeof t.title !== "string" || !t.title.trim()) {
+      return errors.push(`${where}: precisa de 'id' (slug) e 'title'`);
+    }
+    if (seen.has(t.id)) return errors.push(`${where}: id repetido`);
+    seen.add(t.id);
+    const steps: string[] = Array.isArray(t.steps) ? t.steps.map(String) : [];
+    if (!steps.length) return errors.push(`${where}: 'steps' deve listar ao menos um desafio`);
+    if (new Set(steps).size !== steps.length) return errors.push(`${where}: desafio repetido em 'steps'`);
+    const missing = steps.filter((s) => !kinds.has(s));
+    if (missing.length) return errors.push(`${where}: desafio(s) inexistente(s): ${missing.join(", ")}`);
+    // Só desafios stdio têm "resolvido"; sem nenhum, a trilha nunca teria como ser zerada.
+    if (!steps.some((s) => kinds.get(s) === "stdio")) return errors.push(`${where}: precisa de ao menos um desafio com testes (stdio)`);
+    tracks.push({ id: t.id, title: t.title.trim(), description: String(t.description ?? "").trim(), steps, order: i });
+  });
+  return { tracks, errors };
 }
 
 /** Desafios ficam em challenges/<categoria>/<slug>/README.md */
@@ -208,5 +251,7 @@ export async function loadAll(repoRoot: string) {
     if (seen.has(c.slug)) errors.push(`slug duplicado '${c.slug}': ${seen.get(c.slug)} e ${c.sourceDir}`);
     seen.set(c.slug, c.sourceDir);
   }
-  return { categories, challenges, errors };
+  const { tracks, errors: trackErrors } = await loadTracks(root, new Map(challenges.map((c) => [c.slug, c.kind])));
+  errors.push(...trackErrors);
+  return { categories, challenges, tracks, errors };
 }

@@ -80,7 +80,14 @@ export function getSettings(): Settings {
   const raw = read<Partial<Settings>>(SETTINGS_KEY, {});
   if (raw !== settingsRaw || !settingsSnapshot) {
     settingsRaw = raw;
-    settingsSnapshot = { ...DEFAULT_SETTINGS, ...raw, flags: { ...DEFAULT_SETTINGS.flags, ...raw.flags } };
+    // Tela de toque sem teclado físico: Vim atrapalha. Vale só enquanto a pessoa não escolheu.
+    const touch = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+    settingsSnapshot = {
+      ...DEFAULT_SETTINGS,
+      ...(touch ? { vim: false } : {}),
+      ...raw,
+      flags: { ...DEFAULT_SETTINGS.flags, ...raw.flags },
+    };
   }
   return settingsSnapshot;
 }

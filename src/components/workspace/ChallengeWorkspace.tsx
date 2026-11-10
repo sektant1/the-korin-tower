@@ -12,7 +12,7 @@ import {
   useSettings,
   type EditorTheme,
 } from "@/lib/client/store";
-import { LANGUAGES, type ChallengeKind, type LanguageId } from "@/lib/languages";
+import { LANGUAGES, isCanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
 import type { RunResponse } from "@/lib/run-api";
 import { GIFS } from "@/lib/gifs";
 import { useAccount, useProgressMap } from "../Account";
@@ -20,6 +20,16 @@ import { Gif } from "../Gif";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { ShaderCanvas, type ShaderError } from "./ShaderCanvas";
+import { WasmCanvas } from "./WasmCanvas";
+
+/** Código aprovado de outro jogador (GET /api/challenges/<slug>/solutions). */
+interface PlayerSolution {
+  username: string;
+  language: LanguageId;
+  code: string;
+  bytes: number;
+  timeMs: number | null;
+}
 
 interface Props {
   slug: string;
@@ -57,6 +67,8 @@ export function ChallengeWorkspace(p: Props) {
   const [message, setMessage] = useState("");
   const [hints, setHints] = useState<string[]>([]);
   const [solution, setSolution] = useState<Partial<Record<LanguageId, string>> | null>(null);
+  const [others, setOthers] = useState<PlayerSolution[] | null>(null);
+  const [wasm, setWasm] = useState<{ js: string | null; version: number }>({ js: null, version: 0 });
   const [confirm, setConfirm] = useState<null | "giveup" | "reset">(null);
   const [shader, setShader] = useState({ source: initialCode, version: 0 });
   const [shaderErrors, setShaderErrors] = useState<ShaderError[]>([]);
@@ -132,6 +144,26 @@ export function ChallengeWorkspace(p: Props) {
       }
       if (busy) return;
       save(false);
+      if (p.kind === "canvas") {
+        if (mode !== "run") return flash("desafio de canvas: sem testes automáticos, use :run");
+        if (!isCanvasLanguage(lang)) return;
+        setOutput({ status: "running", label: "compilando para WebAssembly (emcc)..." });
+        try {
+          const res = await fetch("/api/build", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ slug: p.slug, language: lang, source: editor.current?.getValue() ?? "" }),
+          });
+          const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+          if (!res.ok) return setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
+          // Mesmo painel do stdio: erros de compilação clicáveis; com sucesso, só os avisos.
+          setOutput({ status: "done", response: { mode: "run", compile: { ok: body.ok, output: body.output ?? "" }, run: null, warnings: [] } });
+          if (body.ok && typeof body.js === "string") setWasm((w) => ({ js: body.js, version: w.version + 1 }));
+        } catch (e) {
+          setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
+        }
+        return;
+      }
       setOutput({ status: "running", label: MODE_LABEL[mode] });
       try {
         const res = await fetch("/api/run", {
@@ -193,6 +225,15 @@ export function ChallengeWorkspace(p: Props) {
   useEffect(() => {
     if (logged && status && !solution && p.hasSolution) void loadSolution();
   }, [logged, status, solution, p.hasSolution, loadSolution]);
+
+  // Soluções dos outros jogadores: mesma regra, e só ao abrir a aba (podem ser muitas).
+  useEffect(() => {
+    if (tab !== "sol" || !logged || !status || others || p.kind !== "stdio") return;
+    fetch(`/api/challenges/${p.slug}/solutions`)
+      .then((r) => (r.ok ? r.json() : { solutions: [] }))
+      .then((d) => setOthers(d.solutions))
+      .catch(() => setOthers([]));
+  }, [tab, logged, status, others, p.kind, p.slug]);
 
   const commands: EditorCommands = useMemo(
     () => ({
@@ -258,13 +299,13 @@ export function ChallengeWorkspace(p: Props) {
   ];
 
   const tabs = [
-    { id: "out", label: p.kind === "shader" ? "Canvas" : "Saída" },
+    { id: "out", label: p.kind === "stdio" ? "Saída" : "Canvas" },
     { id: "hints", label: `Cheat codes ${hints.length}/${p.hintsTotal}` },
     { id: "sol", label: "Solução" },
   ] as const;
 
   return (
-    <div className="workspace">
+    <div className="workspace" id="editor">
       <div className="ws-editor">
         <div className="toolbar98" role="toolbar" aria-label="Ações do editor">
           {p.languages.length > 1 && (
@@ -369,6 +410,11 @@ export function ChallengeWorkspace(p: Props) {
                 />
                 <OutputPanel state={output} checker={p.checker} onJump={jump} />
               </>
+            ) : p.kind === "canvas" ? (
+              <>
+                <WasmCanvas js={wasm.js} version={wasm.version} />
+                {output.status !== "idle" && <OutputPanel state={output} checker={p.checker} onJump={jump} />}
+              </>
             ) : (
               <>
                 <ShaderCanvas source={shader.source} version={shader.version} onResult={setShaderErrors} />
@@ -432,8 +478,9 @@ export function ChallengeWorkspace(p: Props) {
               )}
               {p.hasSolution && logged && !status && (
                 <p>
-                  [TRANCADA] Liberada quando você passar em todos os testes{p.kind === "shader" ? "" : " (:submit)"} ou desistir. Desistir
-                  zera os pontos deste desafio.{" "}
+                  {p.kind === "stdio"
+                    ? "[TRANCADA] Liberada quando você passar em todos os testes (:submit) ou desistir. Desistir zera os pontos deste desafio."
+                    : "[TRANCADA] Este desafio roda no navegador, sem testes nem pontos. Tente primeiro; a referência abre quando você desistir."}{" "}
                   <button type="button" className="btn98 small" onClick={() => setConfirm("giveup")}>
                     Desistir
                   </button>
@@ -454,6 +501,24 @@ export function ChallengeWorkspace(p: Props) {
                     </details>
                   ))}
                 </>
+              )}
+              {logged && status && others && others.length > 0 && (
+                <section className="others" aria-labelledby="others-title">
+                  <h3 id="others-title" className="section-title">
+                    Soluções dos outros jogadores ({others.length})
+                  </h3>
+                  {others.map((o) => (
+                    <details key={`${o.username}:${o.language}`}>
+                      <summary>
+                        <b>{o.username}</b> · {LANGUAGES[o.language].label} · {o.bytes} bytes{o.timeMs != null ? ` · ${o.timeMs} ms` : ""}
+                        {o.username === account?.username ? " (você)" : ""}
+                      </summary>
+                      <pre className="code-block">
+                        <code>{o.code}</code>
+                      </pre>
+                    </details>
+                  ))}
+                </section>
               )}
               <p>
                 <button type="button" className="btn98 small" onClick={() => setConfirm("reset")}>

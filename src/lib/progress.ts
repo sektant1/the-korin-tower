@@ -34,13 +34,17 @@ export async function getChallengeProgress(userId: string, challengeId: string) 
   return { state: (p?.state ?? null) as ProgressState | null, hintsRevealed: p?.hintsRevealed ?? 0, drafts: codes };
 }
 
-/** Marca como resolvido. Retorna os pontos ganhos, ou null se já estava resolvido. */
-export async function recordSolve(userId: string, challenge: { id: string; difficulty: number }): Promise<number | null> {
+/**
+ * Marca como resolvido. Retorna os pontos ganhos, ou null se já estava resolvido.
+ * @param daily o desafio é o desafio do dia de hoje (bônus de pontos)
+ */
+export async function recordSolve(userId: string, challenge: { id: string; difficulty: number }, daily = false): Promise<number | null> {
   return prisma.$transaction(async (tx) => {
     const p = await tx.progress.findUnique({ where: key(userId, challenge.id) });
     if (p?.state === "solved") return null;
-    const points = pointsFor(challenge.difficulty, p?.hintsRevealed ?? 0, p?.gaveUp ?? false);
-    const data = { state: "solved", points, solvedAt: new Date() };
+    const points = pointsFor(challenge.difficulty, p?.hintsRevealed ?? 0, p?.gaveUp ?? false, daily);
+    // Quem desistiu antes não pontua, então também não leva o selo do dia.
+    const data = { state: "solved", points, solvedAt: new Date(), dailyBonus: daily && points > 0 };
     await tx.progress.upsert({ where: key(userId, challenge.id), create: { userId, challengeId: challenge.id, ...data }, update: data });
     return points;
   });
