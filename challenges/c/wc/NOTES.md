@@ -1,0 +1,5 @@
+- Bug nº 1: `char c = getchar();`. Em plataformas com `char` sem sinal o laço nunca termina; com sinal, o byte `0xFF` vira `EOF` falso. Mostre os dois casos.
+- Bug nº 2: contar palavras pelos espaços (`palavras = espacos + 1`). Quebra com espaços duplos, entrada vazia e espaço no começo.
+- Teste oculto "sem-newline-final": a última linha sem `\n` não conta como linha, igual ao `wc -l`.
+- Puxe a conversa sobre buffering: `getchar` é rápido porque o `stdio` lê blocos de 4 KB por baixo. Compare com `read(0, &c, 1)` (uma syscall por byte).
+- Extensão: aceitar flags `-l`, `-w`, `-c` lendo de `argv`.

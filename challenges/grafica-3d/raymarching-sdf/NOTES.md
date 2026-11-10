@@ -1,0 +1,6 @@
+- A beleza das SDFs: `min` é união, `max` é interseção, `max(a, -b)` é subtração. Monte uma cena CSG ao vivo.
+- O passo `t += d` é seguro porque a SDF garante que nada está mais perto que `d` (por isso "sphere tracing").
+- Erro clássico: começar a sombra exatamente na superfície; o raio acerta o próprio ponto e tudo fica preto (*shadow acne*). Daí o `+ n * 0.01`.
+- Sombra suave de Inigo Quilez: `res = min(res, k * d / t)`. `k` maior = sombra mais dura.
+- Desempenho: o custo é dominado pelos passos perto de quinas (passos minúsculos). Mostre um mapa de calor com a contagem de passos como cor.
+- Referência: os artigos de Inigo Quilez sobre SDFs e o Shadertoy dele.

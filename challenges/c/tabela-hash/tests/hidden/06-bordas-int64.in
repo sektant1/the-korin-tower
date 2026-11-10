@@ -1,0 +1,7 @@
+set a 9223372036854775807
+set b -9223372036854775808
+get a
+get b
+set zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz 7
+get zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+count

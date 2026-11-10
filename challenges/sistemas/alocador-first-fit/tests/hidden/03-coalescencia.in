@@ -1,0 +1,10 @@
+96
+malloc 1 32
+malloc 2 32
+malloc 3 32
+free 1
+free 3
+dump
+free 2
+dump
+stats

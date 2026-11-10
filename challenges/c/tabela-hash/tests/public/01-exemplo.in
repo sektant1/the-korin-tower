@@ -1,0 +1,10 @@
+set goku 9001
+set vegeta 8000
+get goku
+set goku 9002
+get goku
+get kuririn
+count
+del vegeta
+del vegeta
+count

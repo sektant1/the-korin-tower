@@ -1,0 +1,5 @@
+- O que fica de fora, de propósito: cabeçalho de bloco dentro do próprio heap, alinhamento por `max_align_t`, `realloc`. Bom tema para a aula seguinte: como o `glibc malloc` guarda o tamanho 8 bytes antes do ponteiro.
+- Erros mais comuns: esquecer de coalescer com o bloco **anterior** (só olham o próximo), e não tratar `free` de um id cujo `malloc` deu `NULL`.
+- Teste oculto "fragmentacao": aloca e libera blocos alternados até o maior bloco livre ficar pequeno, mesmo com muita memória livre. Ótimo para discutir fragmentação externa.
+- Compare first-fit com best-fit e next-fit: mesmos comandos, endereços diferentes. Peça para medirem o `maior` no fim de cada estratégia.
+- `long` em vez de `int`: o heap vai até $2^{24}$, mas acostume a usar tipos largos para endereços (ou `size_t`/`uintptr_t`).

@@ -1,0 +1,403 @@
+4096
+free 5
+free 4
+free 5
+free 3
+malloc 1 70
+free 2
+free 1
+free 1
+malloc 2 103
+malloc 3 72
+free 2
+free 3
+malloc 4 35
+free 4
+free 4
+malloc 5 79
+free 5
+malloc 6 103
+free 6
+malloc 7 192
+malloc 8 79
+free 7
+stats
+free 8
+free 1
+malloc 9 118
+malloc 10 174
+free 10
+free 9
+malloc 11 135
+malloc 12 106
+malloc 13 65
+malloc 14 187
+free 14
+malloc 15 74
+malloc 16 147
+free 16
+malloc 17 58
+malloc 18 204
+malloc 19 105
+dump
+malloc 20 18
+malloc 21 207
+free 11
+free 13
+free 19
+free 15
+malloc 22 265
+free 18
+malloc 23 6
+free 21
+malloc 24 40
+malloc 25 225
+malloc 26 14
+free 24
+free 12
+malloc 27 213
+malloc 28 297
+malloc 29 267
+malloc 30 107
+free 29
+malloc 31 254
+free 30
+free 26
+malloc 32 67
+malloc 33 39
+free 33
+free 23
+malloc 34 120
+free 27
+malloc 35 111
+free 17
+malloc 36 260
+free 31
+free 31
+malloc 37 193
+malloc 38 52
+free 19
+malloc 39 111
+malloc 40 174
+malloc 41 50
+free 34
+free 25
+free 22
+free 41
+malloc 42 203
+free 35
+free 28
+free 40
+malloc 43 263
+malloc 44 140
+free 8
+free 37
+malloc 45 80
+malloc 46 279
+malloc 47 58
+malloc 48 26
+malloc 49 113
+malloc 50 30
+malloc 51 83
+malloc 52 38
+free 45
+malloc 53 49
+free 53
+malloc 54 91
+free 54
+free 47
+malloc 55 126
+free 20
+free 39
+free 32
+free 44
+free 43
+malloc 56 212
+free 50
+free 38
+malloc 57 164
+free 48
+free 36
+free 52
+malloc 58 188
+malloc 59 281
+malloc 60 46
+free 55
+malloc 61 103
+malloc 62 102
+free 5
+malloc 63 3
+malloc 64 41
+free 63
+malloc 65 11
+free 61
+free 64
+malloc 66 89
+free 66
+free 56
+stats
+malloc 67 42
+free 49
+free 65
+malloc 68 223
+free 59
+malloc 69 49
+malloc 70 254
+malloc 71 93
+malloc 72 153
+free 68
+malloc 73 271
+free 73
+free 67
+malloc 74 254
+malloc 75 114
+free 58
+free 4
+malloc 76 298
+free 72
+free 51
+malloc 77 227
+free 69
+malloc 78 164
+malloc 79 67
+malloc 80 173
+free 70
+malloc 81 265
+malloc 82 254
+malloc 83 158
+malloc 84 178
+malloc 85 27
+malloc 86 25
+stats
+malloc 87 80
+free 83
+malloc 88 178
+free 62
+malloc 89 56
+malloc 90 284
+malloc 91 174
+malloc 92 159
+free 85
+malloc 93 220
+malloc 94 22
+free 79
+malloc 95 167
+malloc 96 84
+malloc 97 113
+free 71
+dump
+malloc 98 165
+free 88
+malloc 99 226
+malloc 100 189
+free 76
+free 74
+malloc 101 250
+malloc 102 29
+free 97
+malloc 103 62
+free 98
+malloc 104 217
+malloc 105 65
+malloc 106 139
+free 99
+malloc 107 134
+malloc 108 195
+free 60
+free 81
+free 82
+malloc 109 8
+free 103
+free 31
+malloc 110 192
+free 109
+free 104
+free 95
+free 102
+malloc 111 143
+malloc 112 6
+malloc 113 88
+free 106
+malloc 114 96
+free 92
+free 77
+free 57
+free 82
+stats
+malloc 115 31
+malloc 116 216
+free 87
+malloc 117 140
+malloc 118 227
+malloc 119 60
+malloc 120 51
+malloc 121 289
+free 94
+malloc 122 298
+malloc 123 282
+malloc 124 2
+free 105
+malloc 125 42
+free 93
+free 94
+malloc 126 48
+malloc 127 248
+malloc 128 64
+malloc 129 24
+malloc 130 251
+free 100
+free 89
+malloc 131 29
+malloc 132 145
+stats
+malloc 133 41
+free 121
+malloc 134 38
+malloc 135 106
+malloc 136 113
+stats
+free 101
+free 75
+malloc 137 48
+malloc 138 225
+free 131
+free 134
+free 114
+malloc 139 253
+malloc 140 118
+free 115
+free 125
+free 123
+malloc 141 52
+free 137
+free 78
+free 120
+free 113
+malloc 142 234
+malloc 143 209
+malloc 144 83
+malloc 145 202
+free 127
+free 121
+malloc 146 2
+free 119
+free 46
+free 126
+free 117
+free 144
+free 116
+malloc 147 288
+malloc 148 23
+free 148
+malloc 149 232
+malloc 150 129
+malloc 151 113
+malloc 152 206
+free 110
+malloc 153 257
+free 153
+free 133
+free 146
+free 129
+free 136
+malloc 154 113
+malloc 155 51
+free 122
+free 42
+malloc 156 122
+malloc 157 201
+free 157
+malloc 158 273
+free 96
+free 152
+free 80
+malloc 159 60
+malloc 160 204
+free 151
+malloc 161 254
+malloc 162 287
+free 111
+free 155
+malloc 163 299
+malloc 164 56
+malloc 165 156
+malloc 166 271
+free 145
+free 56
+free 156
+free 161
+free 108
+malloc 167 178
+free 128
+malloc 168 108
+malloc 169 200
+free 149
+malloc 170 195
+malloc 171 238
+free 160
+free 135
+malloc 172 91
+malloc 173 54
+stats
+malloc 174 296
+free 170
+free 168
+free 84
+malloc 175 130
+free 165
+malloc 176 188
+malloc 177 171
+free 130
+malloc 178 66
+free 163
+malloc 179 53
+free 172
+free 107
+free 158
+stats
+malloc 180 91
+malloc 181 258
+malloc 182 73
+malloc 183 173
+malloc 184 43
+free 184
+free 176
+malloc 185 79
+free 154
+malloc 186 240
+free 182
+free 138
+free 124
+malloc 187 199
+malloc 188 207
+malloc 189 183
+malloc 190 141
+free 174
+malloc 191 297
+free 139
+malloc 192 285
+free 118
+free 166
+free 91
+free 175
+free 179
+free 112
+free 150
+free 147
+free 191
+malloc 193 199
+malloc 194 252
+malloc 195 270
+malloc 196 234
+free 187
+free 180
+free 149
+free 147
+free 143
+free 142
+free 188
+malloc 197 90
+malloc 198 11
+malloc 199 161
+dump
+stats

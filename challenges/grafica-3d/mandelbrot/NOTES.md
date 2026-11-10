@@ -1,0 +1,5 @@
+- Mostre primeiro em preto e branco (dentro/fora), depois por iterações, depois suave. Cada passo é uma linha de código.
+- A fórmula do *smooth coloring* vem de $|z_n| \approx |z_{n-1}|^2$ depois do escape; o `log2(log2(|z|^2))` "desfaz" esse crescimento duplo-exponencial.
+- Precisão: compare `float` e o truque de *double-float* (dois floats representando um valor). Bom gancho para falar de IEEE-754 e do *perturbation theory* usado nos zooms profundos.
+- Desempenho: o custo é proporcional às iterações dentro do conjunto (pixels pretos são os mais caros). Teste otimizações: checar o cardioide principal antes do laço.
+- Divergência de *warps*: pixels vizinhos com contagens muito diferentes deixam a GPU ociosa.

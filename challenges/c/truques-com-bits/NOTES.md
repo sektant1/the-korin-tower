@@ -1,0 +1,5 @@
+- Teste oculto com $2^{64}-1$: quem usa `long long` (com sinal) ou `%lld` vê número negativo. Bom gancho para falar de complemento de dois.
+- `1 << 63` com `int` é comportamento indefinido; o certo é `UINT64_C(1) << 63` ou `1ULL << 63`.
+- Kernighan (`n &= n - 1`) roda em O(número de bits 1), não O(64). Compare com o laço ingênuo bit a bit.
+- Gray code: dois números consecutivos diferem em exatamente um bit. Aplicações: encoders rotativos, mapas de Karnaugh.
+- Para quem terminou: `std::popcount`, `std::bit_width` e `std::has_single_bit` do `<bit>` (C++20) fazem tudo isso; olhe o assembly gerado com `-O2 -mpopcnt` no Compiler Explorer.

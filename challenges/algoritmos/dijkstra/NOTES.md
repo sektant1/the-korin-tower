@@ -1,0 +1,6 @@
+- O truque das "entradas velhas" (lazy deletion) é o que todo mundo usa na prática; *decrease-key* com heap indexado só vale a pena em casos especiais.
+- Bug nº 1: `int` para distância. O teste oculto "caminho-longo" é uma corrente de 40 mil arestas de peso $10^9$ (distância final perto de $4 \cdot 10^{13}$).
+- Bug nº 2: `priority_queue` padrão é max-heap. Sem `std::greater<>` o resultado continua certo (as entradas velhas são descartadas), mas o algoritmo reprocessa vértices demais e pode estourar o tempo no teste "denso".
+- Grafo dirigido: quem adiciona a aresta nos dois sentidos falha no exemplo (vértice 5).
+- Em C, a lista de adjacência em CSR (offsets + vetor único) é mais rápida que lista ligada por vértice: bom gancho para falar de localidade de cache.
+- Pesos negativos? Mostre um contraexemplo e apresente Bellman-Ford.

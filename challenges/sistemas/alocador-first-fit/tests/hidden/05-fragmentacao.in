@@ -1,0 +1,100 @@
+4096
+malloc 1 64
+malloc 2 64
+malloc 3 64
+malloc 4 64
+malloc 5 64
+malloc 6 64
+malloc 7 64
+malloc 8 64
+malloc 9 64
+malloc 10 64
+malloc 11 64
+malloc 12 64
+malloc 13 64
+malloc 14 64
+malloc 15 64
+malloc 16 64
+malloc 17 64
+malloc 18 64
+malloc 19 64
+malloc 20 64
+malloc 21 64
+malloc 22 64
+malloc 23 64
+malloc 24 64
+malloc 25 64
+malloc 26 64
+malloc 27 64
+malloc 28 64
+malloc 29 64
+malloc 30 64
+malloc 31 64
+malloc 32 64
+malloc 33 64
+malloc 34 64
+malloc 35 64
+malloc 36 64
+malloc 37 64
+malloc 38 64
+malloc 39 64
+malloc 40 64
+malloc 41 64
+malloc 42 64
+malloc 43 64
+malloc 44 64
+malloc 45 64
+malloc 46 64
+malloc 47 64
+malloc 48 64
+malloc 49 64
+malloc 50 64
+malloc 51 64
+malloc 52 64
+malloc 53 64
+malloc 54 64
+malloc 55 64
+malloc 56 64
+malloc 57 64
+malloc 58 64
+malloc 59 64
+malloc 60 64
+malloc 61 64
+malloc 62 64
+malloc 63 64
+malloc 64 64
+free 1
+free 3
+free 5
+free 7
+free 9
+free 11
+free 13
+free 15
+free 17
+free 19
+free 21
+free 23
+free 25
+free 27
+free 29
+free 31
+free 33
+free 35
+free 37
+free 39
+free 41
+free 43
+free 45
+free 47
+free 49
+free 51
+free 53
+free 55
+free 57
+free 59
+free 61
+free 63
+stats
+malloc 100 100
+dump

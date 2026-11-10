@@ -1,0 +1,4 @@
+- Primeiro shader da turma: mostre que `fragCoord` está em pixels e que dividir por `iResolution.y` (e não por `.xy`) é o que mantém os quadrados quadrados.
+- Erro comum: girar antes de centralizar; o tabuleiro gira em torno do canto inferior esquerdo.
+- `mat2` do GLSL é *column-major*: `mat2(c, -s, s, c)` aplicado como `M * p` gira no sentido horário. Troque o sinal e veja inverter.
+- Aliasing nas bordas das casas é visível quando o zoom diminui. Gancho para `smoothstep` + `fwidth` (antialiasing analítico).

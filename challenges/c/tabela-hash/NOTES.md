@@ -1,0 +1,6 @@
+- Duas escolas: encadeamento (solução de referência) e endereçamento aberto com sondagem linear. Peça para a turma implementar as duas e comparar com `perf stat` (cache misses).
+- No endereçamento aberto, o `del` precisa de *tombstones* (ou backward-shift). É onde a maioria erra.
+- Teste oculto "muitas-chaves": 50 mil chaves distintas. Sem redimensionar, a solução fica quadrática e estoura o tempo.
+- Teste oculto "sobrescrita": o mesmo `set` 20 mil vezes. Quem insere sem procurar antes faz `count` crescer errado.
+- Hash ruim de propósito: `h = soma dos bytes`. Mostre que "ab" e "ba" colidem e o desempenho despenca.
+- Valores vão até $\pm 9 \cdot 10^{18}$: use `int64_t` com `PRId64`/`SCNd64`, não `int`.

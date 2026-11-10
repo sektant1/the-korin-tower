@@ -1,0 +1,6 @@
+- É pergunta de entrevista clássica (LeetCode 146), mas aqui o foco é C++: invalidação de iteradores. `std::list::splice` mantém os iteradores válidos; `std::vector` não serviria.
+- Erro comum: no `put` de chave existente, inserir um nó novo em vez de mover o antigo (vazamento lógico + tamanho errado).
+- Outro: remover da lista mas esquecer do mapa; o próximo `get` daquela chave acessa iterador inválido (UB, às vezes "funciona").
+- Teste oculto "capacidade-1": toda inserção de chave nova remove a anterior.
+- Teste oculto "grande": 60 mil operações. Solução O(C) por operação (procurar na lista) estoura o tempo.
+- Extensão: versão genérica `LRUCache<K, V>` e uma versão thread-safe com `std::mutex`.

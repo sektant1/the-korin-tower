@@ -1,0 +1,4 @@
+- Representação invertida (unidade em `d[0]`) é o "aha" do exercício: todo laço vira `for (i = 0; ...)` e o vai-um nunca precisa de deslocar o vetor.
+- Casos que derrubam: `0 * 123` (zeros à esquerda no resultado), `42 - 42` (`-0`), `5 - 12` (resultado negativo), `999...9 + 1` (vai-um que cresce o tamanho).
+- Na multiplicação, acumular em `int` antes de propagar é seguro: no pior caso cada casa recebe 1000 × 81 = 81 000.
+- Para quem terminou: guardar 9 dígitos por "limb" (`uint32_t`, base $10^9$) deixa tudo ~9x mais rápido; depois, Karatsuba em $O(n^{1.585})$. Conecte com GMP e com o `BigInt` do JavaScript.

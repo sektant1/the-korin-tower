@@ -1,0 +1,7 @@
+32
+malloc 1 32
+malloc 2 1
+stats
+free 1
+malloc 2 1
+dump

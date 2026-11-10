@@ -1,0 +1,10 @@
+64
+free 1
+malloc 1 100
+free 1
+malloc 2 8
+free 2
+free 2
+malloc 2 8
+free 2
+stats

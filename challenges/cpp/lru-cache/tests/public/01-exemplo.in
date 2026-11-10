@@ -1,0 +1,11 @@
+2
+put 1 100
+put 2 200
+get 1
+put 3 300
+get 2
+put 1 111
+get 1
+put 4 400
+get 3
+get 4

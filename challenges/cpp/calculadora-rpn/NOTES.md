@@ -1,0 +1,5 @@
+- Ponte para compiladores: a JVM, o WebAssembly e o Forth são máquinas de pilha. `3 4 + 2 *` é literalmente o bytecode `push 3; push 4; add; push 2; mul`.
+- Erro clássico: desempilhar na ordem errada e calcular `b - a`. O teste `10 3 -` pega na hora.
+- Outro: tratar `-` como número porque `std::stoll("-")` lança exceção. Use a checagem de tamanho/dígito antes.
+- `INT64_MIN / -1` estoura: os testes evitam esse caso, mas pergunte à turma o que acontece (SIGFPE no x86).
+- Extensão: converter infixo para RPN com o algoritmo shunting-yard do Dijkstra.
