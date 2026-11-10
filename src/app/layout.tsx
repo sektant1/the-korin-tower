@@ -8,7 +8,7 @@ import { PlayerOne, SanityToggle, SettingsApplier, StarTrail, VisitCounter } fro
 import { Bookmark, Clock, DragonBalls, FlyingCloud, KonamiCode } from "@/components/PortalWidgets";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
-import { Blink, Marquee, RainbowHr } from "@/components/Retro";
+import { Marquee, RainbowHr } from "@/components/Retro";
 import { logout } from "@/app/entrar/actions";
 import { getCurrentUser } from "@/lib/auth/session";
 import { latestChallenges, listCategories } from "@/lib/challenges";
@@ -39,7 +39,6 @@ const MENU = [
   { href: "/sobre", label: "Sobre mim" },
   { href: "/config", label: "Opções" },
 ];
-const MENU_BANNERS = [GIFS.navDragonBall, GIFS.navCommunity, GIFS.navSite];
 
 async function loadAccount(): Promise<AccountData | null> {
   const user = await getCurrentUser();
@@ -99,10 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <img src={fanart.banner} alt="" className="header-banner" />
           )}
           <p className="tagline">
-            ~*~ desafios de programação para devs de <i>baixo nível</i> ~*~{" "}
-            <span className="insert-coin">
-              <Blink>INSERT COIN</Blink>
-            </span>
+            ~*~ desafios de programação para devs de <i>baixo nível</i> ~*~
           </p>
         </header>
 
@@ -124,13 +120,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <nav className="sidebar" aria-label="Navegação principal">
             <div className="side-box">
               <h2 className="side-title">MENU</h2>
-              {/* Menu único em banners da época: o GIF fica de fundo (retrato + textura)
-                  e uma faixa cobre o texto original a partir do x=36. */}
-              <ul className="nav-banners">
-                {menu.map((item, i) => (
+              <ul className="nav-list">
+                {menu.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href} className="nav-banner" style={{ backgroundImage: `url(${MENU_BANNERS[i % MENU_BANNERS.length].src})` }}>
-                      <span>{item.label}</span>
+                    <Link href={item.href}>
+                      <Gif gif={GIFS.sphere} height={14} /> {item.label}
                     </Link>
                   </li>
                 ))}

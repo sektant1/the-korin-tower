@@ -1999,39 +1999,7 @@ body:has(.challenge-page) .content {
 }
 
 /* Banners de navegação 150x33 com texto próprio por cima do GIF original. */
-.nav-banner {
-  position: relative;
-  display: block;
-  width: 150px;
-  height: 33px;
-  background-size: 150px 33px;
-  image-rendering: pixelated;
-  text-decoration: none;
-}
-.nav-banner span {
-  position: absolute;
-  inset: 0 0 0 36px;
-  display: flex;
-  align-items: center;
-  padding-left: 7px;
-  font: 17px "Times New Roman", Times, serif;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-  background: linear-gradient(90deg, rgba(52, 44, 160, 0.97), rgba(26, 18, 86, 0.97));
-}
-.nav-banner:hover span,
-.nav-banner:focus-visible span {
-  color: #ffff66;
-}
 
-.nav-banners {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  justify-items: center;
-  gap: 3px;
-}
 
 /* Títulos de página centralizados, como o resto do conteúdo. */
 .flame {
@@ -2215,13 +2183,6 @@ body:has(.challenge-page) .content {
   font-family: var(--font-fun);
   color: var(--cyan);
 }
-.insert-coin {
-  margin-left: 8px;
-  font-family: var(--font-pixel-stack);
-  font-size: 10px;
-  color: var(--red);
-  white-space: nowrap;
-}
 .header-banner {
   display: block;
   max-width: min(100%, 728px);
@@ -2271,10 +2232,6 @@ body:has(.challenge-page) .flying-cloud {
   display: none;
 }
 @media (max-width: 760px) {
-  .insert-coin {
-    display: block;
-    margin: 4px 0 0;
-  }
   .logo-title .gif {
     width: 22px;
     height: 22px;
