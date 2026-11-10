@@ -1,0 +1,125 @@
+# CI em todo PR e push; CD (Supabase + Vercel) só em push na master, depois de tudo passar.
+#
+# Segredos do repositório (Settings → Secrets and variables → Actions), usados só no deploy:
+#   DATABASE_URL       Supabase, pooler "Transaction" (porta 6543)
+#   DIRECT_URL         Supabase, pooler "Session" (porta 5432), para migrate
+#   VERCEL_TOKEN       vercel.com/account/tokens
+#   VERCEL_ORG_ID      .vercel/project.json depois de `npx vercel link`
+#   VERCEL_PROJECT_ID  idem
+name: CI/CD
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  check:
+    name: typecheck, testes e build
+    runs-on: ubuntu-latest
+    env:
+      # prisma.config.ts exige a variável até para gerar o client; o build não conecta.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run typecheck
+      - run: npm test
+      - run: npx next build
+
+  database:
+    name: migrações e seed (Postgres limpo)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: ci
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ci -d ci"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - name: schema.prisma bate com as migrações (sem migração esquecida)
+        run: npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code
+      - name: seed roda duas vezes (idempotente)
+        run: npm run seed && npm run seed
+
+  verify:
+    name: soluções de referência
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      # Runner local: compila na própria VM do Actions (descartável). Só roda as
+      # soluções do repositório, nunca código de usuário.
+      RUNNER: local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: gcc --version && g++ --version && rustc --version
+      - run: npm run verify
+
+  deploy:
+    name: deploy (Supabase + Vercel)
+    needs: [check, database, verify]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment: production
+    # Nunca dois deploys ao mesmo tempo (migrações concorrentes no mesmo banco).
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      # Banco primeiro: o código novo só sobe com as tabelas que ele espera.
+      - name: Supabase - migrações e desafios
+        run: npm run db:deploy
+      - name: Vercel - build e deploy de produção
+        run: |
+          npx vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel build --prod --token="$VERCEL_TOKEN"
+          npx vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

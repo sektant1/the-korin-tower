@@ -14,7 +14,7 @@
     "verify": "tsx scripts/verify-challenges.ts",
     "invite": "tsx scripts/invite.ts",
     "db:migrate": "prisma migrate deploy",
-    "vercel-build": "prisma generate && prisma migrate deploy && tsx scripts/seed.ts && next build"
+    "db:deploy": "prisma migrate deploy && tsx scripts/seed.ts"
   },
   "dependencies": {
     "@codemirror/commands": "^6.11.1",
@@ -55,7 +55,8 @@
     "dotenv": "^18.0.10",
     "prisma": "^7.10.1",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vercel": "^65.14.0"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,

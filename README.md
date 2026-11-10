@@ -134,6 +134,25 @@ Limites desse arranjo:
 - **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
 - Rate limit e limite de execuções simultâneas são em memória, por instância. Na Vercel cada instância tem o seu, então valem como teto aproximado.
 
+## CI/CD (GitHub Actions)
+
+`.github/workflows/ci.yml` roda em todo PR e push:
+
+- **check:** typecheck, testes unitários, `next build`;
+- **database:** Postgres limpo → `prisma migrate deploy` → confere se `schema.prisma` bate com as migrações (pega migração esquecida) → seed duas vezes (idempotente);
+- **verify:** compila e testa as soluções de referência (runner local na VM do Actions);
+- **deploy** (só push na `master`, depois dos três acima): `npm run db:deploy` no Supabase (migrações + desafios) e então `vercel build` + `vercel deploy --prebuilt --prod`. Um deploy por vez.
+
+O `vercel.json` desliga o deploy automático da Vercel na `master` (quem faz é o Actions, depois de migrar o banco). PRs continuam ganhando preview pela integração Git da Vercel; o build de preview não mexe no banco.
+
+Configuração, uma vez:
+1. `npx vercel link` na sua máquina; copie `orgId` e `projectId` de `.vercel/project.json`.
+2. Crie um token em vercel.com/account/tokens.
+3. No GitHub (Settings → Secrets and variables → Actions) crie `DATABASE_URL`, `DIRECT_URL`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. Opcional: crie o environment `production` com aprovação manual.
+4. As variáveis de runtime (`APP_URL`, `PISTON_URL`, ...) continuam no painel da Vercel.
+
+Migrações rodam **antes** do código novo subir: prefira migrações que só acrescentam (coluna nova com default, tabela nova). Para remover/renomear, faça em dois deploys.
+
 ## Adicionando um desafio
 
 1. Crie `challenges/<categoria>/<slug>/README.md`:

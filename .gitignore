@@ -8,3 +8,7 @@ src/generated/
 next-env.d.ts
 *.tsbuildinfo
 .next-dev.log
+
+.vercel
+.env*
+!.env.example
