@@ -1,0 +1,9 @@
+node_modules
+.next
+.npm-cache
+.runner-tmp
+data
+src/generated
+.env
+.git
+*.log

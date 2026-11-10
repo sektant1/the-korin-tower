@@ -1,0 +1,10 @@
+int
+print
+pop_front
+size
+push_back 7
+pop_front
+pop_front
+print
+push_back 8
+print

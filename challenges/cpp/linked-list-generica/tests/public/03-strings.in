@@ -1,0 +1,7 @@
+string
+push_back korin
+push_back tower
+push_front the
+print
+find tower
+find nada

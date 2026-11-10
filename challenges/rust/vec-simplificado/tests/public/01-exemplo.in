@@ -1,0 +1,8 @@
+i64
+push 10
+push 20
+insert 0 5
+print
+cap
+remove 1
+print

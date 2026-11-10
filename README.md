@@ -1,0 +1,205 @@
+# 🗼 The Korin Tower
+
+Repositório de desafios de programação para devs de baixo nível (C, C++, Rust, ray tracing, shaders...), com cara de homepage pessoal de 1998 e site de games da época, mas funcionando como app moderno: editor com Vim, compilação de verdade em sandbox e testes automáticos.
+
+> Status: **Fase 2 completa** (contas, convites, progresso no banco, admin, Hall of Fame). Veja o [roadmap](#roadmap).
+
+---
+
+## Arquitetura
+
+```
+ Navegador                          Servidor (Next.js, Node)                   Sandbox
+┌──────────────────────┐  HTTP   ┌──────────────────────────────────┐  HTTP  ┌──────────────┐
+│ páginas (RSC)        │ ──────▶ │ App Router (páginas + /api)      │ ─────▶ │ Piston       │
+│ CodeMirror 6 + Vim   │         │  ├ /api/run  → judge → Runner ───┼──────▶ │ (isolate,    │
+│ terminal de saída    │ ◀────── │  │   rate limit + semáforo       │        │  sem rede)   │
+│ PPM → <canvas>       │         │  ├ Prisma → PostgreSQL           │        └──────────────┘
+│ GLSL → WebGL2        │         │  └ markdown → HTML (KaTeX, hljs) │
+└──────────────────────┘         └──────────────▲───────────────────┘
+                                                │ npm run seed
+                                   /challenges (Markdown + YAML + testes, no git)
+```
+
+- **Fonte de verdade dos desafios:** arquivos em `/challenges`, versionados no git. `npm run seed` importa para o banco (idempotente).
+- **Execução:** `src/lib/runner` tem uma interface `Runner` com dois backends:
+  - `piston`: sandbox via Docker (produção). Sem rede, com limites de tempo, memória, processos e tamanho de saída.
+  - `local`: chama `gcc`/`g++`/`rustc` da sua máquina **sem sandbox**. Só para desenvolver sem Docker; é bloqueado com `NODE_ENV=production`.
+- **Correção:** `src/lib/judge` roda os casos e compara a saída (`exact`, que ignora espaços no fim e CRLF, ou `ppm`, pixel a pixel com tolerância).
+- **Testes ocultos** nunca saem do servidor: a resposta traz só nome, veredito e tempo.
+- **GLSL** roda inteiro no navegador (WebGL2, uniforms `iTime`/`iResolution`/`iMouse`).
+- **Contas (Fase 2):** usuário/senha (scrypt) ou GitHub OAuth, cadastro só com convite. Sessão em banco: o cookie `httpOnly` leva um token aleatório e o banco guarda só o sha256. Sem login dá para jogar tudo, com progresso no `localStorage`, mas sem pontos nem solução.
+- **Progresso no servidor:** só `/api/run` (submit aprovado) marca "resolvido". A solução de referência só sai de `/api/challenges/<slug>/solution` para quem resolveu ou desistiu. Rascunhos, dicas reveladas e preferências do editor ficam na conta.
+- **Pontos:** 100 × dificuldade; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
+
+## Estrutura de pastas
+
+```
+challenges/                    ← desafios (edite aqui)
+  categories.yml               ← categorias e ordem do menu
+  <categoria>/<slug>/
+    README.md                  ← frontmatter YAML + enunciado em Markdown
+    NOTES.md                   ← notas do professor (opcional)
+    template.<ext>             ← código inicial, um por linguagem
+    solution.<ext>             ← solução de referência (opcional)
+    tests/public/NN.in, NN.out ← testes visíveis
+    tests/hidden/NN.in, NN.out ← testes ocultos
+    assets/                    ← imagens usadas no enunciado (./assets/x.svg)
+prisma/                        ← schema e migrações
+scripts/
+  seed.ts                      ← importa /challenges para o banco
+  verify-challenges.ts         ← roda as soluções contra os testes
+  piston-install.mjs           ← instala compiladores no Piston
+src/
+  app/                         ← páginas e rotas de API (App Router)
+    api/run/                   ← compilar/executar/testar
+    api/challenges/[slug]/     ← dicas (uma por vez) e solução
+    desafio/[slug]/            ← página do desafio
+  components/
+    workspace/                 ← editor Vim, terminal de saída, PPM, shader
+    Retro.tsx, PixelSprite.tsx ← marquee, blink, under construction, sprites
+  lib/
+    languages.ts               ← lista única de linguagens
+    challenge-loader.ts        ← lê e valida /challenges
+    judge/                     ← correção e checkers
+    runner/                    ← Piston e runner local
+    client/                    ← estado no navegador e parser de .vimrc
+```
+
+## Rodando localmente
+
+Pré-requisitos: Node 22+, um PostgreSQL (`docker compose up -d db` ou um projeto no Supabase) e, para executar código, **um** dos dois:
+- Docker (recomendado): roda o Piston;
+- ou gcc/g++/rustc instalados, com `RUNNER=local` (sem sandbox, só para você).
+
+```bash
+npm install
+cp .env.example .env          # ajuste DATABASE_URL e RUNNER (piston ou local)
+docker compose up -d db       # PostgreSQL local (ou use a URL do Supabase no .env)
+npx prisma migrate deploy     # cria as tabelas
+npx prisma generate
+npm run seed                  # importa /challenges
+npm run invite -- --admin     # gera o convite do primeiro admin
+npm run dev                   # http://localhost:3000 → /entrar → Criar conta
+```
+
+Com Piston, sem subir o app no Docker:
+
+```bash
+docker compose up -d piston piston-init   # 1ª vez baixa os compiladores (demora)
+# no .env: RUNNER="piston" e PISTON_URL="http://localhost:2000"
+# e exponha a porta: adicione `ports: ["127.0.0.1:2000:2000"]` ao serviço piston
+```
+
+Verificações:
+
+```bash
+npm test              # testes unitários (checkers, .vimrc)
+npm run typecheck
+npm run verify        # compila cada solução de referência e roda todos os testes
+```
+
+## Deploy (VPS)
+
+```bash
+docker compose up -d --build
+```
+
+Sobe `app` (porta 3000), `piston` (só na rede interna) e `piston-init`. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
+
+Testes dentro do Docker (typecheck, unitários e as soluções de referência rodando no Piston):
+
+```bash
+docker compose --profile test run --rm test
+```
+
+O compose sobe PostgreSQL 17 (volume `pg-data`), o mesmo motor do Supabase. **GitHub Pages não serve**: o site precisa de servidor Node, banco e do Piston (`privileged`).
+
+Primeiro admin na VPS: `docker compose exec app npx tsx scripts/invite.ts --admin`. Depois, gere convites em `/admin`.
+
+Login com GitHub (opcional): crie um OAuth App com callback `<APP_URL>/api/auth/github/callback` e defina `APP_URL`, `GITHUB_CLIENT_ID` e `GITHUB_CLIENT_SECRET` (o compose lê do ambiente ou de um `.env` ao lado).
+
+Para atualizar os desafios na VPS: `git pull && docker compose restart app`.
+
+## Deploy (Vercel + Supabase)
+
+O app Next.js inteiro (páginas, `/api`, login) roda na Vercel; o Supabase é só o PostgreSQL. A autenticação continua a própria do site (não usa Supabase Auth).
+
+1. **Supabase:** crie o projeto. Em *Connect*, copie a URL do pooler em modo *Transaction* (porta 6543) para `DATABASE_URL` e a do modo *Session* (porta 5432) para `DIRECT_URL`.
+2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`), `RUNNER=piston` e `PISTON_URL`. GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
+3. O script `vercel-build` roda `prisma migrate deploy`, o seed de `/challenges` e o build. Cada push atualiza os desafios.
+4. Primeiro admin, da sua máquina com o `.env` apontando para o Supabase: `npm run invite -- --admin`.
+
+Limites desse arranjo:
+- **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
+- Rate limit e limite de execuções simultâneas são em memória, por instância. Na Vercel cada instância tem o seu, então valem como teto aproximado.
+
+## Adicionando um desafio
+
+1. Crie `challenges/<categoria>/<slug>/README.md`:
+
+   ```markdown
+   ---
+   title: Meu Desafio
+   difficulty: 3              # 1 a 5
+   tags: [ponteiros, parsing]
+   languages: [c, cpp, rust]  # ids de src/lib/languages.ts
+   timeLimitMs: 2000          # padrão 2000
+   memoryLimitMb: 128         # padrão 256
+   checker: exact             # ou: { type: ppm, tolerance: 2, maxBadRatio: 0.01 }
+   kind: stdio                # ou "shader" (GLSL no navegador, sem testes)
+   order: 1                   # ordem dentro da categoria
+   hints:
+     - "Primeira dica (Markdown)"
+     - "Segunda dica"
+   ---
+
+   Enunciado em **Markdown**, com `código`, $fórmulas$ KaTeX e ![imagens](./assets/fig.svg).
+   ```
+
+2. Adicione `template.<ext>` para cada linguagem (`c`, `cpp`, `rs`, `go`, `zig`, `asm`, `frag`) e, se quiser, `solution.<ext>` e `NOTES.md`.
+3. Crie os testes: `tests/public/01.in` + `01.out`, `tests/hidden/02.in` + `02.out`...
+4. Rode `npm run verify -- <slug>` (a solução precisa passar) e `npm run seed`.
+
+Categoria nova: adicione em `challenges/categories.yml` e crie a pasta.
+
+Também dá para criar desafios em `/admin → Novo desafio`. Eles ficam só no banco (`sourceDir` nulo) e são editáveis lá. Os de `/challenges` só se editam no git. Se um slug criado pela web aparecer depois em `/challenges`, o seed sobrescreve. `npm run seed -- --prune` apaga desafios que sumiram do disco, junto com o progresso deles.
+
+## Editor
+
+- Vim ligado por padrão (desligue na toolbar ou em Configurações).
+- Layout de IDE: enunciado | editor | painel com abas (Saída, Cheat codes, Solução), tudo visível sem rolar a página.
+- Comandos ex: `:w` salva rascunho · `:run`/`:make` executa com o stdin da caixa · `:test` testes públicos · `:submit` todos · `:hint` próxima dica · `:stdin` foca a caixa de entrada (lá, `Ctrl+Enter` executa e `Esc` volta ao editor) · `:out` volta para a aba Saída · `:set theme=noite|fosforo|ambar|turbo|win98` · `:q` volta para a lista.
+- `.vimrc` simplificado em Configurações: `map`, `nmap`, `imap`, `vmap`, variantes `noremap`, e `set theme=...`.
+- Erros de compilação: clique em `main.c:12:5` para pular o cursor para a linha.
+- Se o programa imprime um PPM **P3**, a imagem aparece no terminal de saída. P6 (binário) não sobrevive ao transporte como texto; use P3.
+
+## Imagens próprias (public/fanart)
+
+Coloque arquivos `.gif`, `.png`, `.jpg`, `.webp` ou `.svg` em `public/fanart/`. Não precisa de rebuild:
+
+- `banner.*` aparece no cabeçalho;
+- `mascote.*` aparece no topo da home;
+- os demais vão para `/galeria` e para um slot aleatório na sidebar.
+
+Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-content.ts`. Easter egg: ↑↑↓↓←→←→BA fora do editor.
+
+## Segurança
+
+- Código de usuário só roda no Piston: sem rede, com limites de tempo, memória, processos e saída. Nunca use `RUNNER=local` num servidor acessível por outras pessoas.
+- Flags de compilador passam por uma lista de flags permitidas (`src/lib/runner/flags.ts`). Isso bloqueia, por exemplo, `-include /etc/passwd`. O Piston usa flags fixas, então elas só valem no runner local.
+- Rate limit por usuário logado, ou por IP sem login (`RUN_RATE_PER_MINUTE`); login e cadastro: 10/min por IP e limite de execuções simultâneas (`RUN_MAX_CONCURRENCY`), em memória.
+- Server Functions do admin conferem `isAdmin` uma a uma; quem não é admin recebe 404. Cookies `SameSite=Lax`, e revelar dica é `POST`, então um link externo não gasta dicas de ninguém.
+- Dicas continuam públicas sem login (é um jogo entre convidados: dá para fugir da penalidade abrindo uma aba anônima).
+- O Markdown dos desafios é tratado como confiável (vem do repositório e, na Fase 2, do admin). HTML cru é descartado. Antes de aceitar Markdown de usuários (comentários e guestbook na Fase 3), adicione `rehype-sanitize`.
+
+## Roadmap
+
+- [x] **Fase 1:** layout retrô, lista por categoria, página do desafio com editor Vim, execução C/C++/Rust com testes stdin/stdout, seed de `/challenges`. Também entraram o preview PPM e o canvas GLSL, necessários para os desafios de exemplo.
+- [x] **Fase 2:** login (usuário/senha ou GitHub) e convites, progresso e rascunhos no banco, painel admin, Hall of Fame com pontos, solução liberada pelo servidor.
+- [ ] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, badges, ver soluções dos outros.
+- [ ] **Fase 4:** C/C++ com raylib/SDL via Emscripten (WASM) no canvas, mais linguagens.
+
+Limitações conhecidas da Fase 1:
+- O Piston não informa memória em versões antigas (aparece `n/d`), e o runner local não mede memória.
+- Com o Piston, cada teste recompila o programa (a API não separa compilação de execução).

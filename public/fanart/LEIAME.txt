@@ -1,0 +1,3 @@
+Coloque aqui suas imagens (.gif, .png, .jpg, .webp, .svg).
+Elas aparecem sozinhas em /galeria e, uma por vez, na sidebar.
+Use só imagens que você tem direito de publicar.

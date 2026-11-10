@@ -1,0 +1,8 @@
+string
+push_front a
+pop_front
+push_back b
+print
+reverse
+print
+find b

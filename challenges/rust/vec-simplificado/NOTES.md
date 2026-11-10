@@ -1,0 +1,4 @@
+- Baseado no capítulo de `Vec` do Rustonomicon: indique a leitura depois de tentarem.
+- Os testes com `string` existem para pegar quem esquece de rodar o drop dos elementos ou faz `ptr::read` duas vezes (double free costuma aparecer como RE).
+- Ponto de discussão: por que `T` de tamanho zero (`()`) quebra essa implementação? (`Layout::array::<()>` tem tamanho 0 e `alloc` com tamanho 0 é UB.)
+- Rode com Miri localmente (`cargo +nightly miri run`) para mostrar UB que os testes não pegam.

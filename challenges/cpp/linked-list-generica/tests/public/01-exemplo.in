@@ -1,0 +1,9 @@
+int
+push_back 1
+push_back 2
+push_front 0
+print
+reverse
+print
+pop_front
+size

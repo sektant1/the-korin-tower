@@ -1,0 +1,4 @@
+- Ótimo para "aquecer" a turma antes do ray tracer: mostra que um shader é uma função `pixel -> cor` executada em paralelo.
+- Ao vivo: comece com `fragColor = vec4(uv, 0, 1)`, depois some um seno de cada vez.
+- Conceito para fixar: não há laço sobre os pixels, cada invocação só vê o próprio `fragCoord`.
+- Referência da paleta de cossenos: artigo "palettes" do Inigo Quilez.

@@ -1,0 +1,4 @@
+- Objetivo real: **regra dos três** (ou cinco). O teste `snapshot` só passa com cópia profunda.
+- Peça para rodarem localmente com `-fsanitize=address` e mostrarem que não há leak. O runner local do site aceita essa flag (Configurações > Flags do compilador).
+- Discussão boa: por que `pop_front` devolve `std::optional<T>` e não `T&`? (o nó já foi liberado)
+- Extensão: iteradores (`begin()`/`end()`) para usar range-for, e move constructor.

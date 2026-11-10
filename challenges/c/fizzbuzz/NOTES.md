@@ -1,0 +1,4 @@
+- Bom para apresentar o fluxo do site: editor Vim, `:test`, `:submit`.
+- Erro clássico: testar `% 3` antes de `% 15` e nunca imprimir `FizzBuzz`.
+- Pergunte: "e se N fosse 10^9?" para puxar a conversa sobre buffer de saída (`printf` linha a linha vs. montar um buffer grande e um único `fwrite`).
+- Variação para quem terminou rápido: fazer sem nenhum `%` (contadores que zeram).

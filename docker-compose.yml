@@ -1,0 +1,96 @@
+# docker compose up -d --build                       app + PostgreSQL + Piston
+# docker compose exec app npx tsx scripts/invite.ts --admin   primeiro convite de admin
+# docker compose --profile test run --rm test         typecheck + testes + verificação das soluções
+# App em http://localhost:3000. O Piston NÃO é exposto para fora da rede interna.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://korin:${POSTGRES_PASSWORD:-korin}@db:5432/korin
+      RUNNER: piston
+      PISTON_URL: http://piston:2000
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      RUN_RATE_PER_MINUTE: "20"
+      RUN_MAX_CONCURRENCY: "4"
+    volumes:
+      - ./challenges:/app/challenges:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      piston-init:
+        condition: service_completed_successfully
+
+  # Mesmo motor do Supabase. Dev local com o app fora do container:
+  #   docker compose up -d db   e no .env: DATABASE_URL="postgresql://korin:korin@localhost:5432/korin"
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432" # só na máquina local
+    environment:
+      POSTGRES_USER: korin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-korin}
+      POSTGRES_DB: korin
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U korin -d korin"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Sandbox de execução (isolate + cgroups). Precisa de privileged e cgroup v2 no host.
+  piston:
+    image: ghcr.io/engineer-man/piston
+    restart: unless-stopped
+    privileged: true
+    tmpfs:
+      - /piston/jobs:exec,uid=1000,gid=1000,mode=711
+    volumes:
+      - piston-packages:/piston/packages
+    environment:
+      PISTON_DISABLE_NETWORKING: "true"
+      PISTON_RUN_TIMEOUT: "10000"
+      PISTON_COMPILE_TIMEOUT: "20000"
+      PISTON_RUN_MEMORY_LIMIT: "536870912"
+      PISTON_MAX_PROCESS_COUNT: "64"
+      PISTON_OUTPUT_MAX_SIZE: "2097152"
+
+  # Instala gcc/rust/go/zig/nasm no Piston na primeira subida (depois é instantâneo).
+  piston-init:
+    image: node:24-alpine
+    command: node /piston-install.mjs
+    environment:
+      PISTON_URL: http://piston:2000
+    volumes:
+      - ./scripts/piston-install.mjs:/piston-install.mjs:ro
+    depends_on:
+      - piston
+
+  # Testes num container: typecheck, unitários e todas as soluções de referência no Piston.
+  #   docker compose --profile test run --rm test
+  test:
+    profiles: ["test"]
+    build:
+      context: .
+      target: build # estágio com devDependencies e código-fonte
+    command: sh -c "npm run typecheck && npm test && npm run verify"
+    environment:
+      DATABASE_URL: postgresql://korin:${POSTGRES_PASSWORD:-korin}@db:5432/korin
+      RUNNER: piston
+      PISTON_URL: http://piston:2000
+    volumes:
+      - ./challenges:/app/challenges:ro
+    depends_on:
+      piston-init:
+        condition: service_completed_successfully
+
+volumes:
+  pg-data:
+  piston-packages:

@@ -1,0 +1,43 @@
+# Categorias de desafio. A ordem aqui é a ordem no menu.
+# Para criar uma categoria nova: adicione aqui e crie challenges/<id>/.
+# icon: reservado (hoje o site usa o GIF da esfera para todas as categorias).
+- id: c
+  name: C
+  icon: floppy
+  description: Ponteiros, malloc e muita coragem.
+- id: cpp
+  name: C++
+  icon: capsule
+  description: Templates, RAII e mensagens de erro de 400 linhas.
+- id: rust
+  name: Rust
+  icon: aura
+  description: O borrow checker é seu amigo. Às vezes.
+- id: zig
+  name: Zig
+  icon: staff
+  description: Comptime, alocadores explícitos, zero mágica.
+- id: go
+  name: Go
+  icon: cloud
+  description: Goroutines, channels e simplicidade.
+- id: asm
+  name: Assembly x86-64
+  icon: coin
+  description: Registradores, syscalls e nada entre você e a CPU.
+- id: grafica-3d
+  name: Computação Gráfica 3D
+  icon: radar
+  description: Ray tracing, rasterização e shaders.
+- id: gamedev
+  name: Game Dev
+  icon: joystick
+  description: Game loops, física, colisão e ECS.
+- id: sistemas
+  name: Sistemas
+  icon: tower
+  description: Alocadores, parsers, interpretadores, emuladores e redes.
+- id: algoritmos
+  name: Algoritmos e Estruturas de Dados
+  icon: trophy
+  description: O clássico que cai na entrevista.

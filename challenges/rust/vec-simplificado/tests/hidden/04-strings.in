@@ -1,0 +1,13 @@
+string
+push ola
+push mundo
+insert 1 velho
+print
+remove 0
+get 1
+get 5
+pop
+pop
+pop
+print
+cap

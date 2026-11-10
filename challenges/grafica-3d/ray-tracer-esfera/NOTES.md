@@ -1,0 +1,4 @@
+- Segue a primeira parte de *Ray Tracing in One Weekend* (Peter Shirley). Bom "passo 1" para a trilha "Do zero ao Ray Tracer".
+- Erro comum: inverter o eixo y e a esfera "funciona" mas o céu fica de cabeça para baixo (azul embaixo).
+- Outro: esquecer o `+0.5` (centro do pixel). Em imagens pequenas isso costuma estourar a tolerância de ±2.
+- Próximos passos para a aula: vários objetos (lista de "hittables"), antialiasing, material difuso.

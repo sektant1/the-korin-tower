@@ -1,0 +1,133 @@
+// PostgreSQL (Supabase em produção, container `db` do docker-compose em dev).
+// Adapter de runtime em src/lib/db.ts; URL de migração em prisma.config.ts.
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id          String      @id // ex: "c", "grafica-3d"
+  name        String
+  icon        String
+  description String
+  order       Int         @default(0)
+  challenges  Challenge[]
+}
+
+model Challenge {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  title         String
+  categoryId    String
+  category      Category   @relation(fields: [categoryId], references: [id])
+  tags          Json // string[]
+  difficulty    Int // 1..5
+  kind          String // "stdio" | "shader"
+  checker       Json // { type: "exact" } | { type: "ppm", tolerance, maxBadRatio }
+  statement     String // Markdown
+  notes         String? // Markdown: notas do professor
+  hints         Json // string[] (Markdown)
+  languages     Json // LanguageId[]
+  templates     Json // Record<LanguageId, string>
+  solutions     Json // Record<LanguageId, string>
+  timeLimitMs   Int
+  memoryLimitMb Int
+  order         Int        @default(0)
+  sourceDir     String? // diretório em /challenges (null = criado pela web)
+  tests         TestCase[]
+  progress      Progress[]
+  drafts        Draft[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([categoryId])
+}
+
+model TestCase {
+  id          String    @id @default(cuid())
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  name        String
+  input       String
+  expected    String
+  hidden      Boolean
+  order       Int
+
+  @@index([challengeId])
+}
+
+model Counter {
+  key   String @id
+  value Int    @default(0)
+}
+
+// ---- Fase 2: contas, convites, progresso e rascunhos
+
+model User {
+  id           String     @id @default(cuid())
+  username     String     @unique // minúsculo, [a-z0-9_-]{3,20}
+  passwordHash String? // null = só entra pelo GitHub
+  githubId     String?    @unique
+  isAdmin      Boolean    @default(false)
+  settings     Json? // preferências do editor (ver src/lib/client/store.ts)
+  createdAt    DateTime   @default(now())
+  sessions     Session[]
+  progress     Progress[]
+  drafts       Draft[]
+  invitesMade  Invite[]   @relation("InviteCreator")
+  inviteUsed   Invite?    @relation("InviteUser")
+}
+
+model Session {
+  id        String   @id // sha256 do token do cookie (o token em si não fica no banco)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Invite {
+  code        String    @id
+  isAdmin     Boolean   @default(false) // quem usar vira admin
+  createdById String?
+  createdBy   User?     @relation("InviteCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  usedById    String?   @unique
+  usedBy      User?     @relation("InviteUser", fields: [usedById], references: [id], onDelete: SetNull)
+  usedAt      DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Progress {
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId   String
+  challenge     Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  state         String? // null (em andamento) | "solved" | "gaveup"
+  hintsRevealed Int       @default(0)
+  gaveUp        Boolean   @default(false) // já viu a solução antes de resolver
+  points        Int       @default(0)
+  solvedAt      DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@id([userId, challengeId])
+  @@index([challengeId])
+}
+
+model Draft {
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  language    String
+  code        String
+  updatedAt   DateTime  @updatedAt
+
+  @@id([userId, challengeId, language])
+}

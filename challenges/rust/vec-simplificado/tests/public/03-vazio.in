@@ -1,0 +1,7 @@
+i64
+pop
+get 0
+print
+remove 0
+insert 1 9
+len

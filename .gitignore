@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.npm-cache/
+.runner-tmp/
+data/*.db*
+src/generated/
+.env
+next-env.d.ts
+*.tsbuildinfo
+.next-dev.log

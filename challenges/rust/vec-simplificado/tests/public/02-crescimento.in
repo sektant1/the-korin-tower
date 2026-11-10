@@ -1,0 +1,15 @@
+i64
+cap
+push 1
+cap
+push 2
+push 3
+push 4
+cap
+push 5
+cap
+len
+pop
+pop
+len
+cap

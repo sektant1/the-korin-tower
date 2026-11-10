@@ -1,0 +1,2365 @@
+/* ==========================================================================
+   THE KORIN TOWER :: estilo homepage 1998 + site de games da época
+   Tudo gerado em CSS/SVG inline: nenhuma imagem externa.
+   ========================================================================== */
+
+:root {
+  --bg: #000010;
+  --fg: #ffff66;
+  --fg-soft: #e8e8c8;
+  --lime: #33ff33;
+  --cyan: #00ffff;
+  --magenta: #ff00ff;
+  --red: #ff3355;
+  --orange: #ff8800;
+  --link: #6699ff;
+  --link-visited: #cc66ff;
+  --link-hover: #ff00ff;
+
+  --w98-face: #c0c0c0;
+  --w98-light: #ffffff;
+  --w98-mid: #dfdfdf;
+  --w98-shadow: #808080;
+  --w98-dark: #000000;
+  --w98-title: linear-gradient(90deg, #000080, #1084d0);
+  --w98-text: #000000;
+
+  /* Painéis de leitura: escuros, contraste alto, sem cansar a vista */
+  --panel-bg: #12121c;
+  --panel-bg-2: #1b1b2a;
+  --panel-border: #3a3a55;
+  --panel-fg: #e4e4ec;
+  --panel-dim: #a0a0b4;
+  --panel-heading: #ffd866;
+  --panel-link: #8ab4ff;
+  --panel-link-visited: #c9a2ff;
+  --code-bg: #262638;
+
+  --font-body: Verdana, Tahoma, Arial, sans-serif;
+  --font-serif: "Times New Roman", Times, serif;
+  --font-fun: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
+  --font-mono: "Courier New", Courier, monospace;
+  --font-pixel-stack: var(--font-pixel), "Press Start 2P", monospace;
+  --font-vt-stack: var(--font-vt), "VT323", monospace;
+
+  /* Tile de céu estrelado (64x64) */
+  --tile-stars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' shape-rendering='crispEdges'%3E%3Crect width='64' height='64' fill='%23000010'/%3E%3Crect x='5' y='9' width='1' height='1' fill='%23fff'/%3E%3Crect x='40' y='4' width='2' height='2' fill='%23ffff99'/%3E%3Crect x='22' y='30' width='1' height='1' fill='%2399ccff'/%3E%3Crect x='55' y='26' width='1' height='1' fill='%23fff'/%3E%3Crect x='12' y='50' width='2' height='2' fill='%23fff'/%3E%3Crect x='47' y='52' width='1' height='1' fill='%23ff99ff'/%3E%3Crect x='31' y='58' width='1' height='1' fill='%23fff'/%3E%3Crect x='60' y='42' width='1' height='1' fill='%23ffff99'/%3E%3Crect x='33' y='14' width='1' height='1' fill='%23666'/%3E%3Crect x='3' y='36' width='1' height='1' fill='%23666'/%3E%3C/svg%3E");
+  /* Tile pixelado (xadrez escuro) para a sidebar */
+  --tile-checker: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%23000033'/%3E%3Crect width='4' height='4' fill='%23000050'/%3E%3Crect x='4' y='4' width='4' height='4' fill='%23000050'/%3E%3C/svg%3E");
+  /* Cursor: seta pixel amarela */
+  --cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h-4v1h1v2h1v2h-2v-1h-1v-2h-1v-1h-1v1h-1v1h-1z' fill='%23000'/%3E%3Cpath d='M1 1h1v1h1v1h1v1h1v1h1v1h1v1h1v1h-3v1h1v2h1v1h-1v-2h-1v-1h-2v1h-1z' fill='%23ffff00'/%3E%3C/svg%3E") 0 0, auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--fg);
+  background-color: var(--bg);
+  background-image: var(--tile-stars);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  cursor: var(--cursor);
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  cursor: pointer;
+}
+a:visited {
+  color: var(--link-visited);
+}
+a:hover {
+  color: var(--link-hover);
+  background: #ffff0022;
+}
+
+:focus-visible {
+  outline: 3px dashed var(--cyan);
+  outline-offset: 2px;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+}
+
+kbd {
+  display: inline-block;
+  padding: 0 4px;
+  font-size: 0.9em;
+  color: #000;
+  background: var(--w98-face);
+  border: 2px outset var(--w98-light);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  z-index: 100;
+  padding: 8px;
+  background: #ffff00;
+  color: #000;
+}
+.skip-link:focus {
+  left: 8px;
+}
+
+.dim {
+  color: #a8a8b8;
+}
+.small {
+  font-size: 0.85em;
+}
+.center {
+  text-align: center;
+}
+.block {
+  display: block;
+}
+
+/* ---------- animações clássicas ---------- */
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
+}
+.blink {
+  animation: blink 1s steps(1) infinite;
+}
+.blink-slow {
+  animation: blink 2s steps(1) infinite;
+}
+
+@keyframes flame {
+  0%,
+  100% {
+    text-shadow:
+      0 0 4px #fff,
+      0 -2px 6px #ff0,
+      0 -6px 10px #f80,
+      0 -12px 18px #f20,
+      0 -18px 26px #a00;
+  }
+  50% {
+    text-shadow:
+      0 0 4px #fff,
+      1px -3px 7px #ff0,
+      -1px -8px 12px #f80,
+      2px -14px 20px #f20,
+      -2px -22px 30px #a00;
+  }
+}
+.flame {
+  font-family: var(--font-pixel-stack);
+  font-weight: normal;
+  font-size: clamp(16px, 3.4vw, 28px);
+  line-height: 1.6;
+  color: #ffffcc;
+  letter-spacing: 1px;
+  margin: 18px 0 12px;
+  animation: flame 0.9s ease-in-out infinite;
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.bob {
+  animation: bob 1.2s steps(2) infinite;
+}
+.bob.delay {
+  animation-delay: 0.6s;
+}
+
+@keyframes star-pulse {
+  50% {
+    transform: scale(1.25);
+    color: #ffffff;
+  }
+}
+
+/* ---------- cabeçalho ---------- */
+
+/* ---------- marquee ---------- */
+.marquee {
+  overflow: hidden;
+  background: #000080;
+  border-top: 2px solid var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+  color: #ffff00;
+  font-family: var(--font-vt-stack);
+  font-size: 22px;
+  white-space: nowrap;
+}
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track > span {
+  padding-right: 48px;
+}
+.marquee .sprite {
+  vertical-align: middle;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ---------- layout "de tabela" ---------- */
+.frame {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 12px;
+  max-width: 1400px;
+  margin: 12px auto;
+  padding: 0 12px;
+}
+
+.sidebar {
+  align-self: start;
+  background-image: var(--tile-checker);
+  border: 4px outset #6666cc;
+  padding: 8px;
+}
+.side-box {
+  margin-bottom: 12px;
+  padding: 6px;
+  background: #000020cc;
+  border: 2px inset #6666cc;
+}
+.side-title {
+  margin: 0 0 6px;
+  font-family: var(--font-pixel-stack);
+  font-size: 10px;
+  font-weight: normal;
+  color: var(--lime);
+  text-align: center;
+  background: #003300;
+  border: 2px outset #33aa33;
+  padding: 4px;
+}
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+.nav-list li {
+  padding: 2px 0;
+}
+.nav-list li::before {
+  content: "► ";
+  color: var(--magenta);
+  font-size: 10px;
+}
+.count {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.content {
+  min-width: 0;
+  padding: 12px 16px 24px;
+  background: #05050c;
+  border: 4px ridge #8888ff;
+}
+.content:focus {
+  outline: none;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--lime);
+}
+
+/* ---------- janelas e botões Windows 98 ---------- */
+.window98 {
+  margin: 12px 0;
+  color: var(--w98-text);
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-light) var(--w98-dark) var(--w98-dark) var(--w98-light);
+  box-shadow:
+    inset -1px -1px var(--w98-shadow),
+    inset 1px 1px var(--w98-mid);
+  padding: 3px;
+  font-family: var(--font-body);
+}
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 3px 6px;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: var(--font-body);
+  color: #fff;
+  background: var(--w98-title);
+}
+.title-buttons {
+  display: flex;
+  gap: 2px;
+}
+.title-buttons span {
+  width: 16px;
+  height: 14px;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  color: #000;
+  background: var(--w98-face);
+  border: 1px outset #fff;
+}
+.window-body {
+  padding: 10px 12px;
+  color: var(--panel-fg);
+  background: var(--panel-bg);
+  border: 2px inset var(--w98-light);
+}
+.window-body a {
+  color: var(--panel-link);
+}
+.window-body a:visited {
+  color: var(--panel-link-visited);
+}
+.window-body .dim {
+  color: var(--panel-dim);
+}
+.window-body code {
+  padding: 0 4px;
+  color: #ffe9a8;
+  background: var(--code-bg);
+}
+
+.btn98 {
+  display: inline-block;
+  min-height: 28px;
+  padding: 3px 12px;
+  font: 13px var(--font-body);
+  color: #000;
+  text-decoration: none;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-light) var(--w98-dark) var(--w98-dark) var(--w98-light);
+  box-shadow:
+    inset -1px -1px var(--w98-shadow),
+    inset 1px 1px var(--w98-mid);
+  cursor: pointer;
+}
+.btn98:visited {
+  color: #000;
+}
+.btn98:active:not(:disabled) {
+  border-color: var(--w98-dark) var(--w98-light) var(--w98-light) var(--w98-dark);
+  box-shadow:
+    inset 1px 1px var(--w98-shadow),
+    inset -1px -1px var(--w98-mid);
+  padding: 4px 11px 2px 13px;
+}
+.btn98:disabled {
+  color: var(--w98-shadow);
+  text-shadow: 1px 1px #fff;
+  cursor: wait;
+}
+.btn98.primary {
+  outline: 1px solid #000;
+  outline-offset: -5px;
+  font-weight: bold;
+}
+.btn98.small {
+  min-height: 22px;
+  padding: 1px 8px;
+  font-size: 12px;
+}
+.btn98:hover {
+  background: #d4d4d4;
+}
+
+.select98,
+.input98,
+.stdin98 {
+  font: 14px "Lucida Console", "Courier New", Courier, monospace;
+  color: var(--panel-fg);
+  background: var(--panel-bg);
+  border: 2px inset var(--w98-light);
+  padding: 3px 6px;
+}
+.toolbar98 .select98 {
+  color: #000;
+  background: #fff;
+}
+.input98 {
+  width: min(100%, 360px);
+}
+.stdin98 {
+  width: 100%;
+  resize: vertical;
+}
+.check98 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.fieldset98 {
+  margin: 0 0 12px;
+  border: 2px groove var(--panel-border);
+  display: grid;
+  gap: 8px;
+}
+.fieldset98 legend {
+  font-weight: bold;
+}
+
+.table98 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table98 th {
+  color: #000;
+  background: var(--w98-face);
+  border: 2px outset #fff;
+  text-align: left;
+  padding: 2px 6px;
+}
+.table98 td {
+  border: 1px solid var(--panel-border);
+  padding: 4px 6px;
+  vertical-align: top;
+}
+.table98 .num {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: #00000088;
+}
+.dialog {
+  width: min(380px, 100%);
+}
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ---------- home / hero estilo site de games ---------- */
+.hero {
+  text-align: center;
+  padding: 8px;
+}
+.hero-sprites {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 12px;
+}
+.hero-text {
+  font-family: var(--font-fun);
+  font-size: 17px;
+  color: var(--fg-soft);
+  max-width: 680px;
+  margin: 0 auto 8px;
+}
+.btn-start {
+  display: inline-block;
+  padding: 12px 20px;
+  font-family: var(--font-pixel-stack);
+  font-size: 14px;
+  color: #000 !important;
+  text-decoration: none;
+  background: linear-gradient(#ffff66, #ff9900);
+  border: 4px outset #ffcc00;
+  box-shadow: 0 0 12px #ff9900aa;
+}
+.btn-start:hover {
+  background: linear-gradient(#ffffff, #ffcc00);
+}
+.howto li {
+  margin-bottom: 4px;
+}
+
+/* ---------- cartuchos (cards de desafio) ---------- */
+.cart-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+.cartridge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 12px;
+  color: #eee;
+  background: linear-gradient(#3a3a3a, #1c1c1c);
+  border: 3px solid #555;
+  border-top: 10px solid #666;
+  border-radius: 6px 6px 2px 2px;
+  box-shadow:
+    inset 0 0 0 2px #111,
+    4px 4px 0 #000;
+}
+.cartridge::before {
+  /* ranhuras do cartucho */
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20%;
+  right: 20%;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #444 0 6px, #888 6px 8px);
+}
+.cart-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  color: var(--cyan);
+}
+.cart-title {
+  margin: 2px 0;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.2;
+}
+.cart-title a {
+  color: #ffff66;
+}
+.cart-title a:visited {
+  color: #ffcc66;
+}
+.cart-meta {
+  margin: 0;
+  font-size: 12px;
+  color: #aaa;
+}
+.cartridge .play {
+  align-self: flex-start;
+  margin-top: auto;
+  font-family: var(--font-pixel-stack);
+  font-size: 10px;
+}
+.tags {
+  margin: 2px 0;
+}
+.tag {
+  display: inline-block;
+  margin: 0 4px 2px 0;
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lime);
+  border: 1px dotted var(--lime);
+}
+.badge-clear {
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  color: #000;
+  background: var(--lime);
+  padding: 2px 4px;
+  animation: blink 1.4s steps(1) infinite;
+}
+
+/* ---------- dificuldade ---------- */
+.difficulty {
+  font-size: 18px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.star {
+  display: inline-block;
+  color: #444;
+}
+.star.on {
+  color: #ffd700;
+  text-shadow: 0 0 4px #ff9900;
+  animation: star-pulse 1.6s ease-in-out infinite;
+}
+.boss {
+  margin-left: 6px;
+  font-family: var(--font-pixel-stack);
+  font-size: 9px;
+  color: #fff;
+  background: var(--red);
+  padding: 2px 4px;
+  animation: blink 0.8s steps(1) infinite;
+}
+
+/* ---------- under construction ---------- */
+.under-construction {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0;
+  border: 2px solid #000;
+  background: #ffcc00;
+  color: #000;
+  text-align: center;
+}
+.uc-stripes {
+  height: 12px;
+  background: repeating-linear-gradient(-45deg, #000 0 12px, #ffcc00 12px 24px);
+  background-size: 34px 34px;
+  animation: stripes 1s linear infinite;
+}
+@keyframes stripes {
+  to {
+    background-position: 34px 0;
+  }
+}
+.uc-text {
+  padding: 6px;
+  font-family: var(--font-pixel-stack);
+  font-size: 12px;
+}
+.uc-text small {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+/* ---------- hr arco-íris animado ---------- */
+hr.rainbow {
+  height: 6px;
+  margin: 18px 0;
+  border: 0;
+  background: linear-gradient(90deg, #f00, #f80, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  background-size: 200% 100%;
+  animation: rainbow 3s linear infinite;
+}
+@keyframes rainbow {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* ---------- contador odômetro ---------- */
+.counter {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 11px;
+}
+.counter-label {
+  display: block;
+  color: var(--fg-soft);
+}
+.odometer {
+  display: inline-flex;
+  gap: 1px;
+  padding: 2px;
+  background: #000;
+  border: 2px inset #888;
+}
+.odo-digit {
+  width: 14px;
+  font-family: var(--font-vt-stack);
+  font-size: 22px;
+  line-height: 24px;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(#222 0%, #555 48%, #111 52%, #333 100%);
+}
+.sanity-toggle {
+  font-size: 12px;
+}
+
+/* ---------- player 1 / barra de XP ---------- */
+.player-one {
+  font-family: var(--font-pixel-stack);
+  font-size: 9px;
+  color: #fff;
+}
+.p1-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--red);
+}
+.p1-score {
+  color: #fff;
+}
+.xp-bar {
+  height: 12px;
+  margin: 6px 0;
+  background: #330000;
+  border: 2px solid #fff;
+}
+.xp-bar span {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--lime) 0 6px, #00aa00 6px 8px);
+}
+.p1-foot {
+  text-align: right;
+  color: var(--cyan);
+}
+
+/* ---------- rodapé ---------- */
+.site-footer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 12px 24px;
+  text-align: center;
+}
+.webring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto 12px;
+  padding: 6px 12px;
+  max-width: 640px;
+  font-family: var(--font-serif);
+  background: #200020;
+  border: 3px double var(--magenta);
+}
+.buttons-88 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.b88 {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 88px;
+  height: 31px;
+  overflow: hidden;
+  font-family: var(--font-body);
+  line-height: 1;
+  border: 2px outset #999;
+}
+.b88 b {
+  font-size: 11px;
+}
+.b88 small {
+  font-size: 9px;
+}
+.b-netscape {
+  background: linear-gradient(#003366, #006699);
+  color: #fff;
+}
+.b-notepad {
+  background: #fff;
+  color: #000080;
+  font-family: var(--font-mono);
+}
+.b-rust {
+  background: linear-gradient(#b7410e, #5c2007);
+  color: #ffe0c0;
+}
+.b-vim {
+  background: #019833;
+  color: #fff;
+}
+.b-800 {
+  background: #000;
+  color: var(--lime);
+  font-family: var(--font-vt-stack);
+}
+.b-html {
+  background: linear-gradient(#ffcc00, #ff6600);
+  color: #000;
+}
+.best-viewed {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #999;
+}
+
+/* ---------- página do desafio ---------- */
+.challenge-page {
+  display: grid;
+  grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr);
+  gap: 14px;
+  align-items: start;
+}
+.statement {
+  margin-top: 0;
+  position: sticky;
+  top: 8px;
+  max-height: calc(100vh - 16px);
+  display: flex;
+  flex-direction: column;
+}
+.statement .window-body {
+  overflow: auto;
+}
+.crumbs {
+  font-size: 12px;
+}
+.ch-title {
+  margin: 4px 0;
+  font-family: var(--font-serif);
+  font-size: 30px;
+  color: var(--panel-heading);
+}
+.ch-meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--panel-dim);
+}
+
+/* Texto corrido em sans (Verdana) e entrelinha generosa: lê melhor que Times em fundo escuro */
+.markdown {
+  max-width: 72ch;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--panel-fg);
+}
+.markdown h2,
+.markdown h3 {
+  margin: 1.4em 0 0.5em;
+  font-family: var(--font-serif);
+  color: var(--panel-heading);
+  border-bottom: 1px solid var(--panel-border);
+}
+.markdown strong {
+  color: #ffffff;
+}
+.markdown code {
+  padding: 1px 5px;
+  font-size: 0.9em;
+  color: #ffe9a8;
+  background: var(--code-bg);
+  border: 0;
+}
+.markdown pre,
+.code-block {
+  overflow: auto;
+  max-height: 420px;
+  padding: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #e4e4ec;
+  background: #0a0a12;
+  border: 1px solid var(--panel-border);
+}
+.markdown pre code {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+}
+.markdown table {
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 13px;
+  display: block;
+  overflow-x: auto;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--panel-border);
+  padding: 4px 10px;
+}
+.markdown th {
+  color: var(--panel-heading);
+  background: var(--panel-bg-2);
+}
+.markdown img {
+  max-width: 100%;
+  border: 1px solid var(--panel-border);
+}
+.markdown .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* highlight.js, paleta de terminal */
+.hljs-keyword,
+.hljs-built_in,
+.hljs-meta {
+  color: #ffd866;
+}
+.hljs-string {
+  color: #a9dc76;
+}
+.hljs-number,
+.hljs-literal {
+  color: #fc9867;
+}
+.hljs-comment {
+  color: #8a8aa0;
+  font-style: italic;
+}
+.hljs-type,
+.hljs-title {
+  color: #ffffff;
+}
+
+.public-tests,
+.teacher-notes {
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg-2);
+}
+.public-tests summary,
+.teacher-notes summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+.sample-io {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.io-label {
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* ---------- workspace ---------- */
+.workspace {
+  min-width: 0;
+}
+.toolbar98 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 4px;
+  color: #000;
+  background: var(--w98-face);
+  border: 2px outset #fff;
+  font-size: 13px;
+}
+.editor-frame {
+  display: flex;
+  flex-direction: column;
+  border: 4px inset #808080;
+  background: #000;
+}
+.editor-host {
+  height: 62vh;
+  min-height: 340px;
+}
+.editor-host .cm-editor {
+  height: 100%;
+}
+.vim-status {
+  display: flex;
+  gap: 12px;
+  padding: 1px 8px;
+  font-family: "Lucida Console", "Courier New", Courier, monospace;
+  font-size: 13px;
+  line-height: 22px;
+  color: #000;
+  background: #c0c0c0;
+}
+.editor-frame[data-theme="fosforo"] .vim-status {
+  background: #0f2a0f;
+  color: #a8ffa8;
+}
+.editor-frame[data-theme="ambar"] .vim-status {
+  background: #2a1a00;
+  color: #ffc040;
+}
+.editor-frame[data-theme="turbo"] .vim-status {
+  background: #00aaaa;
+  color: #000;
+}
+.vim-mode {
+  min-width: 14ch;
+  font-weight: bold;
+}
+.vim-msg {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.help-line {
+  margin: 4px 0 10px;
+  font-size: 12px;
+  color: #c8c8c8;
+}
+.help-line kbd {
+  font-size: 11px;
+}
+.stdin-label {
+  font-size: 13px;
+}
+
+/* ---------- terminal de saída ----------
+   Moldura retrô, conteúdo sóbrio: fundo chapado, fonte mono, sem glow. */
+.crt {
+  margin: 8px 0;
+  border: 4px inset #808080;
+  background: #0c0c0c;
+}
+.crt-inner {
+  min-height: 140px;
+  max-height: 60vh;
+  overflow: auto;
+  padding: 10px 12px;
+  color: #d8d8d8;
+  font-family: "Lucida Console", "Courier New", Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.crt .dim {
+  color: #8a8a8a;
+}
+.caret {
+  animation: blink 1s steps(1) infinite;
+}
+.out-pre {
+  margin: 4px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: inherit;
+}
+.out-pre.small {
+  max-height: 160px;
+  overflow: auto;
+}
+.out-err {
+  color: #ff8080;
+}
+.out-warn {
+  color: #ffd166;
+}
+.out-note {
+  color: #9ec5ff;
+}
+.pass {
+  color: #66ff66;
+}
+.fail {
+  color: #ff5555;
+}
+.metrics {
+  color: #9a9a9a;
+}
+.loc-link {
+  padding: 0;
+  font: inherit;
+  color: #ffff66;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tests {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.test-row {
+  padding: 3px 0;
+  border-bottom: 1px solid #262626;
+}
+.test-row summary {
+  cursor: pointer;
+}
+.test-detail {
+  padding-left: 12px;
+}
+.diff {
+  width: 100%;
+  margin: 6px 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.diff caption {
+  text-align: left;
+  color: #ffd166;
+}
+.diff th,
+.diff td {
+  border: 1px solid #333;
+  padding: 0 6px;
+  white-space: pre;
+  text-align: left;
+}
+.diff tr.bad td {
+  background: #3a1010;
+  color: #ffc0c0;
+}
+.diff td:first-child {
+  color: #8a8a8a;
+  width: 3em;
+}
+.banner-win,
+.banner-lose {
+  margin: 4px 0 8px;
+  padding: 6px;
+  font-family: var(--font-pixel-stack);
+  font-size: 11px;
+  text-align: center;
+}
+.banner-win {
+  color: #000;
+  background: #33dd33;
+}
+.banner-win.big {
+  font-size: 14px;
+  padding: 12px;
+}
+.banner-lose {
+  color: #ff6b80;
+  border: 2px solid #ff6b80;
+}
+.loading-bar {
+  height: 16px;
+  margin: 6px 0;
+  border: 2px solid #6a6a6a;
+  overflow: hidden;
+}
+.loading-bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: repeating-linear-gradient(90deg, #c0c0c0 0 10px, transparent 10px 14px);
+  animation: loading 1.2s steps(10) infinite;
+}
+@keyframes loading {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+.ppm-view {
+  margin: 6px 0;
+  text-align: center;
+}
+.ppm-view canvas {
+  image-rendering: pixelated;
+  border: 1px solid #555;
+  background: #000;
+}
+.ppm-view figcaption {
+  color: #9a9a9a;
+}
+.ppm-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.shader-box {
+  margin: 8px 0;
+  text-align: right;
+}
+.shader-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 4px inset #808080;
+  touch-action: none;
+  margin-bottom: 4px;
+}
+
+.hints {
+  margin: 0;
+  padding-left: 20px;
+}
+.hints li {
+  margin-bottom: 6px;
+}
+.hints li {
+  line-height: 1.6;
+}
+
+/* ---------- hall da fama / high scores ---------- */
+.highscores {
+  max-width: 420px;
+  margin: 12px auto;
+  padding: 16px;
+  text-align: center;
+  font-family: var(--font-pixel-stack);
+  background: #000;
+  border: 4px double var(--cyan);
+}
+.hs-title {
+  color: var(--red);
+  font-size: 16px;
+}
+.hs-table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+.hs-table th {
+  color: var(--cyan);
+  padding: 6px;
+  font-weight: normal;
+}
+.hs-table td {
+  padding: 6px;
+}
+.hs-table tr:nth-child(1) td {
+  color: #ffd700;
+}
+.hs-table tr:nth-child(2) td {
+  color: #e0e0e0;
+}
+.hs-table tr:nth-child(3) td {
+  color: #cd7f32;
+}
+.hs-foot {
+  font-size: 9px;
+  color: var(--lime);
+}
+
+/* ---------- sobre ---------- */
+.photo-frame {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  background: #000;
+  border: 3px inset #808080;
+}
+.star-list {
+  list-style: none;
+  padding-left: 4px;
+}
+.star-list li::before {
+  content: "★ ";
+  color: #cc9900;
+}
+
+/* ---------- rastro de estrelas ---------- */
+.trail-star {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-size: 14px;
+  transform: translate(-50%, -50%);
+  animation: trail 0.8s ease-out forwards;
+}
+@keyframes trail {
+  to {
+    opacity: 0;
+    transform: translate(-50%, 30px) scale(0.3) rotate(90deg);
+  }
+}
+
+/* ==========================================================================
+   MODO SANIDADE / prefers-reduced-motion: sem piscar, sem rolar, sem fogo.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+html[data-sanity="on"] *,
+html[data-sanity="on"] *::before,
+html[data-sanity="on"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+html[data-sanity="on"] .flame {
+  text-shadow: 0 0 6px #f80;
+}
+html[data-sanity="on"] body {
+  cursor: auto;
+}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 1100px) {
+  .challenge-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .statement {
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 760px) {
+  .frame {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 8px;
+  }
+  .sidebar {
+    order: 2;
+  }
+  .content {
+    padding: 10px;
+  }
+  .sample-io {
+    grid-template-columns: 1fr;
+  }
+  .editor-host {
+    height: 45vh;
+  }
+}
+
+/* Na página do desafio a sidebar sai: todo o espaço vai para enunciado + editor.
+   A navegação continua no logo, no breadcrumb e no :q. */
+@media (min-width: 761px) {
+  .frame:has(.challenge-page) {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 1800px;
+  }
+  .frame:has(.challenge-page) .sidebar {
+    display: none;
+  }
+}
+
+/* Botões que são links mantêm texto preto mesmo dentro de janelas. */
+.window-body a.btn98,
+.window-body a.btn98:visited {
+  color: #000;
+}
+/* Janela ocupa a altura da célula do grid sem mostrar faixa cinza. */
+.window98 {
+  display: flex;
+  flex-direction: column;
+}
+.window98 > .window-body {
+  flex: 1;
+}
+
+/* Tema "noite": barra de status discreta, borda sem moldura pesada. */
+.editor-frame[data-theme="noite"] .vim-status {
+  background: #232633;
+  color: #d4d7e0;
+  border-top: 1px solid #2e3242;
+}
+.editor-frame[data-theme="noite"] .vim-mode {
+  color: #a6d189;
+}
+
+/* No terminal, comandos são só texto destacado, não "botões". */
+.crt kbd {
+  padding: 0;
+  font: inherit;
+  color: #ffd866;
+  background: none;
+  border: 0;
+}
+
+/* Marquee: sempre uma fileira rolando (pedido explícito), inclusive com
+   prefers-reduced-motion. Só o Modo Sanidade o para: fica parado numa linha,
+   com rolagem horizontal manual. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-sanity="on"]) .marquee-track {
+    animation: marquee 30s linear infinite !important;
+  }
+}
+html[data-sanity="on"] .marquee {
+  overflow-x: auto;
+}
+html[data-sanity="on"] .marquee-track > span[aria-hidden] {
+  display: none;
+}
+
+/* ---------- scrollbars Windows 98 ----------
+   Chrome/Edge/Safari: ::-webkit-scrollbar (3D completo).
+   Firefox não suporta: recebe só as cores via scrollbar-color.
+   (Não definir scrollbar-color fora do @supports: no Chrome 121+ ele
+   desativa os pseudo-elementos ::-webkit-scrollbar.) */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-track {
+  /* xadrez 1px cinza/branco, o "dither" clássico */
+  background-color: #c0c0c0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Crect width='1' height='1' fill='%23fff'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23fff'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #000 #000 #dfdfdf;
+  box-shadow:
+    inset 1px 1px #fff,
+    inset -1px -1px #808080;
+}
+::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: #c0c0c0;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 2px solid;
+  border-color: #dfdfdf #000 #000 #dfdfdf;
+  box-shadow:
+    inset 1px 1px #fff,
+    inset -1px -1px #808080;
+}
+::-webkit-scrollbar-button:single-button:active {
+  border-color: #808080;
+  box-shadow: none;
+}
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v1h1v1h1v1h1v1H0V3h1V2h1V1h1z'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h7v1H6v1H5v1H4v1H3V3H2V2H1V1H0z'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v7H3V6H2V5H1V4H0V3h1V2h1V1h1z'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h1v1h1v1h1v1h1v1H3v1H2v1H1v1H0z'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-corner {
+  background: #c0c0c0;
+}
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-color: #c0c0c0 #e0e0e0;
+  }
+}
+
+/* ==========================================================================
+   Detalhes de portal pessoal / site de games (com tempero Dragon Ball)
+   ========================================================================== */
+@keyframes fly {
+  from {
+    transform: translateX(-90px);
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+/* Esferas do Dragão na sidebar */
+.balls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+}
+.ball {
+  filter: grayscale(1) brightness(0.45);
+}
+.ball.on {
+  filter: drop-shadow(0 0 3px #ff9900);
+}
+.balls-text {
+  margin: 4px 0 0;
+  font-size: 11px;
+  text-align: center;
+  color: var(--fg-soft);
+}
+.balls-text.wish {
+  color: #ffd866;
+  font-weight: bold;
+}
+
+.power-level {
+  margin-top: 6px;
+  font-size: 8px;
+  color: var(--cyan);
+}
+.power-level b {
+  color: #ffd866;
+}
+.over-8000 {
+  margin-top: 4px;
+  color: var(--red);
+}
+
+/* Hora certa (LCD) */
+.clock {
+  display: grid;
+  justify-items: center;
+  margin-top: 8px;
+  font-size: 10px;
+}
+.clock-label {
+  color: var(--fg-soft);
+}
+.lcd {
+  padding: 0 6px;
+  font-family: var(--font-vt-stack);
+  font-size: 22px;
+  color: #7cff7c;
+  background: #0a1a0a;
+  border: 2px inset #888;
+}
+.clock-date {
+  color: #9a9a9a;
+}
+.bookmark {
+  margin-top: 8px;
+  text-align: center;
+}
+.bookmark p {
+  margin: 4px 0 0;
+  color: var(--fg-soft);
+}
+
+/* Easter egg do código Konami */
+.konami {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: grid;
+  place-items: center;
+  background: #000a;
+  cursor: pointer;
+}
+.konami-text {
+  font-family: var(--font-pixel-stack);
+  font-size: clamp(16px, 4vw, 40px);
+  color: #9fd8ff;
+  text-shadow: 0 0 8px #3aa0ff;
+}
+.beam {
+  position: absolute;
+  top: 58%;
+  left: 0;
+  height: 60px;
+  width: 100%;
+  background: linear-gradient(#ffffff00, #8fd3ff 30%, #ffffff 50%, #8fd3ff 70%, #ffffff00);
+  box-shadow: 0 0 40px #3aa0ff;
+  transform-origin: left;
+  animation: beam 0.5s ease-out;
+}
+@keyframes beam {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Mapa da Torre */
+.tower-map {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 420px;
+  border-left: 6px solid #808080;
+  border-right: 6px solid #808080;
+}
+.floor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 2px solid #3a3a55;
+  background: repeating-linear-gradient(90deg, transparent 0 46px, #ffd86622 46px 52px);
+}
+.floor.empty {
+  opacity: 0.6;
+}
+.floor.top {
+  background: #3a2a00;
+  color: #ffd866;
+  font-weight: bold;
+}
+.floor.ground {
+  background: #1d3a1d;
+  color: #a6d189;
+  border-bottom: 0;
+}
+.floor-n {
+  min-width: 7.5ch;
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  color: var(--cyan);
+}
+.floor-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--panel-dim);
+}
+
+/* Mural de novidades */
+.news {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.news li {
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--panel-border);
+}
+.news-date {
+  font-family: var(--font-mono);
+  font-weight: bold;
+  color: #ffd866;
+}
+.new-badge {
+  display: inline-block;
+  padding: 0 4px;
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  color: #fff;
+  background: #e0002a;
+  border: 1px solid #ffff00;
+  animation: blink 1s steps(1) infinite;
+}
+.fact {
+  font-size: 15px;
+}
+.tournament {
+  font-family: var(--font-pixel-stack);
+  font-size: 11px;
+  color: #ffd866;
+}
+
+.b-ki {
+  background: linear-gradient(#fff36b, #ff9a00);
+  color: #602000;
+}
+.b-senzu {
+  background: linear-gradient(#7ad66b, #2e7d32);
+  color: #fff;
+}
+
+/* ==========================================================================
+   Página do desafio em layout de IDE: tudo cabe na tela, sem rolar a página
+   entre editor, stdin e saída. Cada painel rola por dentro.
+   ========================================================================== */
+body:has(.challenge-page) .frame {
+  margin-top: 6px;
+}
+body:has(.challenge-page) .content {
+  padding: 6px;
+}
+
+.challenge-page {
+  /* viewport menos cabeçalho compacto + marquee + molduras */
+  height: max(560px, calc(100vh - 116px));
+  grid-template-columns: minmax(280px, 1.25fr) minmax(0, 3fr);
+  gap: 8px;
+}
+.challenge-page > * {
+  min-height: 0;
+}
+.statement {
+  position: static;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+.ws-editor,
+.ws-io {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.ws-editor .editor-frame {
+  flex: 1;
+  min-height: 0;
+}
+.ws-editor .editor-host {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+.ws-editor .help-line {
+  margin: 3px 0 0;
+}
+
+.ws-io {
+  padding: 3px;
+  background: var(--w98-face);
+  border: 2px outset #fff;
+}
+.tabs98 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 0 4px;
+}
+.tab98 {
+  position: relative;
+  top: 2px;
+  padding: 3px 10px;
+  font: 12px var(--font-body);
+  color: #000;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: #fff #000 transparent #fff;
+  cursor: pointer;
+}
+.tab98.active {
+  top: 0;
+  padding-bottom: 5px;
+  font-weight: bold;
+  color: var(--panel-fg);
+  background: var(--panel-bg);
+}
+.tab-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px;
+  background: var(--panel-bg);
+  border: 2px inset #fff;
+}
+.tab-panel > .window-body {
+  border: 0;
+  padding: 2px;
+}
+.tab-out {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  min-height: 0;
+}
+.tab-out[hidden] {
+  display: none;
+}
+.tab-out .crt {
+  display: flex;
+  flex: 1;
+  min-height: 120px;
+  margin: 4px 0 0;
+}
+.tab-out .crt-inner {
+  flex: 1;
+  max-height: none;
+}
+.tab-out .shader-box {
+  margin: 0;
+}
+.stdin-label {
+  color: var(--panel-fg);
+}
+
+/* Telas médias: saída embaixo do editor, os dois visíveis. */
+@media (max-width: 1500px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}
+/* Tablet: enunciado em cima; editor + saída ocupam uma tela inteira. */
+@media (max-width: 1100px) {
+  .challenge-page {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .statement {
+    height: auto;
+    max-height: 55vh;
+  }
+  .workspace {
+    height: max(560px, calc(100vh - 24px));
+  }
+}
+/* Celular: empilhado, com alturas fixas. */
+@media (max-width: 760px) {
+  .workspace {
+    height: auto;
+    grid-template-rows: none;
+  }
+  .ws-editor .editor-host {
+    flex: none;
+    height: 50vh;
+  }
+  .ws-io {
+    min-height: 60vh;
+  }
+}
+
+/* ---------- imagens do dono do site (public/fanart) ---------- */
+.hero-mascot {
+  display: block;
+  max-width: min(100%, 320px);
+  max-height: 240px;
+  margin: 0 auto 8px;
+}
+.hero-balls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+.hero-balls .sprite:nth-child(odd) {
+  animation-delay: 0.6s;
+}
+.side-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px inset #6666cc;
+}
+.gallery,
+.sprite-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.gallery {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+.sprite-grid {
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+}
+.gallery li,
+.sprite-grid li {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  padding: 6px;
+  text-align: center;
+  font-size: 12px;
+  background: var(--panel-bg-2);
+  border: 1px solid var(--panel-border);
+}
+.gallery img {
+  max-width: 100%;
+  max-height: 180px;
+}
+.sprite-grid li {
+  min-height: 90px;
+}
+
+/* Mapa da Torre: uma linha por andar, nome com reticências se faltar espaço. */
+.floor {
+  flex-wrap: nowrap;
+}
+.floor-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.floor-count {
+  flex: none;
+  white-space: nowrap;
+}
+.nav-list .sprite,
+.section-title .sprite,
+.flame .sprite,
+.marquee .sprite {
+  vertical-align: middle;
+}
+.badge-gaveup {
+  font-family: var(--font-pixel-stack);
+  font-size: 8px;
+  color: #000;
+  background: #c0c0c0;
+  padding: 2px 4px;
+}
+
+/* ---------- GIFs de public/assets ---------- */
+.marquee-gif {
+  vertical-align: middle;
+}
+.p1-avatar {
+  display: block;
+  margin: 0 auto 6px;
+  image-rendering: pixelated;
+}
+.hero-goku {
+  display: block;
+  margin: 0 auto;
+  image-rendering: pixelated;
+}
+.banner-win img {
+  vertical-align: middle;
+}
+
+/* ---------- GIFs de public/assets/dragon-ball-gifs ---------- */
+.gif {
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}
+.gif.pixelated {
+  image-rendering: pixelated;
+}
+.nav-buttons {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.nav-buttons a:hover {
+  background: none;
+  filter: brightness(1.25);
+}
+.b88-img {
+  display: inline-flex;
+  height: 31px;
+}
+.b88-img:hover {
+  background: none;
+}
+.fighters,
+.arena {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  max-width: 420px;
+  margin: 0 auto 4px;
+}
+.arena {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 40px;
+  max-width: 520px;
+  margin: 0 auto 8px;
+}
+.arena-left {
+  justify-self: end;
+}
+.arena-right {
+  justify-self: start;
+}
+@media (max-width: 760px) {
+  .arena-left,
+  .arena-right {
+    display: none;
+  }
+}
+.result-gif,
+.tab-gif {
+  margin: 2px 0 4px;
+  text-align: center;
+}
+.konami-gif {
+  position: absolute;
+  top: calc(58% - 140px);
+  left: 8px;
+}
+
+/* Banners de navegação 150x33 com texto próprio por cima do GIF original. */
+.nav-banner {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: 33px;
+  background-size: 150px 33px;
+  image-rendering: pixelated;
+  text-decoration: none;
+}
+.nav-banner span {
+  position: absolute;
+  inset: 0 0 0 36px;
+  display: flex;
+  align-items: center;
+  padding-left: 7px;
+  font: 17px "Times New Roman", Times, serif;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  background: linear-gradient(90deg, rgba(52, 44, 160, 0.97), rgba(26, 18, 86, 0.97));
+}
+.nav-banner:hover span,
+.nav-banner:focus-visible span {
+  color: #ffff66;
+}
+
+.nav-banners {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+}
+
+/* Títulos de página centralizados, como o resto do conteúdo. */
+.flame {
+  text-align: center;
+}
+.flame .sprite,
+.flame .gif {
+  vertical-align: middle;
+}
+
+/* Botões: texto e setas (►) na mesma linha de base, em qualquer fonte. */
+.btn98 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.cartridge .play {
+  padding: 4px 10px;
+  line-height: 1;
+}
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+}
+/* Setas em Arial: as fontes pixel não têm ► ◄ e o fallback desalinha. */
+.arrow {
+  font-family: Arial, sans-serif;
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+/* Sidebar: marcador e ícone alinhados; nome longo quebra alinhado ao texto, não embaixo do marcador. */
+.nav-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.nav-list li::before {
+  flex: none;
+}
+.nav-list a {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+.nav-list a .sprite {
+  margin-top: 3px;
+}
+.nav-list a .sprite {
+  flex: none;
+}
+.nav-list .count {
+  flex: none;
+}
+.side-title {
+  font-size: 9px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ---------- cabeçalho: logo DBZ + título entre esferas ---------- */
+
+/* ---------- topo da home: guerreiros ladeando o texto ---------- */
+.hero-balls {
+  gap: 10px;
+  margin: 4px 0 10px;
+}
+.hero-stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.hero-center .flame {
+  margin-top: 0;
+}
+.hero-fighter {
+  align-self: end;
+}
+@media (max-width: 760px) {
+  .hero-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-fighter {
+    display: none;
+  }
+}
+.ball {
+  filter: grayscale(1) brightness(0.4);
+}
+.ball.on {
+  filter: drop-shadow(0 0 3px #ff9900);
+}
+
+/* ---------- barra de teclas do editor (estilo Turbo C / Edit do DOS) ---------- */
+.fkeys {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  background: #c0c0c0;
+  border-top: 1px solid #fff;
+}
+.fkey {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  flex: none;
+  padding: 2px 8px;
+  font: 12px "Lucida Console", "Courier New", monospace;
+  color: #000;
+  background: none;
+  border: 0;
+  border-right: 1px solid #808080;
+  cursor: pointer;
+}
+.fkey:hover,
+.fkey:focus-visible {
+  color: #fff;
+  background: #000080;
+}
+.fkey-cmd {
+  font-weight: bold;
+  color: #a00000;
+}
+.fkey:hover .fkey-cmd,
+.fkey:focus-visible .fkey-cmd {
+  color: #ffff66;
+}
+
+/* ==========================================================================
+   CABEÇALHO (bloco único)
+   logo DBZ em cima; abaixo, título entre duas esferas; abaixo, slogan.
+   ========================================================================== */
+.site-header {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 16px 8px;
+  text-align: center;
+  background: linear-gradient(#000040, #000010);
+  border-bottom: 4px ridge #8888ff;
+}
+.logo-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+.logo-link:hover {
+  background: none;
+}
+.header-logo-gif {
+  display: block;
+}
+.logo-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.logo-title .gif {
+  flex: none;
+}
+.logo-text {
+  margin: 0;
+  font-size: clamp(16px, 4vw, 34px);
+  line-height: 1;
+}
+.tagline {
+  margin: 8px 0 0;
+  font-family: var(--font-fun);
+  color: var(--cyan);
+}
+.insert-coin {
+  margin-left: 8px;
+  font-family: var(--font-pixel-stack);
+  font-size: 10px;
+  color: var(--red);
+  white-space: nowrap;
+}
+.header-banner {
+  display: block;
+  max-width: min(100%, 728px);
+  max-height: 120px;
+  margin: 8px auto 0;
+}
+
+/* Guerreiro voando pelo cabeçalho; sem animação ele não aparece (parado no canto não faz sentido). */
+.flying-cloud {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  pointer-events: none;
+  animation: fly 22s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flying-cloud {
+    display: none;
+  }
+}
+html[data-sanity="on"] .flying-cloud {
+  display: none;
+}
+
+/* Página do desafio: cabeçalho compacto numa linha. */
+body:has(.challenge-page) .site-header {
+  padding: 4px 16px;
+}
+body:has(.challenge-page) .logo-link {
+  flex-direction: row;
+  gap: 12px;
+}
+body:has(.challenge-page) .header-logo-gif {
+  width: auto;
+  height: 32px;
+}
+body:has(.challenge-page) .logo-title .gif {
+  width: 20px;
+  height: 20px;
+}
+body:has(.challenge-page) .logo-text {
+  font-size: 18px;
+}
+body:has(.challenge-page) .tagline,
+body:has(.challenge-page) .header-banner,
+body:has(.challenge-page) .flying-cloud {
+  display: none;
+}
+@media (max-width: 760px) {
+  .insert-coin {
+    display: block;
+    margin: 4px 0 0;
+  }
+  .logo-title .gif {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* ---------- Fase 2: contas, Hall of Fame e painel admin ---------- */
+.auth-form {
+  display: grid;
+  gap: 6px;
+  max-width: 360px;
+}
+.auth-form .btn98 {
+  justify-self: start;
+  margin-top: 6px;
+}
+.auth-alt {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--panel-border);
+  display: grid;
+  gap: 6px;
+}
+.auth-inline,
+.admin-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.admin-inline + .table98 {
+  margin-top: 10px;
+}
+.stats98 {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0 0 12px;
+}
+.stats98 dt {
+  color: var(--panel-dim);
+}
+.stats98 dd {
+  margin: 0;
+  color: var(--panel-heading);
+}
+.p1-name {
+  margin: 4px 0;
+  font-family: var(--font-pixel), monospace;
+  font-size: 9px;
+  color: var(--cyan);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.hs-table tr.hs-me td {
+  background: #ffffff1a;
+  outline: 1px dashed var(--lime);
+}
+.select-all {
+  user-select: all;
+}
+.input98.narrow {
+  width: 110px;
+}
+.mono {
+  font-family: var(--font-mono), monospace;
+}
+.admin-form label:not(.check98):not(.block) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.admin-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  align-items: start;
+}
+.admin-test {
+  display: grid;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--panel-border);
+}
+.table-scroll {
+  overflow-x: auto;
+}

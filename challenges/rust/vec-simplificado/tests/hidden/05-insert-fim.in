@@ -1,0 +1,11 @@
+i64
+insert 0 1
+insert 1 2
+insert 2 3
+insert 3 4
+insert 4 5
+print
+cap
+remove 4
+remove 0
+print
