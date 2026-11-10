@@ -1,5 +1,5 @@
 // Convites: só entra quem tem um código. Usado pelo site e pelo script `npm run invite`.
-import { randomInt } from "node:crypto";
+import { randomInt, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
 
 // Sem 0/O/1/I/L para não confundir ao digitar.
@@ -24,6 +24,18 @@ export async function createInvite(opts: { isAdmin?: boolean; createdById?: stri
 export class InviteError extends Error {}
 
 /**
+ * ADMIN_BOOTSTRAP_CODE (env, 16+ caracteres): cria o primeiro admin pelo próprio site,
+ * sem acesso ao banco. Só vale enquanto não existe nenhum admin; depois é ignorado.
+ */
+function isBootstrapCode(code: string): boolean {
+  const secret = normalizeInvite(process.env.ADMIN_BOOTSTRAP_CODE);
+  if (secret.length < 16) return false;
+  const a = Buffer.from(code);
+  const b = Buffer.from(secret);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/**
  * Cria o usuário e consome o convite na mesma transação.
  * O updateMany condicional garante que dois cadastros simultâneos não usem o mesmo código.
  */
@@ -39,6 +51,13 @@ export async function createUserWithInvite(code: string, data: { username: strin
 
 function consume(code: string, data: { username: string; passwordHash?: string; githubId?: string }) {
   return prisma.$transaction(async (tx) => {
+    if (isBootstrapCode(code)) {
+      if (await tx.user.count({ where: { isAdmin: true } })) throw new InviteError("já existe um admin: peça um convite a ele");
+      if (await tx.user.findUnique({ where: { username: data.username }, select: { id: true } })) {
+        throw new InviteError("esse nome de usuário já existe");
+      }
+      return tx.user.create({ data: { ...data, isAdmin: true } });
+    }
     const invite = await tx.invite.findUnique({ where: { code } });
     if (!invite || invite.usedById || (invite.expiresAt && invite.expiresAt < new Date())) {
       throw new InviteError("convite inválido, vencido ou já usado");

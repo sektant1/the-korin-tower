@@ -128,7 +128,7 @@ O app Next.js inteiro (páginas, `/api`, login) roda na Vercel; o Supabase é s�
 1. **Supabase:** crie o projeto. Em *Connect*, copie a URL do pooler em modo *Transaction* (porta 6543) para `DATABASE_URL` e a do modo *Session* (porta 5432) para `DIRECT_URL`.
 2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`), `RUNNER=piston` e `PISTON_URL`. GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
 3. O script `vercel-build` roda `prisma migrate deploy`, o seed de `/challenges` e o build. Cada push atualiza os desafios.
-4. Primeiro admin, da sua máquina com o `.env` apontando para o Supabase: `npm run invite -- --admin`.
+4. Primeiro admin, sem tocar no banco: defina `ADMIN_BOOTSTRAP_CODE` (16+ caracteres, ex.: `openssl rand -hex 16`) na Vercel, faça o redeploy e cadastre-se em `/entrar` usando esse valor como código de convite. Só funciona enquanto não houver admin. Depois, gere convites em `/admin`. Alternativa: `npm run invite -- --admin` da sua máquina com o `.env` apontando para o Supabase.
 
 Limites desse arranjo:
 - **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
