@@ -38,6 +38,9 @@ interface ProcResult {
   truncated: boolean;
 }
 
+// rustc -O pode passar de 30s em máquinas lentas (ex.: runner do GitHub Actions).
+const COMPILE_TIMEOUT_MS = Number(process.env.RUNNER_COMPILE_TIMEOUT_MS) || 30_000;
+
 function run(cmd: string[], cwd: string, stdin: string, timeoutMs: number): Promise<ProcResult> {
   return new Promise((resolve) => {
     const start = performance.now();
@@ -95,10 +98,14 @@ export class LocalRunner implements Runner {
       await writeFile(path.join(dir, LANGUAGES[req.language].file), req.source);
       let compileOutput = "";
       for (const cmd of compileCommands(req.language, req.flags)) {
-        const r = await run(cmd, dir, "", 30000);
+        const r = await run(cmd, dir, "", COMPILE_TIMEOUT_MS);
         compileOutput += r.stdout + r.stderr;
+        if (r.timedOut) {
+          compileOutput += `\n[korin] compilação passou de ${COMPILE_TIMEOUT_MS / 1000}s e foi interrompida (RUNNER_COMPILE_TIMEOUT_MS)`;
+          return { compile: { ok: false, output: compileOutput.trim() }, runs: [] };
+        }
         if (r.code !== 0) {
-          return { compile: { ok: false, output: compileOutput || `compilador saiu com código ${r.code}` }, runs: [] };
+          return { compile: { ok: false, output: compileOutput || `compilador saiu com código ${r.code}${r.signal ? ` (${r.signal})` : ""}` }, runs: [] };
         }
       }
       const runs: ExecResult[] = [];
