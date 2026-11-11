@@ -12,7 +12,7 @@ import {
   useSettings,
   type EditorTheme,
 } from "@/lib/client/store";
-import { LANGUAGES, isCanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
+import { LANGUAGES, isCanvasLanguage, type CanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
 import { renderShaderPpm } from "@/lib/client/shader";
 import type { RunResponse } from "@/lib/run-api";
 import { HINT_PENALTY } from "@/lib/scoring";
@@ -23,7 +23,7 @@ import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
 import { ShaderCanvas } from "./ShaderCanvas";
 import type { ShaderError } from "@/lib/client/shader";
-import { WasmCanvas } from "./WasmCanvas";
+import { EmceptionCanvas } from "./EmceptionCanvas";
 
 /** Código aprovado de outro jogador (GET /api/challenges/<slug>/solutions). */
 interface PlayerSolution {
@@ -73,7 +73,7 @@ export function ChallengeWorkspace(p: Props) {
   const [hints, setHints] = useState<string[]>([]);
   const [solution, setSolution] = useState<Partial<Record<LanguageId, string>> | null>(null);
   const [others, setOthers] = useState<PlayerSolution[] | null>(null);
-  const [wasm, setWasm] = useState<{ js: string | null; version: number }>({ js: null, version: 0 });
+  const [wasm, setWasm] = useState<{ source: string; language: CanvasLanguage; version: number }>({ source: "", language: "c", version: 0 });
   const [confirm, setConfirm] = useState<null | "giveup" | "reset">(null);
   const [shader, setShader] = useState({ source: initialCode, version: 0 });
   const [shaderErrors, setShaderErrors] = useState<ShaderError[]>([]);
@@ -176,6 +176,12 @@ export function ChallengeWorkspace(p: Props) {
     [flash, p.slug, router],
   );
 
+  // O canvas compila no navegador; o resultado do clang/wasm-ld vira o mesmo
+  // painel de compilação dos desafios stdio (avisos e erros clicáveis).
+  const onWasmCompile = useCallback((r: { ok: boolean; output: string }) => {
+    setOutput({ status: "done", response: { mode: "run", compile: { ok: r.ok, output: r.output }, run: null, warnings: [] } });
+  }, []);
+
   const execute = useCallback(
     async (mode: Mode) => {
       setTab("out");
@@ -229,21 +235,10 @@ export function ChallengeWorkspace(p: Props) {
       if (p.kind === "canvas") {
         if (mode !== "run") return flash("desafio de canvas não tem testes; use :run");
         if (!isCanvasLanguage(lang)) return;
-        setOutput({ status: "running", label: "compilando para WebAssembly (emcc)..." });
-        try {
-          const res = await fetch("/api/build", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ slug: p.slug, language: lang, source: editor.current?.getValue() ?? "" }),
-          });
-          const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-          if (!res.ok) return setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
-          // Mesmo painel do stdio: erros de compilação clicáveis; com sucesso, só os avisos.
-          setOutput({ status: "done", response: { mode: "run", compile: { ok: body.ok, output: body.output ?? "" }, run: null, warnings: [] } });
-          if (body.ok && typeof body.js === "string") setWasm((w) => ({ js: body.js, version: w.version + 1 }));
-        } catch (e) {
-          setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
-        }
+        // Compilação no próprio navegador (Emception/clang num Worker): nada
+        // do código sai daqui. O componente avisa quando termina.
+        setOutput({ status: "running", label: "carregando a toolchain e compilando no navegador..." });
+        setWasm((w) => ({ source: editor.current?.getValue() ?? "", language: lang, version: w.version + 1 }));
         return;
       }
       setOutput({ status: "running", label: MODE_LABEL[mode] });
@@ -483,7 +478,7 @@ export function ChallengeWorkspace(p: Props) {
               </>
             ) : p.kind === "canvas" ? (
               <>
-                <WasmCanvas js={wasm.js} version={wasm.version} />
+                <EmceptionCanvas source={wasm.source} language={wasm.language} version={wasm.version} onCompile={onWasmCompile} />
                 {output.status !== "idle" && <OutputPanel state={output} checker={p.checker} onJump={jump} />}
               </>
             ) : (
