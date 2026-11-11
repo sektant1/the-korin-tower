@@ -71,7 +71,7 @@ scripts/
 wasm-builder/                  ← serviço emcc (raylib + SDL2) dos desafios canvas
   build.mjs                    ← compila um fonte; também roda sozinho em dev
   server.mjs, Dockerfile       ← HTTP mínimo e imagem
-piston/                        ← imagem do Piston com gcc/rust/go/zig/nasm/pascal embutidos
+piston/                        ← imagem do Piston com gcc (C, C++) e rust embutidos
   Dockerfile, install.cjs      ← instala os runtimes durante o build
 cli/                           ← CLI `korin` (um arquivo, sem dependências) + package.json
 docs/fase-5.md, fase-6.md      ← design das fases 5 e 6
@@ -137,7 +137,7 @@ npm run verify        # compila cada solução de referência e roda todos os te
 docker compose up -d --build
 ```
 
-Sobe `app` (porta 3000), `piston` e `wasm-builder` (só na rede interna) e `piston-init`. A primeira build demora: a imagem do Piston já vem com gcc (C, C++, D e Fortran), rust, go, zig, nasm e pascal embutidos (o gcc sozinho passa de 2 GB), e a do `wasm-builder` baixa o emsdk e compila a raylib. Depois disso a VPS sempre sobe com os compiladores instalados, sem depender de download no primeiro boot; o `piston-init` só confere e instala o que faltar. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
+Sobe `app` (porta 3000), `piston` e `wasm-builder` (só na rede interna) e `piston-init`. A primeira build demora: a imagem do Piston já vem com gcc (C e C++) e rust embutidos (o gcc sozinho passa de 2 GB), e a do `wasm-builder` baixa o emsdk e compila a raylib. Depois disso a VPS sempre sobe com os compiladores instalados, sem depender de download no primeiro boot; o `piston-init` só confere e instala o que faltar. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
 
 Testes dentro do Docker (typecheck, unitários e as soluções de referência rodando no Piston):
 
@@ -278,14 +278,14 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 - [x] **Fase 1:** layout retrô, lista por categoria, página do desafio com editor Vim, execução C/C++/Rust com testes stdin/stdout, seed de `/challenges`. Também entraram o preview PPM e o canvas GLSL, necessários para os desafios de exemplo.
 - [x] **Fase 2:** login (usuário/senha ou GitHub) e convites, progresso e rascunhos no banco, painel admin, Hall of Fame com pontos, solução liberada pelo servidor.
 - [x] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, medalhas, soluções dos outros jogadores.
-- [x] **Fase 4:** C/C++ com raylib/SDL2 via Emscripten (WASM) no canvas; D, Pascal e Fortran.
+- [x] **Fase 4:** C/C++ com raylib/SDL2 via Emscripten (WASM) no canvas.
 - [x] **Fase 5:** torneio: desafio do dia com bônus, sequências, recordes (menor código, mais rápido), perfil público e feed RSS. Design em [docs/fase-5.md](docs/fase-5.md).
 - [x] **Fase 6:** CLI `korin` no estilo LeetCode (pick/test/submit do terminal), tokens de API, categoria "LeetCode" com link para os originais e trilha "Maratona de entrevista". Design em [docs/fase-6.md](docs/fase-6.md).
 
 Limitações conhecidas das Fases 3 a 5:
 - Desafios `shader` e `canvas` não têm "resolvido": não pontuam, não entram no desafio do dia e são passos livres nas trilhas.
 - Recordes usam o **último** código aprovado de cada jogador por linguagem; o tempo vem do runner e é ruidoso.
-- D e Pascal não têm solução de referência no repositório: o `npm run verify` do CI (runner local) só cobre C, C++, Rust e Fortran.
+- A torre fala C, C++ e Rust (mais GLSL nos shaders). Pascal, Fortran, D, Assembly, Go e Zig foram removidos para manter o foco.
 
 Limitações conhecidas da Fase 1:
 - O Piston não informa memória em versões antigas (aparece `n/d`), e o runner local não mede memória.

@@ -2,10 +2,11 @@
 
 /** Mural de novidades da home (mais recente primeiro). */
 export const NEWS: { date: string; text: string }[] = [
+  { date: "12/11/2026", text: "16 desafios novos e 8 andares: agora são 5 resolvidos para subir. CLI com korin next, korin status e instalação em uma linha." },
   { date: "11/11/2026", text: "CLI korin: resolva no seu editor e envie pelo terminal. Nova categoria LeetCode, com o número de cada problema." },
   { date: "11/11/2026", text: "Compilador livre em /compilador, sem desafio." },
   { date: "11/11/2026", text: "Desafio do dia com bônus, recordes de menor código e mais rápido, perfil público e feed RSS." },
-  { date: "11/11/2026", text: "Game Dev: C/C++ com raylib e SDL2 rodando no navegador. Chegaram D, Pascal e Fortran." },
+  { date: "11/11/2026", text: "Game Dev: C/C++ com raylib e SDL2 rodando no navegador." },
   { date: "11/11/2026", text: "Detonados, guestbook, comentários, medalhas e soluções dos outros jogadores." },
   { date: "10/11/2026", text: "11 desafios novos: tabela hash, malloc first-fit, BigInt, LRU, Dijkstra e 3 shaders." },
   { date: "10/11/2026", text: "Contas por convite. Progresso, rascunhos e Hall of Fame." },

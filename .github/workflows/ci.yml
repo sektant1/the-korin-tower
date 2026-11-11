@@ -97,7 +97,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: gcc --version && g++ --version && rustc --version && gfortran --version
+      - run: gcc --version && g++ --version && rustc --version
       - run: npm run verify
 
   deploy:
