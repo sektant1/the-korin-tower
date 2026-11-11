@@ -2358,9 +2358,9 @@ body:has(.playground-page) .content {
 .site-banner {
   display: block;
   width: 100%;
-  height: clamp(140px, 20vw, 320px);
+  height: clamp(140px, 15vw, 280px);
   object-fit: cover;
-  object-position: center 50%;
+  object-position: center 38%;
 }
 .flying-cloud {
   z-index: 2;
