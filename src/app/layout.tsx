@@ -34,6 +34,7 @@ export const metadata: Metadata = {
 const MENU = [
   { href: "/", label: "Home" },
   { href: "/desafios", label: "Desafios" },
+  { href: "/compilador", label: "Compilador" },
   { href: "/trilhas", label: "Detonados" },
   { href: "/hall-da-fama", label: "Hall of Fame" },
   { href: "/galeria", label: "Galeria" },

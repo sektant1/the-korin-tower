@@ -29,4 +29,4 @@ Este desafio roda no navegador (WebGL2, estilo Shadertoy). Você escreve `mainIm
 
 `iResolution` (`vec3`, pixels), `iTime` (`float`, segundos), `iMouse` (`vec4`).
 
-Não há teste automático: quando o tabuleiro estiver girando liso e com casas quadradas, considere resolvido.
+Sem teste de pixel-a-pixel: `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que o tabuleiro aparece. Quando estiver girando liso e com casas quadradas, `:submit` fecha o desafio.

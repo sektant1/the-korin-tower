@@ -17,6 +17,8 @@ interface Props {
   state: OutputState;
   checker: "exact" | "ppm";
   onJump(line: number, col: number): void;
+  /** Texto do estado inicial; padrão é a dica de :run/:test/:submit dos desafios. */
+  idle?: string;
 }
 
 // gcc/g++: "main.c:12:5: error"   rustc: "--> main.rs:12:5"
@@ -111,11 +113,15 @@ function TestRow({ t, checker }: { t: TestOutcome; checker: Props["checker"] }) 
         <div className="test-detail">
           <div className="io-label">entrada</div>
           <pre className="out-pre small">{t.input.length > 2000 ? t.input.slice(0, 2000) + "\n…" : t.input || "(vazia)"}</pre>
-          {checker === "ppm" && looksLikePpm(t.stdout) ? (
-            <div className="ppm-pair">
-              <PpmView text={t.expected} label="esperado" />
+          {looksLikePpm(t.stdout) ? (
+            checker === "ppm" ? (
+              <div className="ppm-pair">
+                <PpmView text={t.expected} label="esperado" />
+                <PpmView text={t.stdout} label="obtido" />
+              </div>
+            ) : (
               <PpmView text={t.stdout} label="obtido" />
-            </div>
+            )
           ) : (
             !ok && t.verdict === "WA" && <Diff expected={t.expected} actual={t.stdout} />
           )}
@@ -131,13 +137,13 @@ function TestRow({ t, checker }: { t: TestOutcome; checker: Props["checker"] }) 
   );
 }
 
-export function OutputPanel({ state, checker, onJump }: Props) {
+export function OutputPanel({ state, checker, onJump, idle }: Props) {
   return (
     <div className="crt" aria-live="polite" aria-busy={state.status === "running"}>
       <div className="crt-inner">
         {state.status === "idle" && (
           <p className="dim">
-            C:\KORIN&gt; aguardando... digite <kbd>:run</kbd>, <kbd>:test</kbd> ou <kbd>:submit</kbd>
+            C:\KORIN&gt; {idle ?? <>aguardando... digite <kbd>:run</kbd>, <kbd>:test</kbd> ou <kbd>:submit</kbd></>}
             <span className="caret">_</span>
           </p>
         )}

@@ -59,6 +59,8 @@ scripts/
 wasm-builder/                  ← serviço emcc (raylib + SDL2) dos desafios canvas
   build.mjs                    ← compila um fonte; também roda sozinho em dev
   server.mjs, Dockerfile       ← HTTP mínimo e imagem
+piston/                        ← imagem do Piston com gcc/rust/go/zig/nasm/pascal embutidos
+  Dockerfile, install.cjs      ← instala os runtimes durante o build
 docs/fase-5.md                 ← design da fase 5
 src/
   app/                         ← páginas e rotas de API (App Router)
@@ -100,7 +102,7 @@ npm run dev                   # http://localhost:3000 → /entrar → Criar cont
 Com Piston, sem subir o app no Docker:
 
 ```bash
-docker compose up -d piston piston-init   # 1ª vez baixa os compiladores (demora)
+docker compose up -d --build piston piston-init   # 1ª vez baixa os runtimes (~2 GB) e demora
 # no .env: RUNNER="piston" e PISTON_URL="http://localhost:2000"
 # e exponha a porta: adicione `ports: ["127.0.0.1:2000:2000"]` ao serviço piston
 ```
@@ -119,7 +121,7 @@ npm run verify        # compila cada solução de referência e roda todos os te
 docker compose up -d --build
 ```
 
-Sobe `app` (porta 3000), `piston` e `wasm-builder` (só na rede interna) e `piston-init`. A primeira build do `wasm-builder` demora: baixa o emsdk e compila a raylib. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
+Sobe `app` (porta 3000), `piston` e `wasm-builder` (só na rede interna) e `piston-init`. A primeira build demora: a imagem do Piston já vem com gcc (C, C++, D e Fortran), rust, go, zig, nasm e pascal embutidos (o gcc sozinho passa de 2 GB), e a do `wasm-builder` baixa o emsdk e compila a raylib. Depois disso a VPS sempre sobe com os compiladores instalados, sem depender de download no primeiro boot; o `piston-init` só confere e instala o que faltar. A cada subida o app roda as migrações e o seed. O Piston precisa de `privileged: true` e cgroup v2 no host (padrão no Ubuntu 22.04+). Coloque um proxy reverso com HTTPS na frente (Caddy ou nginx). Ele deve **sobrescrever** `X-Forwarded-For`, porque o rate limit usa esse cabeçalho.
 
 Testes dentro do Docker (typecheck, unitários e as soluções de referência rodando no Piston):
 
@@ -156,11 +158,14 @@ Limites desse arranjo:
 - **check:** typecheck, testes unitários, `next build`;
 - **database:** Postgres limpo → `prisma migrate deploy` → confere se `schema.prisma` bate com as migrações (pega migração esquecida) → seed duas vezes (idempotente);
 - **verify:** compila e testa as soluções de referência (runner local na VM do Actions);
-- **deploy** (só push na `master`, depois dos três acima): `npm run db:deploy` no Supabase (migrações + desafios) e então `vercel build` + `vercel deploy --prebuilt --prod`. Um deploy por vez.
+- **deploy** (só push na `master`, depois dos três acima): `npm run db:deploy` no Supabase (migrações + desafios) e então `vercel build` + `vercel deploy --prebuilt --prod`. Um deploy por vez;
+- **deploy-vps** (idem, quando `DEPLOY_TARGET=vps`): entra por SSH na VPS, roda `git pull --ff-only`, `docker compose up -d --build` e remove imagens antigas. O próprio `app` aplica as migrações e o seed ao subir. Também um deploy por vez.
+
+O alvo é escolhido pela variável de repositório `DEPLOY_TARGET` (Settings → Secrets and variables → Actions → Variables): sem ela o deploy vai para a Vercel; com `vps`, vai para a VPS. Para a VPS, crie os segredos `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (chave privada ed25519 com acesso ao clone) e, se o clone não estiver em `/opt/the-korin-tower`, `VPS_PATH`. A VPS precisa ter Docker + Compose, o repositório clonado com o remoto configurado e um `.env` ao lado do `docker-compose.yml`.
 
 O `vercel.json` desliga o deploy automático da Vercel na `master` (quem faz é o Actions, depois de migrar o banco). PRs continuam ganhando preview pela integração Git da Vercel; o build de preview não mexe no banco.
 
-Configuração, uma vez:
+Configuração da Vercel, uma vez:
 1. `npx vercel link` na sua máquina; copie `orgId` e `projectId` de `.vercel/project.json`.
 2. Crie um token em vercel.com/account/tokens.
 3. No GitHub (Settings → Secrets and variables → Actions) crie `DATABASE_URL`, `DIRECT_URL`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. Opcional: crie o environment `production` com aprovação manual.

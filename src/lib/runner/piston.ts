@@ -25,34 +25,56 @@ interface PistonResponse {
 
 const PARALLEL = 3;
 
+/**
+ * PISTON_URL aceita a raiz do serviço (`http://piston:2000`) ou a URL completa
+ * do execute (`https://host/api/v2/piston/execute`, Piston atrás de proxy com
+ * caminho — é o caso da instância pública da emkc).
+ */
+export function endpointOf(url: string): string {
+  const clean = url.trim().replace(/\/+$/, "");
+  return clean.endsWith("/execute") ? clean : `${clean}/api/v2/execute`;
+}
+
 export class PistonRunner implements Runner {
   readonly name = "piston";
-  constructor(private baseUrl: string) {}
+  private readonly endpoint: string;
+  private readonly host: string;
+
+  constructor(url: string) {
+    this.endpoint = endpointOf(url);
+    this.host = new URL(this.endpoint).host;
+  }
 
   private async execute(req: BatchRequest, stdin: string): Promise<PistonResponse> {
     const lang = LANGUAGES[req.language];
     if (!lang.piston) throw new Error(`${lang.label} não roda no servidor`);
-    const res = await fetch(`${this.baseUrl}/api/v2/execute`, {
-      method: "POST",
-      // PISTON_TOKEN: para um Piston remoto atrás de um proxy que exige token (ex.: app na Vercel).
-      headers: {
-        "content-type": "application/json",
-        ...(process.env.PISTON_TOKEN ? { authorization: `Bearer ${process.env.PISTON_TOKEN}` } : {}),
-      },
-      body: JSON.stringify({
-        language: lang.piston,
-        version: "*",
-        files: [{ name: lang.file, content: req.source }],
-        stdin,
-        compile_timeout: 15000,
-        run_timeout: req.timeLimitMs,
-        compile_memory_limit: 512 * 1024 * 1024,
-        run_memory_limit: req.memoryLimitMb * 1024 * 1024,
-      }),
-      signal: AbortSignal.timeout(req.timeLimitMs + 30000),
-    });
+    let res: Response;
+    try {
+      res = await fetch(this.endpoint, {
+        method: "POST",
+        // PISTON_TOKEN: para um Piston remoto atrás de um proxy que exige token (ex.: app na Vercel).
+        headers: {
+          "content-type": "application/json",
+          ...(process.env.PISTON_TOKEN ? { authorization: `Bearer ${process.env.PISTON_TOKEN}` } : {}),
+        },
+        body: JSON.stringify({
+          language: lang.piston,
+          version: "*",
+          files: [{ name: lang.file, content: req.source }],
+          stdin,
+          compile_timeout: 15000,
+          run_timeout: req.timeLimitMs,
+          compile_memory_limit: 512 * 1024 * 1024,
+          run_memory_limit: req.memoryLimitMb * 1024 * 1024,
+        }),
+        signal: AbortSignal.timeout(req.timeLimitMs + 30000),
+      });
+    } catch (e) {
+      // "fetch failed" sozinho não diz nada; o host aparece aqui de propósito.
+      throw new Error(`não consegui falar com o Piston em ${this.host}: ${(e as Error).message}`);
+    }
     const body = (await res.json().catch(() => ({}))) as PistonResponse;
-    if (!res.ok) throw new Error(`Piston respondeu ${res.status}: ${body.message ?? "erro desconhecido"}`);
+    if (!res.ok) throw new Error(`Piston em ${this.host} respondeu ${res.status}: ${body.message ?? "erro desconhecido"}`);
     return body;
   }
 

@@ -19,10 +19,32 @@ interface Palette {
   comment: string;
   type: string;
   fn: string;
+  /** Diretivas de pré-processador (#include, #define...); cai em `keyword` se ausente. */
+  preproc?: string;
 }
 
 const PALETTES: Record<EditorTheme, Palette> = {
-  // Padrão: escuro neutro, cores suaves e só o necessário para distinguir tokens.
+  // Cores padrão do Vim (:syntax on sem colorscheme, fundo escuro), de
+  // runtime/syntax/syncolor.vim: Statement #ffff60, Constant #ffa0a0,
+  // Comment #80a0ff, Identifier #40ffff, Type #60ff60, PreProc #ff80ff.
+  vim: {
+    dark: true,
+    bg: "#000000",
+    fg: "#ffffff",
+    gutterBg: "#000000",
+    gutterFg: "#cd7f32", // LineNr: Brown
+    cursor: "#ffffff",
+    selection: "#00008b", // Visual: azul marinho
+    activeLine: "#101010",
+    keyword: "#ffff60",
+    string: "#ffa0a0",
+    number: "#ffa0a0",
+    comment: "#80a0ff",
+    type: "#60ff60",
+    fn: "#40ffff",
+    preproc: "#ff80ff",
+  },
+  // Escuro neutro, cores suaves e só o necessário para distinguir tokens.
   noite: {
     dark: true,
     bg: "#1b1d26",
@@ -109,7 +131,7 @@ const PALETTES: Record<EditorTheme, Palette> = {
 const CODE_FONT = "'Lucida Console', 'Courier New', Courier, monospace";
 
 export function editorTheme(id: EditorTheme, fontSize = 15): Extension {
-  const p = PALETTES[id] ?? PALETTES.noite;
+  const p = PALETTES[id] ?? PALETTES.vim;
   const theme = EditorView.theme(
     {
       "&": { color: p.fg, backgroundColor: p.bg, fontSize: `${fontSize}px`, height: "100%" },
@@ -136,8 +158,9 @@ export function editorTheme(id: EditorTheme, fontSize = 15): Extension {
     { tag: [t.number, t.bool, t.null, t.atom], color: p.number },
     { tag: [t.comment, t.lineComment, t.blockComment], color: p.comment, fontStyle: "italic" },
     { tag: [t.typeName, t.className, t.standard(t.typeName)], color: p.type },
-    { tag: [t.function(t.variableName), t.function(t.propertyName), t.macroName], color: p.fn },
-    { tag: [t.processingInstruction, t.meta], color: p.keyword },
+    { tag: [t.function(t.variableName), t.function(t.propertyName)], color: p.fn },
+    { tag: [t.macroName], color: p.preproc ?? p.fn },
+    { tag: [t.processingInstruction, t.meta], color: p.preproc ?? p.keyword },
   ]);
   return [theme, syntaxHighlighting(highlight)];
 }

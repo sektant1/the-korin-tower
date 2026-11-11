@@ -2,14 +2,15 @@
 import { cpp } from "@codemirror/lang-cpp";
 import { go } from "@codemirror/lang-go";
 import { rust } from "@codemirror/lang-rust";
-import { StreamLanguage } from "@codemirror/language";
+import { indentUnit, StreamLanguage } from "@codemirror/language";
+import { indentWithTab } from "@codemirror/commands";
 import { c as clikeC, shader } from "@codemirror/legacy-modes/mode/clike";
 import { d as dMode } from "@codemirror/legacy-modes/mode/d";
 import { fortran } from "@codemirror/legacy-modes/mode/fortran";
 import { gas } from "@codemirror/legacy-modes/mode/gas";
 import { pascal } from "@codemirror/legacy-modes/mode/pascal";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
-import { EditorView } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
 import { getCM, Vim, vim } from "@replit/codemirror-vim";
 import { basicSetup } from "codemirror";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
@@ -90,9 +91,9 @@ function registerVimCommands() {
   Vim.defineEx("stdin", "std", () => active?.commands.stdin());
   Vim.defineEx("output", "out", () => active?.commands.output());
   // :set theme=ambar  /  :set theme?
-  Vim.defineOption("theme", "noite", "string", [], (value?: string) => {
+  Vim.defineOption("theme", "vim", "string", [], (value?: string) => {
     if (value === undefined) return active?.theme;
-    if (!isEditorTheme(value)) throw new Error(`tema desconhecido: ${value} (noite, fosforo, ambar, turbo, win98)`);
+    if (!isEditorTheme(value)) throw new Error(`tema desconhecido: ${value} (vim, noite, fosforo, ambar, turbo, win98)`);
     active?.commands.setTheme(value);
   });
 }
@@ -124,6 +125,9 @@ export const CodeEditor = forwardRef<CodeEditorHandle, Props>(function CodeEdito
   const comp = useRef({ vim: new Compartment(), lang: new Compartment(), theme: new Compartment() });
   const onChange = useRef(props.onChange);
   onChange.current = props.onChange;
+  // Os atalhos abaixo leem por ref: o objeto de comandos muda a cada render do pai.
+  const commandsRef = useRef(props.commands);
+  commandsRef.current = props.commands;
   const [mode, setMode] = useState("normal");
   const [pos, setPos] = useState({ line: 1, col: 1 });
 
@@ -139,10 +143,35 @@ export const CodeEditor = forwardRef<CodeEditorHandle, Props>(function CodeEdito
         doc: props.initialValue,
         extensions: [
           c.vim.of(props.vimEnabled ? vim() : []), // antes do basicSetup: precedência das teclas
+          // Atalhos "de IDE" para quem não usa Vim (e no modo de inserção do Vim).
+          // Antes do basicSetup para vencer o Mod-Enter (insertNewlineAndIndent) do defaultKeymap.
+          keymap.of([
+            indentWithTab, // Tab indenta, Shift-Tab desindenta; antes disso o Tab tirava o foco do editor
+            {
+              key: "Mod-s",
+              preventDefault: true,
+              run: () => {
+                commandsRef.current.save();
+                return true;
+              },
+            },
+            {
+              key: "Mod-Enter",
+              preventDefault: true,
+              run: () => {
+                commandsRef.current.run();
+                return true;
+              },
+            },
+          ]),
           basicSetup,
+          // Quebra de linha longa em vez de rolar na horizontal: melhor no celular e
+          // não esconde nada no desktop (os colchetes de dobra seguem a quebra).
+          EditorView.lineWrapping,
           c.lang.of(languageExtension(props.language)),
           c.theme.of(editorTheme(props.theme, props.fontSize)),
           EditorState.tabSize.of(4),
+          indentUnit.of("    "),
           EditorView.contentAttributes.of({ "aria-label": "Editor de código" }),
           EditorView.updateListener.of((u) => {
             if (u.docChanged) onChange.current(u.state.doc.toString());

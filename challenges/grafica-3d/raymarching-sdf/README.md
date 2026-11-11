@@ -31,4 +31,4 @@ Monte uma cena 3D, inteira dentro de um fragment shader, com:
 
 `iResolution` (`vec3`), `iTime` (`float`), `iMouse` (`vec4`).
 
-Sem teste automático: quando a esfera estiver iluminada e fazendo sombra no chão, missão cumprida. Compare com o seu [Ray Tracer de Uma Esfera](/desafio/ray-tracer-esfera): mesma cena, outra técnica.
+Sem teste de pixel-a-pixel: `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que a cena aparece. Quando a esfera estiver iluminada e fazendo sombra no chão, `:submit` fecha o desafio. Compare com o seu [Ray Tracer de Uma Esfera](/desafio/ray-tracer-esfera): mesma cena, outra técnica.

@@ -4,9 +4,10 @@
 // com a conta (ver src/components/Account.tsx).
 import { useSyncExternalStore } from "react";
 
-export type EditorTheme = "noite" | "fosforo" | "ambar" | "turbo" | "win98";
+export type EditorTheme = "vim" | "noite" | "fosforo" | "ambar" | "turbo" | "win98";
 export const EDITOR_THEMES: { id: EditorTheme; label: string }[] = [
-  { id: "noite", label: "Noite (padrão, mais legível)" },
+  { id: "vim", label: "Vim (padrão: colorscheme default do vim)" },
+  { id: "noite", label: "Noite (mais legível)" },
   { id: "fosforo", label: "Fósforo verde" },
   { id: "ambar", label: "Âmbar" },
   { id: "turbo", label: "Turbo C++ azul" },
@@ -25,7 +26,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   vim: true,
-  editorTheme: "noite",
+  editorTheme: "vim",
   vimrc: '" mapeamentos simples, um por linha\n" imap jj <Esc>\n',
   sanity: false,
   starTrail: true,

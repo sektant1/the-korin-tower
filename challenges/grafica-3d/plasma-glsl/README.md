@@ -30,4 +30,4 @@ Este desafio roda **direto no seu navegador**, num canvas WebGL2, no estilo Shad
 2. O padrão deve variar no espaço com **ao menos três** ondas de seno somadas.
 3. Bônus: o mouse distorce o plasma.
 
-Não existe teste automático aqui: quando estiver bonito, considere resolvido.
+Não existe teste de pixel-a-pixel aqui: `:submit` renderiza dois frames (em `t=0` e `t=3`) no seu navegador e confere que o efeito aparece — se estiver bonito, `:submit` fecha o desafio.

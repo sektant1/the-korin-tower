@@ -13,13 +13,15 @@ import {
   type EditorTheme,
 } from "@/lib/client/store";
 import { LANGUAGES, isCanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
+import { renderShaderPpm } from "@/lib/client/shader";
 import type { RunResponse } from "@/lib/run-api";
 import { GIFS } from "@/lib/gifs";
 import { useAccount, useProgressMap } from "../Account";
 import { Gif } from "../Gif";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
-import { ShaderCanvas, type ShaderError } from "./ShaderCanvas";
+import { ShaderCanvas } from "./ShaderCanvas";
+import type { ShaderError } from "@/lib/client/shader";
 import { WasmCanvas } from "./WasmCanvas";
 
 /** Código aprovado de outro jogador (GET /api/challenges/<slug>/solutions). */
@@ -134,12 +136,75 @@ export function ChallengeWorkspace(p: Props) {
     saveTimer.current = setTimeout(() => save(false), 800);
   }, [save]);
 
+  // Trata a resposta de /api/run igual para stdio e shader (STAGE CLEAR etc.).
+  const handleRunResponse = useCallback(
+    async (res: Response) => {
+      const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      if (!res.ok) {
+        setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
+        return;
+      }
+      const r = body as RunResponse;
+      setOutput({ status: "done", response: r });
+      if (r.mode === "submit" && r.allPassed) {
+        if (r.awarded === undefined) {
+          setProgress(p.slug, "solved");
+          flash("★ STAGE CLEAR ★ entre na sua conta para pontuar e ver a solução");
+        } else {
+          router.refresh(); // traz o progresso novo do banco (badges, placar)
+          flash(r.awarded > 0 ? `★ STAGE CLEAR ★ +${r.awarded} pontos! solução liberada` : "★ STAGE CLEAR ★ (sem pontos novos) solução liberada");
+        }
+      }
+    },
+    [flash, p.slug, router],
+  );
+
   const execute = useCallback(
     async (mode: Mode) => {
       setTab("out");
       if (p.kind === "shader") {
-        if (mode === "run") setShader((s) => ({ source: editor.current?.getValue() ?? s.source, version: s.version + 1 }));
-        else flash("desafio de shader: sem testes automáticos, use :run");
+        if (mode === "run") {
+          setShader((s) => ({ source: editor.current?.getValue() ?? s.source, version: s.version + 1 }));
+          return;
+        }
+        // :test/:submit de shader: renderiza frames com iTime fixo no navegador
+        // e manda o PPM para o servidor conferir (e registrar a solução).
+        const source = editor.current?.getValue() ?? "";
+        setOutput({ status: "running", label: mode === "submit" ? "renderizando o shader e conferindo..." : "renderizando o shader..." });
+        await new Promise((r) => setTimeout(r, 50)); // deixa o painel pintar antes do render
+        const f0 = renderShaderPpm(source, 0);
+        const f3 = renderShaderPpm(source, 3);
+        if (f0.ppm === null && f3.ppm === null) {
+          const errors = (f0.errors.length ? f0 : f3).errors;
+          setOutput({
+            status: "done",
+            response: {
+              mode,
+              compile: { ok: false, output: errors.map((e) => `shader.frag:${e.line ?? 0}:1: erro: ${e.message}`).join("\n") },
+              tests: [],
+              allPassed: false,
+              warnings: [],
+            },
+          });
+          return;
+        }
+        save(false);
+        try {
+          const res = await fetch("/api/run", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              slug: p.slug,
+              language: "glsl",
+              source,
+              mode,
+              frames: [f0.ppm, f3.ppm].filter((f): f is string => f !== null),
+            }),
+          });
+          await handleRunResponse(res);
+        } catch (e) {
+          setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
+        }
         return;
       }
       if (busy) return;
@@ -178,27 +243,12 @@ export function ChallengeWorkspace(p: Props) {
             flags: lang === "c" || lang === "cpp" ? settings.flags[lang] : undefined,
           }),
         });
-        const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-        if (!res.ok) {
-          setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
-          return;
-        }
-        const r = body as RunResponse;
-        setOutput({ status: "done", response: r });
-        if (r.mode === "submit" && r.allPassed) {
-          if (r.awarded === undefined) {
-            setProgress(p.slug, "solved");
-            flash("★ STAGE CLEAR ★ entre na sua conta para pontuar e ver a solução");
-          } else {
-            router.refresh(); // traz o progresso novo do banco (badges, placar)
-            flash(r.awarded > 0 ? `★ STAGE CLEAR ★ +${r.awarded} pontos! solução liberada` : "★ STAGE CLEAR ★ (sem pontos novos) solução liberada");
-          }
-        }
+        await handleRunResponse(res);
       } catch (e) {
         setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
       }
     },
-    [busy, flash, lang, p.kind, p.slug, router, save, settings.flags, stdin],
+    [busy, flash, handleRunResponse, lang, p.kind, p.slug, save, settings.flags, stdin],
   );
 
   const nextHint = useCallback(async () => {

@@ -28,7 +28,7 @@ services:
       piston-init:
         condition: service_completed_successfully
       wasm-builder:
-        condition: service_started
+        condition: service_healthy
 
   # Mesmo motor do Supabase. Dev local com o app fora do container:
   #   docker compose up -d db   e no .env: DATABASE_URL="postgresql://korin:korin@localhost:5432/korin"
@@ -50,8 +50,13 @@ services:
       retries: 20
 
   # Sandbox de execução (isolate + cgroups). Precisa de privileged e cgroup v2 no host.
+  # Os compiladores vêm embutidos na imagem (piston/Dockerfile), então a VPS já
+  # sobe com tudo instalado; `piston-init` fica só como rede de segurança.
   piston:
-    image: ghcr.io/engineer-man/piston
+    build:
+      context: ./piston
+      args:
+        PISTON_PACKAGES: ${PISTON_PACKAGES:-gcc,rust,go,zig,nasm,pascal}
     restart: unless-stopped
     privileged: true
     tmpfs:
@@ -65,6 +70,12 @@ services:
       PISTON_RUN_MEMORY_LIMIT: "536870912"
       PISTON_MAX_PROCESS_COUNT: "64"
       PISTON_OUTPUT_MAX_SIZE: "2097152"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:2000/api/v2/runtimes',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
 
   # Fase 4: compila C/C++ (raylib, SDL2) para WASM com emcc. Só compila; quem executa é o navegador.
   # Não é exposto para fora da rede interna. A primeira build da imagem demora (compila a raylib).
@@ -78,17 +89,26 @@ services:
     environment:
       BUILD_MAX_CONCURRENCY: "2"
       BUILD_TIMEOUT_MS: "60000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:2100/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
 
-  # Instala gcc/rust/go/zig/nasm/pascal no Piston na primeira subida (depois é instantâneo).
+  # Rede de segurança: se a imagem do Piston for antiga ou o volume tiver sido
+  # criado sem algum runtime, instala o que faltar antes de o app subir.
   piston-init:
     image: node:24-alpine
     command: node /piston-install.mjs
     environment:
       PISTON_URL: http://piston:2000
+      PISTON_PACKAGES: ${PISTON_PACKAGES:-gcc,rust,go,zig,nasm,pascal}
     volumes:
       - ./scripts/piston-install.mjs:/piston-install.mjs:ro
     depends_on:
-      - piston
+      piston:
+        condition: service_healthy
 
   # Testes num container: typecheck, unitários e todas as soluções de referência no Piston.
   #   docker compose --profile test run --rm test

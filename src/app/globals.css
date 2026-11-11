@@ -1831,6 +1831,34 @@ body:has(.challenge-page) .content {
   }
 }
 
+/* ---------- compilador (/compilador): layout de IDE sem enunciado ---------- */
+body:has(.playground-page) .frame {
+  margin-top: 6px;
+}
+body:has(.playground-page) .content {
+  padding: 6px;
+}
+.playground-page {
+  /* mesma conta da página de desafio: viewport menos cabeçalho compacto e molduras */
+  height: max(560px, calc(100vh - 116px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
+}
+.playground-page .workspace {
+  height: 100%;
+  min-height: 0;
+}
+@media (max-width: 1100px) {
+  .playground-page {
+    height: auto;
+    grid-template-rows: none;
+  }
+  .playground-page .workspace {
+    height: max(560px, calc(100vh - 24px));
+  }
+}
+
 /* ---------- imagens do dono do site (public/fanart) ---------- */
 .hero-mascot {
   display: block;

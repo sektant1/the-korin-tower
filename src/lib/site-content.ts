@@ -2,6 +2,7 @@
 
 /** Mural de novidades da home (mais recente primeiro). */
 export const NEWS: { date: string; text: string }[] = [
+  { date: "11/11/2026", text: "Compilador livre em /compilador: treine em qualquer linguagem da torre, com stdin, sem desafio." },
   { date: "11/11/2026", text: "Torneio aberto: desafio do dia com bônus, sequências, recordes de menor código e mais rápido, perfil público e feed RSS." },
   { date: "11/11/2026", text: "Game Dev no canvas! C/C++ com raylib e SDL2 compilados para WebAssembly. E chegaram D, Pascal e Fortran." },
   { date: "11/11/2026", text: "Detonados (trilhas), guestbook, comentários com spoiler, medalhas e as soluções dos outros jogadores." },
