@@ -1,0 +1,15 @@
+14
+push 0
+push 100
+dup
+jz 11
+swap
+over
+add
+swap
+push 1
+sub
+jmp 2
+pop
+print
+halt

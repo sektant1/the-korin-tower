@@ -1,5 +1,5 @@
 ---
-title: Contando Inversões
+title: "Contando Inversões"
 difficulty: 2
 tags: [merge-sort, divisao-e-conquista, vetores]
 languages: [c, cpp]

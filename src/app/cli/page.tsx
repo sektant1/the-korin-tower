@@ -7,7 +7,10 @@ import { siteUrl } from "@/lib/site-url";
 export const metadata: Metadata = { title: "CLI (korin)" };
 
 const COMMANDS: [string, string][] = [
-  ["korin list [-c cat] [--todo]", "lista os desafios"],
+  ["korin next [--pick]", "o próximo desafio da torre; --pick já baixa"],
+  ["korin status", "seu andar, pontos, esferas e o que falta para subir"],
+  ["korin list [-a andar] [-c cat] [--todo]", "os desafios, andar por andar"],
+  ["korin tracks", "os detonados e seu progresso"],
   ["korin daily [--pick]", "desafio do dia"],
   ["korin pick slug [-l ling] [-d pasta]", "baixa enunciado, template e testes públicos"],
   ["korin run [-i entrada]", "executa com a entrada do pipe, de um arquivo ou do 1º teste"],
@@ -16,7 +19,7 @@ const COMMANDS: [string, string][] = [
   ["korin push", "salva o código como rascunho na conta"],
   ["korin hint · solution · giveup", "as mesmas regras do site"],
   ["korin open · show", "abre no navegador · imprime o enunciado"],
-  ["korin config lang=rust", "linguagem padrão do pick"],
+  ["korin doctor", "confere Node, token, servidor e compiladores"],
   ["korin update", "baixa a versão mais nova"],
 ];
 
@@ -30,27 +33,29 @@ export default async function CliPage() {
       <p className="center dim">Resolva no seu editor e envie pelo terminal. Um arquivo, sem dependências, Node 22.7 ou mais novo.</p>
       <div className="two-col">
         <Window title="instalar.txt">
+          <p className="small">Linux e macOS:</p>
+          <pre className="code-block">
+            <code>{`curl -fsSL ${url}/install.sh | bash`}</code>
+          </pre>
+          <p className="small">Windows (PowerShell):</p>
+          <pre className="code-block">
+            <code>{`irm ${url}/install.ps1 | iex`}</code>
+          </pre>
+          <p className="small dim">
+            O instalador baixa <code>korin.mjs</code> para <code>~/.local/bin</code> (ou <code>%LOCALAPPDATA%\korin</code>) e avisa se faltar algo no
+            PATH. Sem instalador: <code>{`curl -fsSL ${dl} -o korin && chmod +x korin`}</code>.
+          </p>
           <ol className="cli-steps">
-            <li>
-              Instale (Linux e macOS):
-              <pre className="code-block">
-                <code>{`mkdir -p ~/.local/bin && curl -fsSL ${dl} -o ~/.local/bin/korin && chmod +x ~/.local/bin/korin`}</code>
-              </pre>
-              <span className="small dim">
-                No Windows: <code>{`iwr ${dl} -OutFile korin.mjs`}</code> e depois <code>node korin.mjs ...</code>
-              </span>
-            </li>
             <li>
               Gere um token em <Link href={me ? "/conta" : "/entrar?next=/conta"}>Minha conta</Link> e entre:
               <pre className="code-block">
-                <code>{`korin login --url ${url}`}</code>
+                <code>{`korin login`}</code>
               </pre>
             </li>
             <li>
-              Escolha um desafio:
+              Deixe a torre escolher e resolva no seu editor:
               <pre className="code-block">
-                <code>{`korin list --todo
-korin pick fizzbuzz -l c
+                <code>{`korin next --pick
 cd fizzbuzz && vim main.c
 korin test
 korin submit`}</code>

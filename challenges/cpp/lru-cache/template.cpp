@@ -1,31 +1,15 @@
 #include <cstddef>
 #include <iostream>
-#include <list>
 #include <optional>
 #include <string>
-#include <unordered_map>
-#include <utility>
 
 class LRUCache {
-    std::size_t capacity_;
-    // TODO: uma std::list (mais recente na frente) + um unordered_map chave -> iterador
-
 public:
-    explicit LRUCache(std::size_t capacity) : capacity_(capacity) {}
-
+    explicit LRUCache(std::size_t capacity);
     // Valor da chave (e marca como mais recente), ou -1.
-    long long get(long long key) {
-        // TODO
-        (void)key;
-        return -1;
-    }
-
+    long long get(long long key);
     // Grava o valor. Devolve a chave removida, se alguém saiu do cache.
-    std::optional<long long> put(long long key, long long value) {
-        // TODO
-        (void)key, (void)value;
-        return std::nullopt;
-    }
+    std::optional<long long> put(long long key, long long value);
 };
 
 // ======== NÃO ALTERE DAQUI PARA BAIXO ========

@@ -3,12 +3,12 @@
 // baixa e extrai os pacotes em /piston/packages. Assim a VPS já nasce com os
 // compiladores, sem depender de download no primeiro boot.
 //
-//   PISTON_PACKAGES="gcc,rust,go,zig,nasm,pascal" node install.cjs
+//   PISTON_PACKAGES="gcc,rust" node install.cjs
 const { spawn } = require("child_process");
 const http = require("http");
 
 const PORT = 2000;
-const WANTED = (process.env.PISTON_PACKAGES || "gcc,rust,go,zig,nasm,pascal")
+const WANTED = (process.env.PISTON_PACKAGES || "gcc,rust")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);

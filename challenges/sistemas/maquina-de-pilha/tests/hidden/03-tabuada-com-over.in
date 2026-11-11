@@ -1,0 +1,15 @@
+14
+push 1
+dup
+push 11
+sub
+jz 12
+dup
+push 7
+mul
+print
+push 1
+add
+jmp 1
+pop
+halt

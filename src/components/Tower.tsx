@@ -7,6 +7,7 @@ import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNod
 import {
   FLOORS,
   FLOOR_NAMES,
+  NEED_PER_FLOOR,
   floorScene,
   currentFloor,
   floorOf,
@@ -195,8 +196,8 @@ export function ContinueCard() {
       </p>
       {fresh && (
         <p className="continue-how">
-          Leia o enunciado, escreva o código no editor e mande <kbd>:submit</kbd>. Passou nos testes, subiu um degrau. Dois desafios por andar abrem o
-          andar de cima.
+          Leia o enunciado, escreva o código no editor e mande <kbd>:submit</kbd>. Passou nos testes, subiu um degrau. {NEED_PER_FLOOR} desafios por
+          andar abrem o andar de cima.
         </p>
       )}
     </div>

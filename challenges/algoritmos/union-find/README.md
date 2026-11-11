@@ -1,5 +1,5 @@
 ---
-title: Union-Find: Quem Está Conectado
+title: "Union-Find: Quem Está Conectado"
 difficulty: 3
 tags: [grafos, union-find, estruturas-de-dados]
 languages: [c, cpp]

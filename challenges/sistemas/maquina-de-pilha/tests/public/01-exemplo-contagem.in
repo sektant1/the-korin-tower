@@ -1,0 +1,10 @@
+9
+push 5
+dup
+print
+push 1
+sub
+dup
+jnz 1
+pop
+halt

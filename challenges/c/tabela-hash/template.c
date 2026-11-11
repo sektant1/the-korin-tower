@@ -7,49 +7,17 @@
 
 #define KEY_MAX 32
 
-// Sugestão de estrutura (encadeamento). Pode mudar à vontade.
-typedef struct Entry {
-    char key[KEY_MAX + 1];
-    int64_t value;
-    struct Entry *next;
-} Entry;
-
+/* Os campos são escolha sua; o main abaixo só usa as funções ht_*. */
 typedef struct {
-    Entry **buckets;
-    size_t cap;
-    size_t count;
+    void *impl;
 } HashTable;
 
-void ht_init(HashTable *t) {
-    // TODO
-    t->buckets = NULL;
-    t->cap = 0;
-    t->count = 0;
-}
-
-void ht_set(HashTable *t, const char *key, int64_t value) {
-    // TODO
-    (void)t, (void)key, (void)value;
-}
-
-bool ht_get(const HashTable *t, const char *key, int64_t *out) {
-    // TODO: se achar, escreva em *out e devolva true
-    (void)t, (void)key, (void)out;
-    return false;
-}
-
-bool ht_del(HashTable *t, const char *key) {
-    // TODO
-    (void)t, (void)key;
-    return false;
-}
-
-size_t ht_count(const HashTable *t) { return t->count; }
-
-void ht_free(HashTable *t) {
-    // TODO: libere todos os nós e o vetor de baldes
-    (void)t;
-}
+void ht_init(HashTable *t);
+void ht_set(HashTable *t, const char *key, int64_t value);
+bool ht_get(const HashTable *t, const char *key, int64_t *out); /* achou: escreve em *out, devolve true */
+bool ht_del(HashTable *t, const char *key);
+size_t ht_count(const HashTable *t);
+void ht_free(HashTable *t);
 
 /* ======== NÃO ALTERE DAQUI PARA BAIXO ======== */
 

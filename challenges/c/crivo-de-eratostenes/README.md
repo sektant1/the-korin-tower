@@ -1,5 +1,5 @@
 ---
-title: Crivo de Eratóstenes
+title: "Crivo de Eratóstenes"
 difficulty: 1
 tags: [iniciante, vetores, primos, loops]
 languages: [c, cpp]

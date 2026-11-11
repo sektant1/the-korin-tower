@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     "/galeria": ["./public/assets/dragon-ball-gifs/**/*"],
     "/challenge-assets/**": ["./challenges/**/assets/**/*"],
     "/cli/korin.mjs": ["./cli/korin.mjs"], // a CLI é servida pelo site (Fase 6)
+    "/install.sh": ["./cli/install.sh"],
+    "/install.ps1": ["./cli/install.ps1"],
   },
 };
 

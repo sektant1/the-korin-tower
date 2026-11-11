@@ -22,7 +22,7 @@ interface Props {
 }
 
 // gcc/g++: "main.c:12:5: error"   rustc: "--> main.rs:12:5"
-const LOC_RE = /\b(?:main|shader)\.(?:c|cpp|rs|go|zig|asm|d|pas|f90|frag):(\d+):(\d+)/g;
+const LOC_RE = /\b(?:main|shader)\.(?:c|cpp|rs|frag):(\d+):(\d+)/g;
 
 export function ClickableLog({ text, onJump }: { text: string; onJump(line: number, col: number): void }) {
   const parts: ReactNode[] = [];

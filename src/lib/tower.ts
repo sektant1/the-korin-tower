@@ -2,7 +2,7 @@
 //
 //   - Cada andar é uma dificuldade (1 a 5). Os andares acima disso existem no mapa, mas
 //     estão em obras: um andar sem desafios não abre nem conta como alcançado.
-//   - O andar 1 está sempre aberto. O andar N+1 abre quando você resolve NEED desafios
+//   - O andar 1 está sempre aberto. O andar N+1 abre quando você resolve NEED_PER_FLOOR desafios
 //     com testes do andar N (ou todos, se o andar tem menos que isso).
 //   - Detonados são escadas: o próximo passo de um detonado em andamento abre mesmo
 //     que o andar dele ainda esteja trancado. O desafio do dia também abre sempre.
@@ -13,7 +13,7 @@
 // O progresso vem da conta (logado) ou do localStorage (convidado): o formato é o mesmo.
 
 export const FLOORS = 8;
-export const NEED_PER_FLOOR = 2;
+export const NEED_PER_FLOOR = 5;
 
 export type ProgressMap = Record<string, "solved" | "gaveup" | undefined>;
 

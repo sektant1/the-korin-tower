@@ -4,66 +4,24 @@
 #include <string>
 #include <utility>
 
+// Implemente a lista. O main abaixo usa estes métodos; os campos são escolha sua.
 template <typename T>
 class LinkedList {
-    struct Node {
-        T value;
-        Node* next;
-    };
-
-    Node* head_ = nullptr;
-    Node* tail_ = nullptr;
-    std::size_t size_ = 0;
-
 public:
     LinkedList() = default;
+    LinkedList(const LinkedList& other);
+    LinkedList& operator=(const LinkedList& other);
+    ~LinkedList();
 
-    LinkedList(const LinkedList& other) {
-        // TODO: cópia profunda
-        (void)other;
-    }
-
-    LinkedList& operator=(const LinkedList& other) {
-        // TODO: cópia profunda (dica: copy-and-swap)
-        (void)other;
-        return *this;
-    }
-
-    ~LinkedList() {
-        // TODO: liberar todos os nós
-    }
-
-    void push_front(const T& x) {
-        // TODO
-        (void)x;
-    }
-
-    void push_back(const T& x) {
-        // TODO
-        (void)x;
-    }
-
-    std::optional<T> pop_front() {
-        // TODO
-        return std::nullopt;
-    }
-
-    std::size_t size() const { return size_; }
-
-    void reverse() {
-        // TODO
-    }
-
-    long find(const T& x) const {
-        // TODO
-        (void)x;
-        return -1;
-    }
+    void push_front(const T& x);
+    void push_back(const T& x);
+    std::optional<T> pop_front();
+    std::size_t size() const;
+    void reverse();
+    long find(const T& x) const;
 
     template <typename F>
-    void for_each(F f) const {
-        for (Node* n = head_; n; n = n->next) f(n->value);
-    }
+    void for_each(F f) const;
 };
 
 // ======== NÃO ALTERE DAQUI PARA BAIXO ========

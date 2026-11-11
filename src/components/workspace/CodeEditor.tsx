@@ -1,14 +1,9 @@
 "use client";
 import { cpp } from "@codemirror/lang-cpp";
-import { go } from "@codemirror/lang-go";
 import { rust } from "@codemirror/lang-rust";
 import { indentUnit, StreamLanguage } from "@codemirror/language";
 import { indentWithTab } from "@codemirror/commands";
-import { c as clikeC, shader } from "@codemirror/legacy-modes/mode/clike";
-import { d as dMode } from "@codemirror/legacy-modes/mode/d";
-import { fortran } from "@codemirror/legacy-modes/mode/fortran";
-import { gas } from "@codemirror/legacy-modes/mode/gas";
-import { pascal } from "@codemirror/legacy-modes/mode/pascal";
+import { shader } from "@codemirror/legacy-modes/mode/clike";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { getCM, Vim, vim } from "@replit/codemirror-vim";
@@ -57,18 +52,6 @@ function languageExtension(lang: LanguageId): Extension {
       return cpp();
     case "rust":
       return rust();
-    case "go":
-      return go();
-    case "zig":
-      return StreamLanguage.define(clikeC); // aproximação até existir um modo Zig
-    case "nasm":
-      return StreamLanguage.define(gas);
-    case "d":
-      return StreamLanguage.define(dMode);
-    case "pascal":
-      return StreamLanguage.define(pascal);
-    case "fortran":
-      return StreamLanguage.define(fortran);
     case "glsl":
       return StreamLanguage.define(shader);
   }

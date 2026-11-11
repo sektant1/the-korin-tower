@@ -5,6 +5,7 @@ use std::io::{self, BufRead, Write};
 use std::ptr::{self, NonNull};
 use std::str::FromStr;
 
+// Implemente o vetor. O main abaixo usa estes métodos; os campos são escolha sua.
 pub struct MyVec<T> {
     ptr: NonNull<T>,
     cap: usize,
@@ -15,48 +16,18 @@ impl<T> MyVec<T> {
     pub fn new() -> Self {
         MyVec { ptr: NonNull::dangling(), cap: 0, len: 0 }
     }
-
-    fn grow(&mut self) {
-        todo!("aumentar a capacidade: 0 -> 4 -> 8 -> 16 ...")
-    }
-
-    pub fn push(&mut self, x: T) {
-        todo!()
-    }
-
-    pub fn pop(&mut self) -> Option<T> {
-        todo!()
-    }
-
-    pub fn get(&self, i: usize) -> Option<&T> {
-        todo!()
-    }
-
-    pub fn insert(&mut self, i: usize, x: T) {
-        todo!()
-    }
-
-    pub fn remove(&mut self, i: usize) -> T {
-        todo!()
-    }
-
-    pub fn len(&self) -> usize {
-        self.len
-    }
-
-    pub fn capacity(&self) -> usize {
-        self.cap
-    }
-
-    pub fn as_slice(&self) -> &[T] {
-        todo!("dica: std::slice::from_raw_parts")
-    }
+    pub fn push(&mut self, x: T) { todo!() }
+    pub fn pop(&mut self) -> Option<T> { todo!() }
+    pub fn get(&self, i: usize) -> Option<&T> { todo!() }
+    pub fn insert(&mut self, i: usize, x: T) { todo!() }
+    pub fn remove(&mut self, i: usize) -> T { todo!() }
+    pub fn len(&self) -> usize { self.len }
+    pub fn capacity(&self) -> usize { self.cap }
+    pub fn as_slice(&self) -> &[T] { todo!() }
 }
 
 impl<T> Drop for MyVec<T> {
-    fn drop(&mut self) {
-        // TODO: dropar os elementos e liberar a memória
-    }
+    fn drop(&mut self) { todo!() }
 }
 
 // ======== NÃO ALTERE DAQUI PARA BAIXO ========

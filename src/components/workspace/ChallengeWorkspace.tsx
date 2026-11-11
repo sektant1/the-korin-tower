@@ -20,6 +20,7 @@ import { useAccount, useProgressMap } from "../Account";
 import { NextStepBar } from "../Tower";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
+import { SplitColumns } from "./SplitColumns";
 import { ShaderCanvas } from "./ShaderCanvas";
 import type { ShaderError } from "@/lib/client/shader";
 import { WasmCanvas } from "./WasmCanvas";
@@ -81,6 +82,8 @@ export function ChallengeWorkspace(p: Props) {
   const busy = output.status === "running";
   const status = progress[p.slug];
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // setValue() programático (troca de linguagem, restaurar) dispara onChange; não é edição do jogador.
+  const skipChange = useRef(false);
 
   const flash = useCallback((msg: string) => {
     setMessage(msg);
@@ -92,7 +95,7 @@ export function ChallengeWorkspace(p: Props) {
   useEffect(() => {
     const draft = accountDrafts.current[p.languages[0]] ?? loadDraft(p.slug, p.languages[0]);
     if (draft != null && draft !== initialCode) {
-      editor.current?.setValue(draft);
+      setEditorText(draft);
       if (p.kind === "shader") setShader({ source: draft, version: 1 });
       flash(logged ? "rascunho da conta restaurado" : "rascunho restaurado");
     }
@@ -134,9 +137,21 @@ export function ChallengeWorkspace(p: Props) {
   );
 
   const onChange = useCallback(() => {
+    if (skipChange.current) {
+      skipChange.current = false;
+      return;
+    }
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(false), 800);
   }, [save]);
+
+  /** Troca o texto do editor sem que isso conte como edição (nem gere save na linguagem errada). */
+  const setEditorText = useCallback((code: string) => {
+    clearTimeout(saveTimer.current);
+    skipChange.current = true;
+    editor.current?.setValue(code);
+    skipChange.current = false;
+  }, []);
 
   // Trata a resposta de /api/run igual para stdio e shader (resolvido, pontos etc.).
   const handleRunResponse = useCallback(
@@ -309,10 +324,12 @@ export function ChallengeWorkspace(p: Props) {
   );
 
   const switchLang = (next: LanguageId) => {
-    save(false);
+    if (next === lang) return;
+    clearTimeout(saveTimer.current);
+    save(false); // o que está no editor ainda é da linguagem atual
     setLang(next);
     const draft = logged ? accountDrafts.current[next] : loadDraft(p.slug, next);
-    editor.current?.setValue(draft ?? p.templates[next] ?? "");
+    setEditorText(draft ?? p.templates[next] ?? "");
   };
 
   const doConfirm = async () => {
@@ -328,7 +345,7 @@ export function ChallengeWorkspace(p: Props) {
         delete accountDrafts.current[lang];
         void fetch(`/api/challenges/${p.slug}/draft?language=${lang}`, { method: "DELETE" });
       } else clearDraft(p.slug, lang);
-      editor.current?.setValue(p.templates[lang] ?? "");
+      setEditorText(p.templates[lang] ?? "");
       flash("template restaurado");
     }
   };
@@ -356,8 +373,7 @@ export function ChallengeWorkspace(p: Props) {
     { id: "sol", label: "Solução" },
   ] as const;
 
-  return (
-    <div className="workspace" id="editor">
+  const editorPane = (
       <div className="ws-editor">
         <div className="toolbar98" role="toolbar" aria-label="Ações do editor">
           {p.languages.length > 1 && (
@@ -415,7 +431,9 @@ export function ChallengeWorkspace(p: Props) {
           ))}
         </div>
       </div>
+  );
 
+  const ioPane = (
       <div className="ws-io">
         <NextStepBar slug={p.slug} trackId={p.trackId} />
         <div className="tabs98" role="tablist" aria-label="Painel de saída">
@@ -574,7 +592,11 @@ export function ChallengeWorkspace(p: Props) {
           )}
         </div>
       </div>
+  );
 
+  return (
+    <>
+      <SplitColumns storageKey="workspace" initial={58} min={30} max={78} className="workspace" id="editor" left={editorPane} right={ioPane} />
       {confirm && (
         <div className="dialog-backdrop" role="presentation" onClick={() => setConfirm(null)} onKeyDown={(e) => e.key === "Escape" && setConfirm(null)}>
           <div className="window98 dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" onClick={(e) => e.stopPropagation()}>
@@ -595,6 +617,6 @@ export function ChallengeWorkspace(p: Props) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

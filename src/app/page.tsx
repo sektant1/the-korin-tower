@@ -4,6 +4,7 @@ import { GIFS } from "@/lib/gifs";
 import { getFanart } from "@/lib/fanart";
 import { Marquee, RainbowHr, Window } from "@/components/Retro";
 import { ContinueCard, FloorBackdrop, TowerMap } from "@/components/Tower";
+import { NEED_PER_FLOOR } from "@/lib/tower";
 import { TrackProgress } from "@/components/TrackProgress";
 import { latestChallenges } from "@/lib/challenges";
 import { getDaily } from "@/lib/daily";
@@ -47,7 +48,7 @@ export default async function Home() {
 
       <div className="two-col home-grid">
         <Window title="Mapa da Torre">
-          <p className="dim small">Cada andar é uma dificuldade. Dois desafios resolvidos abrem o andar de cima.</p>
+          <p className="dim small">Cada andar é uma dificuldade. {NEED_PER_FLOOR} desafios resolvidos abrem o andar de cima.</p>
           <TowerMap />
         </Window>
 

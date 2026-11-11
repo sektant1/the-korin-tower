@@ -6,7 +6,7 @@ FROM ghcr.io/engineer-man/piston
 
 # Lista separada por vírgula. Para trocar sem editar o compose:
 #   PISTON_PACKAGES="gcc,rust,go" docker compose build piston
-ARG PISTON_PACKAGES="gcc,rust,go,zig,nasm,pascal"
+ARG PISTON_PACKAGES="gcc,rust"
 ENV PISTON_PACKAGES=${PISTON_PACKAGES}
 
 COPY install.cjs /piston-install.cjs

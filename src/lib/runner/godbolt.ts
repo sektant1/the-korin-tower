@@ -21,12 +21,6 @@ export const CE_COMPILERS = {
   c: "cg132", // gcc 13.2
   cpp: "g132", // g++ 13.2
   rust: "r1820", // rustc 1.82.0
-  go: "gl1238", // go 1.23.8
-  zig: "z0141", // zig 0.14.1
-  nasm: "nasm301", // nasm 3.01
-  d: "ldc190", // LDC
-  pascal: "fpc322", // fpc 3.2.2
-  fortran: "gfortran143", // gfortran 14.3
 } as const;
 
 type CeLanguage = keyof typeof CE_COMPILERS;

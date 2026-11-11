@@ -4,7 +4,7 @@
 // segurança: a imagem `piston/Dockerfile` já traz os runtimes embutidos.
 const BASE = process.env.PISTON_URL ?? "http://localhost:2000";
 // gcc cobre C, C++, D e Fortran.
-const WANTED = (process.env.PISTON_PACKAGES ?? "gcc,rust,go,zig,nasm,pascal").split(",");
+const WANTED = (process.env.PISTON_PACKAGES ?? "gcc,rust").split(",");
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

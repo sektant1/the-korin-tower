@@ -1,0 +1,4 @@
+3
+push 1
+jnz 99
+halt

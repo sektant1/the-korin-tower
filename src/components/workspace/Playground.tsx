@@ -16,6 +16,7 @@ import { LANGUAGES, type LanguageId } from "@/lib/languages";
 import type { RunResponse } from "@/lib/run-api";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
+import { SplitColumns } from "./SplitColumns";
 
 // Rascunhos ficam no navegador, como nos desafios sem login.
 const DRAFT = "playground";
@@ -42,54 +43,6 @@ int main() {
     println!("ola, korin!");
 }
 `,
-  go: `package main
-
-import "fmt"
-
-func main() {
-    fmt.Println("ola, korin!")
-}
-`,
-  zig: `const std = @import("std");
-
-pub fn main() !void {
-    const out = std.io.getStdOut().writer();
-    try out.print("ola, korin!\\n", .{});
-}
-`,
-  nasm: `; x86-64 Linux: write no stdout e exit
-section .data
-msg: db "ola, korin!", 10
-len equ $ - msg
-
-section .text
-global _start
-_start:
-    mov rax, 1          ; write
-    mov rdi, 1          ; stdout
-    lea rsi, [msg]
-    mov rdx, len
-    syscall
-    mov rax, 60         ; exit
-    xor rdi, rdi
-    syscall
-`,
-  d: `import std.stdio;
-
-void main() {
-    writeln("ola, korin!");
-}
-`,
-  pascal: `program Ola;
-begin
-    writeln('ola, korin!');
-end.
-`,
-  fortran: `program ola
-    implicit none
-    print '(a)', 'ola, korin!'
-end program ola
-`,
 };
 
 export function Playground() {
@@ -105,6 +58,7 @@ export function Playground() {
   const outRef = useRef<HTMLDivElement>(null);
   const busy = output.status === "running";
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const skipChange = useRef(false);
 
   const flash = useCallback((msg: string) => {
     setMessage(msg);
@@ -116,7 +70,7 @@ export function Playground() {
   useEffect(() => {
     const draft = loadDraft(DRAFT, lang);
     if (draft != null && draft !== initialCode) {
-      editor.current?.setValue(draft);
+      setEditorText(draft);
       flash("rascunho restaurado");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,9 +86,20 @@ export function Playground() {
   );
 
   const onChange = useCallback(() => {
+    if (skipChange.current) {
+      skipChange.current = false;
+      return;
+    }
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(false), 800);
   }, [save]);
+
+  const setEditorText = useCallback((code: string) => {
+    clearTimeout(saveTimer.current);
+    skipChange.current = true;
+    editor.current?.setValue(code);
+    skipChange.current = false;
+  }, []);
 
   const execute = useCallback(async () => {
     if (busy) return;
@@ -188,15 +153,17 @@ export function Playground() {
   );
 
   const switchLang = (next: LanguageId) => {
+    if (next === lang) return;
+    clearTimeout(saveTimer.current);
     save(false);
     setLang(next);
     const draft = loadDraft(DRAFT, next);
-    editor.current?.setValue(draft ?? TEMPLATES[next] ?? "");
+    setEditorText(draft ?? TEMPLATES[next] ?? "");
   };
 
   const reset = () => {
     clearDraft(DRAFT, lang);
-    editor.current?.setValue(TEMPLATES[lang] ?? "");
+    setEditorText(TEMPLATES[lang] ?? "");
     flash("template restaurado");
   };
 
@@ -210,8 +177,7 @@ export function Playground() {
     { cmd: ":q", label: "Sair", run: commands.quit },
   ];
 
-  return (
-    <div className="workspace" id="editor">
+  const editorPane = (
       <div className="ws-editor">
         <div className="toolbar98" role="toolbar" aria-label="Ações do compilador">
           <label>
@@ -257,7 +223,8 @@ export function Playground() {
           ))}
         </div>
       </div>
-
+  );
+  const ioPane = (
       <div className="ws-io">
         <label className="stdin-label" htmlFor="pg-stdin">
           Entrada (stdin) <span className="stdin-hint">Ctrl+Enter executa · Esc volta ao editor</span>
@@ -284,6 +251,6 @@ export function Playground() {
           <OutputPanel state={output} checker="exact" onJump={jump} idle=":run compila e executa com a entrada acima" />
         </div>
       </div>
-    </div>
   );
+  return <SplitColumns storageKey="compilador" initial={58} min={30} max={78} className="workspace" id="editor" left={editorPane} right={ioPane} />;
 }

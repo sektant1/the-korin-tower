@@ -1836,10 +1836,44 @@ body:has(.challenge-page) .content {
 }
 
 .challenge-page {
-  /* viewport menos cabeçalho compacto + molduras */
+  /* viewport menos cabeçalho compacto + molduras; --split vem do divisor arrastável */
   height: max(560px, calc(100vh - 80px));
-  grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr);
-  gap: 8px;
+  grid-template-columns: minmax(280px, var(--split, 40%)) 10px minmax(0, 1fr);
+  gap: 0;
+}
+.split-handle {
+  position: relative;
+  align-self: stretch;
+  cursor: col-resize;
+  touch-action: none;
+  border-radius: 2px;
+}
+.split-handle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  background: repeating-linear-gradient(#8a76c4 0 2px, transparent 2px 4px);
+  opacity: 0.7;
+}
+.split-handle:hover,
+.split-handle:focus-visible {
+  background: #ffd21f33;
+}
+.split-handle:hover::before,
+.split-handle:focus-visible::before {
+  opacity: 1;
+}
+body.is-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+body.is-resizing iframe,
+body.is-resizing .cm-editor {
+  pointer-events: none;
 }
 .challenge-page > * {
   min-height: 0;
@@ -1853,8 +1887,8 @@ body:has(.challenge-page) .content {
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
-  gap: 8px;
+  grid-template-columns: minmax(0, var(--split, 58%)) 10px minmax(300px, 1fr);
+  gap: 0;
   height: 100%;
   min-height: 0;
 }
@@ -1978,6 +2012,10 @@ body:has(.challenge-page) .content {
   .workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 8px;
+  }
+  .workspace > .split-handle {
+    display: none;
   }
 }
 /* Tablet: enunciado em cima; editor + saída ocupam uma tela inteira. */
@@ -1985,6 +2023,10 @@ body:has(.challenge-page) .content {
   .challenge-page {
     height: auto;
     grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+  .challenge-page > .split-handle {
+    display: none;
   }
   .statement {
     height: auto;

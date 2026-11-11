@@ -8,6 +8,7 @@ import { ChallengeGate, FloorStrip, TrackBar } from "@/components/Tower";
 import { getTrack } from "@/lib/tracks";
 import { floorOf } from "@/lib/tower";
 import { ChallengeWorkspace } from "@/components/workspace/ChallengeWorkspace";
+import { SplitColumns } from "@/components/workspace/SplitColumns";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getChallenge } from "@/lib/challenges";
 import { getDaily } from "@/lib/daily";
@@ -71,8 +72,7 @@ export default async function ChallengePage({ params, searchParams }: Params) {
   const publicTests = c.tests.filter((t) => !t.hidden);
   const hiddenCount = c.tests.length - publicTests.length;
 
-  return (
-    <div className="challenge-page">
+  const statementPane = (
       <article className="statement window98" aria-labelledby="ch-title">
         <div className="title-bar">
           <span>enunciado.txt</span>
@@ -175,7 +175,10 @@ export default async function ChallengePage({ params, searchParams }: Params) {
           </details>
         </div>
       </article>
+  );
 
+  return (
+    <SplitColumns storageKey="desafio" initial={40} min={22} max={65} className="challenge-page" left={statementPane} right={
       <ChallengeGate slug={c.slug}>
       <ChallengeWorkspace
         slug={c.slug}
@@ -190,6 +193,6 @@ export default async function ChallengePage({ params, searchParams }: Params) {
         saved={saved && { drafts: saved.drafts, hintsRevealed: saved.hintsRevealed }}
       />
       </ChallengeGate>
-    </div>
+    } />
   );
 }

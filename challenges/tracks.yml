@@ -5,11 +5,15 @@
 # Toda trilha precisa de pelo menos um desafio stdio.
 - id: primeiros-passos-em-c
   title: Primeiros passos em C
-  description: Do FizzBuzz a uma tabela hash feita na mão. Loops, strings, bits e ponteiros, um andar por vez.
+  description: Do FizzBuzz a uma tabela hash feita na mão. Loops, strings, bases, bits e ponteiros, um andar por vez.
   steps:
     - fizzbuzz
+    - cifra-de-cesar
     - wc
+    - conversor-de-bases
+    - crivo-de-eratostenes
     - truques-com-bits
+    - rle
     - numeros-gigantes
     - tabela-hash
 
@@ -17,11 +21,38 @@
   title: Estruturas de dados na unha
   description: Escreva as estruturas que você sempre pegou prontas, em C, C++ e Rust, e feche com Dijkstra.
   steps:
+    - busca-binaria
     - linked-list-generica
-    - vec-simplificado
+    - fila-de-prioridade
+    - union-find
     - tabela-hash
     - lru-cache
+    - vec-simplificado
     - dijkstra
+
+- id: algoritmos-classicos
+  title: Algoritmos clássicos
+  description: Os que caem em toda prova e em toda entrevista, do merge sort ao Huffman, com um Sudoku de sobremesa.
+  steps:
+    - busca-binaria
+    - contando-inversoes
+    - fila-de-prioridade
+    - kmp
+    - huffman
+    - sudoku
+
+- id: por-dentro-da-maquina
+  title: Por dentro da máquina
+  description: Interpretadores, memória e cache. O que acontece embaixo do seu código, escrito por você.
+  steps:
+    - rle
+    - calculadora-rpn
+    - maquina-de-pilha
+    - regex-simples
+    - alocador-first-fit
+    - simulador-de-cache
+    - mark-and-sweep
+    - interpretador-brainfuck
 
 - id: escreva-seu-malloc
   title: Escreva seu próprio malloc

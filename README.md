@@ -42,7 +42,7 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 
 Regras em `src/lib/tower.ts` (puras, com testes), usadas pelo servidor (`/api/run`, perfil, CLI) e pelo navegador (`src/components/Tower.tsx`):
 
-- Cada **andar é uma dificuldade** (1 a 5), com um lugar de Dragon Ball por andar (`FLOOR_NAMES`, imagens em `public/andares`). O andar 1 está sempre aberto; o andar N+1 abre quando o jogador resolve 2 desafios com testes do andar N (ou todos, se há menos que 2). A torre tem 8 andares no mapa: os sem desafios ficam "em obras" e não abrem.
+- Cada **andar é uma dificuldade** (1 a 5), com um lugar de Dragon Ball por andar (`FLOOR_NAMES`, imagens em `public/andares`). O andar 1 está sempre aberto; o andar N+1 abre quando o jogador resolve 5 desafios com testes do andar N (ou todos, se há menos que 5). A torre tem 8 andares no mapa: os sem desafios ficam "em obras" e não abrem.
 - **Detonados** (`challenges/tracks.yml`) são escadas: o próximo passo de um detonado abre mesmo com o andar trancado. O desafio do dia também abre sempre.
 - Só desafios `stdio` contam para subir; shader e canvas seguem o andar mas são passos livres.
 - **Esferas do Dragão**: uma por detonado zerado. Medalhas "Meio da Torre" e "Topo da Torre" ao abrir os andares 3 e 5.

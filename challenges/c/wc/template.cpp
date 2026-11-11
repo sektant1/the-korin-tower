@@ -1,12 +1,13 @@
-#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
+#include <string>
+#include <vector>
 
 int main() {
-    long linhas = 0, palavras = 0, bytes = 0;
-
-    // TODO: leia a entrada byte a byte (std::cin.get(c) ou std::istreambuf_iterator)
-    //       e atualize os três contadores. Cuidado: std::cin >> c pula espaços!
-
-    std::cout << linhas << ' ' << palavras << ' ' << bytes << '\n';
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    /* seu código aqui */
     return 0;
 }

@@ -13,18 +13,6 @@
   name: Rust
   icon: aura
   description: O borrow checker é seu amigo. Às vezes.
-- id: zig
-  name: Zig
-  icon: staff
-  description: Comptime, alocadores explícitos, zero mágica.
-- id: go
-  name: Go
-  icon: cloud
-  description: Goroutines, channels e simplicidade.
-- id: asm
-  name: Assembly x86-64
-  icon: coin
-  description: Registradores, syscalls e nada entre você e a CPU.
 - id: grafica-3d
   name: Computação Gráfica 3D
   icon: radar

@@ -1,5 +1,5 @@
 ---
-title: Busca Binária
+title: "Busca Binária"
 difficulty: 2
 tags: [busca, vetores, logaritmo]
 languages: [c, cpp]

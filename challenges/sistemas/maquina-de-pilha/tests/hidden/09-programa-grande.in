@@ -1,0 +1,8002 @@
+8001
+push 766
+push 27
+sub
+print
+push -942
+push 40
+mod
+print
+push -224
+push 21
+mul
+print
+push -622
+push 33
+mod
+print
+push -951
+push 31
+sub
+print
+push -681
+push 37
+mod
+print
+push -755
+push 2
+sub
+print
+push 35
+push 10
+sub
+print
+push -311
+push 8
+sub
+print
+push 470
+push 16
+swap
+print
+push 368
+push 41
+sub
+print
+push 860
+push 29
+add
+print
+push 869
+push 18
+mul
+print
+push -992
+push 21
+sub
+print
+push 58
+push 22
+mul
+print
+push 243
+push 26
+mod
+print
+push -343
+push 48
+mul
+print
+push 610
+push 11
+mul
+print
+push 231
+push 36
+mod
+print
+push -452
+push 29
+add
+print
+push 657
+push 47
+mod
+print
+push -475
+push 11
+swap
+print
+push -660
+push 19
+mod
+print
+push -432
+push 6
+add
+print
+push 489
+push 25
+mod
+print
+push 363
+push 30
+mod
+print
+push -532
+push 32
+sub
+print
+push -786
+push 40
+mod
+print
+push -151
+push 35
+mod
+print
+push -547
+push 16
+mul
+print
+push 462
+push 14
+swap
+print
+push -217
+push 6
+mul
+print
+push 824
+push 4
+swap
+print
+push -558
+push 7
+mod
+print
+push -983
+push 48
+add
+print
+push 510
+push 36
+mod
+print
+push 222
+push 43
+swap
+print
+push -581
+push 17
+mod
+print
+push -4
+push 14
+mod
+print
+push -280
+push 16
+sub
+print
+push 643
+push 28
+swap
+print
+push -985
+push 33
+mod
+print
+push 305
+push 8
+mod
+print
+push 640
+push 40
+sub
+print
+push -46
+push 24
+mul
+print
+push -775
+push 35
+swap
+print
+push 420
+push 10
+add
+print
+push -948
+push 12
+add
+print
+push 55
+push 30
+sub
+print
+push -575
+push 15
+mul
+print
+push -243
+push 10
+mul
+print
+push -792
+push 14
+mod
+print
+push -64
+push 40
+add
+print
+push 849
+push 19
+mul
+print
+push -495
+push 45
+mul
+print
+push -804
+push 43
+sub
+print
+push 380
+push 44
+swap
+print
+push -728
+push 9
+add
+print
+push -685
+push 5
+swap
+print
+push -236
+push 7
+add
+print
+push 534
+push 29
+sub
+print
+push -441
+push 27
+sub
+print
+push 423
+push 36
+sub
+print
+push -609
+push 35
+swap
+print
+push -94
+push 26
+sub
+print
+push 750
+push 31
+add
+print
+push 790
+push 8
+sub
+print
+push 849
+push 17
+swap
+print
+push -181
+push 46
+add
+print
+push 592
+push 20
+mod
+print
+push 251
+push 28
+sub
+print
+push 771
+push 49
+mul
+print
+push 557
+push 9
+add
+print
+push 614
+push 42
+mod
+print
+push -916
+push 22
+mod
+print
+push 143
+push 26
+sub
+print
+push 788
+push 9
+sub
+print
+push -338
+push 28
+sub
+print
+push 352
+push 15
+mul
+print
+push 11
+push 7
+mul
+print
+push 60
+push 44
+sub
+print
+push 580
+push 14
+mul
+print
+push 401
+push 20
+add
+print
+push 508
+push 12
+mod
+print
+push 703
+push 6
+mod
+print
+push -125
+push 47
+sub
+print
+push 465
+push 21
+add
+print
+push 909
+push 6
+sub
+print
+push 337
+push 7
+sub
+print
+push -537
+push 9
+swap
+print
+push 795
+push 1
+mul
+print
+push 953
+push 37
+swap
+print
+push 15
+push 2
+mod
+print
+push -185
+push 10
+swap
+print
+push 822
+push 17
+swap
+print
+push -883
+push 37
+mod
+print
+push 384
+push 33
+mod
+print
+push 808
+push 6
+add
+print
+push 739
+push 10
+mod
+print
+push -590
+push 20
+mul
+print
+push -451
+push 14
+mod
+print
+push -111
+push 20
+swap
+print
+push -982
+push 16
+mul
+print
+push -108
+push 42
+add
+print
+push 185
+push 31
+mod
+print
+push -954
+push 22
+add
+print
+push 344
+push 17
+mul
+print
+push -513
+push 24
+mod
+print
+push -83
+push 4
+mul
+print
+push -6
+push 24
+mod
+print
+push -302
+push 9
+sub
+print
+push 827
+push 43
+add
+print
+push 844
+push 41
+mul
+print
+push 158
+push 20
+mod
+print
+push -952
+push 2
+mul
+print
+push 207
+push 5
+mod
+print
+push -758
+push 12
+mul
+print
+push 901
+push 34
+sub
+print
+push 165
+push 44
+sub
+print
+push -814
+push 8
+sub
+print
+push -444
+push 34
+mul
+print
+push 310
+push 1
+add
+print
+push 78
+push 31
+mod
+print
+push -787
+push 46
+swap
+print
+push -924
+push 16
+sub
+print
+push -41
+push 15
+swap
+print
+push -66
+push 18
+mod
+print
+push -384
+push 42
+add
+print
+push 75
+push 13
+swap
+print
+push 698
+push 7
+sub
+print
+push -61
+push 13
+sub
+print
+push 463
+push 23
+sub
+print
+push -252
+push 22
+add
+print
+push 200
+push 17
+sub
+print
+push -624
+push 29
+mod
+print
+push 509
+push 12
+mul
+print
+push 829
+push 38
+mul
+print
+push -804
+push 15
+swap
+print
+push -972
+push 29
+add
+print
+push -77
+push 8
+add
+print
+push 237
+push 23
+mod
+print
+push -283
+push 36
+add
+print
+push -57
+push 15
+mul
+print
+push 715
+push 23
+mul
+print
+push 294
+push 28
+sub
+print
+push -72
+push 8
+swap
+print
+push 821
+push 9
+mul
+print
+push -45
+push 31
+mod
+print
+push 771
+push 21
+mod
+print
+push -70
+push 5
+mul
+print
+push 408
+push 6
+sub
+print
+push 893
+push 44
+mod
+print
+push -163
+push 42
+swap
+print
+push 605
+push 17
+swap
+print
+push 655
+push 4
+mul
+print
+push 221
+push 7
+sub
+print
+push -250
+push 32
+sub
+print
+push 578
+push 39
+mod
+print
+push -436
+push 27
+mod
+print
+push -760
+push 39
+add
+print
+push 353
+push 45
+mul
+print
+push -939
+push 20
+swap
+print
+push -182
+push 27
+mul
+print
+push 451
+push 42
+mul
+print
+push -253
+push 34
+mod
+print
+push 680
+push 13
+swap
+print
+push -93
+push 44
+add
+print
+push 694
+push 50
+add
+print
+push -190
+push 43
+add
+print
+push -828
+push 46
+swap
+print
+push -922
+push 32
+sub
+print
+push 802
+push 23
+sub
+print
+push -649
+push 28
+add
+print
+push -491
+push 3
+sub
+print
+push -289
+push 27
+mul
+print
+push 825
+push 34
+mul
+print
+push 416
+push 33
+add
+print
+push -428
+push 31
+sub
+print
+push 28
+push 27
+add
+print
+push 434
+push 7
+sub
+print
+push 249
+push 23
+mul
+print
+push 865
+push 18
+mul
+print
+push 298
+push 8
+add
+print
+push -264
+push 12
+swap
+print
+push -275
+push 27
+sub
+print
+push -312
+push 49
+add
+print
+push -795
+push 49
+mod
+print
+push 999
+push 16
+sub
+print
+push 400
+push 30
+mul
+print
+push -830
+push 31
+add
+print
+push 851
+push 10
+swap
+print
+push 895
+push 5
+mod
+print
+push -647
+push 44
+add
+print
+push 690
+push 37
+mod
+print
+push -892
+push 36
+swap
+print
+push 811
+push 26
+add
+print
+push 781
+push 42
+add
+print
+push 979
+push 29
+swap
+print
+push 461
+push 22
+mul
+print
+push -749
+push 17
+swap
+print
+push -680
+push 19
+mod
+print
+push -314
+push 32
+mod
+print
+push 546
+push 3
+mod
+print
+push -259
+push 40
+swap
+print
+push 682
+push 44
+add
+print
+push 196
+push 7
+add
+print
+push -1000
+push 1
+add
+print
+push -446
+push 8
+mul
+print
+push 765
+push 15
+add
+print
+push -149
+push 30
+sub
+print
+push -518
+push 47
+add
+print
+push -104
+push 45
+mod
+print
+push -304
+push 28
+add
+print
+push 118
+push 45
+sub
+print
+push -237
+push 2
+mul
+print
+push -541
+push 9
+swap
+print
+push 121
+push 22
+mod
+print
+push 663
+push 34
+mul
+print
+push 95
+push 15
+sub
+print
+push -913
+push 19
+swap
+print
+push 495
+push 7
+add
+print
+push -968
+push 10
+mul
+print
+push -473
+push 11
+mod
+print
+push -91
+push 42
+mul
+print
+push 531
+push 4
+sub
+print
+push 934
+push 32
+add
+print
+push 620
+push 47
+sub
+print
+push -375
+push 41
+mod
+print
+push -481
+push 46
+add
+print
+push -242
+push 50
+sub
+print
+push -298
+push 43
+swap
+print
+push 619
+push 30
+add
+print
+push -445
+push 30
+mul
+print
+push 375
+push 34
+mod
+print
+push -25
+push 2
+mul
+print
+push -785
+push 50
+mod
+print
+push 697
+push 36
+add
+print
+push -772
+push 2
+sub
+print
+push 669
+push 38
+swap
+print
+push -861
+push 23
+swap
+print
+push -322
+push 3
+add
+print
+push -900
+push 11
+add
+print
+push -627
+push 31
+mul
+print
+push -812
+push 15
+mul
+print
+push 830
+push 43
+sub
+print
+push -348
+push 23
+mod
+print
+push 602
+push 29
+swap
+print
+push -778
+push 19
+add
+print
+push -936
+push 21
+mul
+print
+push 349
+push 11
+swap
+print
+push 483
+push 37
+mul
+print
+push -372
+push 48
+add
+print
+push 19
+push 26
+swap
+print
+push -351
+push 45
+sub
+print
+push 495
+push 14
+mul
+print
+push 276
+push 42
+mul
+print
+push 150
+push 37
+mod
+print
+push 96
+push 5
+mul
+print
+push 218
+push 23
+mod
+print
+push -186
+push 37
+mod
+print
+push -200
+push 43
+mul
+print
+push 414
+push 40
+mul
+print
+push 290
+push 5
+add
+print
+push 266
+push 8
+swap
+print
+push 622
+push 15
+swap
+print
+push -857
+push 26
+add
+print
+push -914
+push 33
+add
+print
+push -22
+push 1
+sub
+print
+push -950
+push 50
+sub
+print
+push 116
+push 1
+sub
+print
+push -376
+push 20
+mod
+print
+push -979
+push 25
+sub
+print
+push -958
+push 27
+mul
+print
+push 691
+push 28
+mod
+print
+push 821
+push 17
+mul
+print
+push 772
+push 33
+mul
+print
+push 5
+push 39
+swap
+print
+push -497
+push 1
+sub
+print
+push 205
+push 24
+add
+print
+push -164
+push 30
+sub
+print
+push 277
+push 10
+mod
+print
+push -921
+push 46
+mod
+print
+push 989
+push 37
+sub
+print
+push 130
+push 46
+add
+print
+push -709
+push 10
+mul
+print
+push -575
+push 5
+swap
+print
+push -594
+push 49
+swap
+print
+push 902
+push 6
+mul
+print
+push 458
+push 37
+mul
+print
+push -378
+push 38
+swap
+print
+push 600
+push 16
+sub
+print
+push -986
+push 6
+sub
+print
+push 225
+push 12
+add
+print
+push 559
+push 48
+mod
+print
+push -843
+push 24
+add
+print
+push 975
+push 8
+mul
+print
+push -964
+push 48
+add
+print
+push -623
+push 27
+mul
+print
+push -813
+push 5
+add
+print
+push 259
+push 40
+mul
+print
+push 243
+push 2
+add
+print
+push 911
+push 15
+mod
+print
+push 59
+push 8
+swap
+print
+push 251
+push 2
+swap
+print
+push -151
+push 11
+swap
+print
+push -191
+push 38
+mul
+print
+push -429
+push 39
+sub
+print
+push -243
+push 18
+sub
+print
+push -405
+push 43
+mul
+print
+push 927
+push 19
+sub
+print
+push -102
+push 15
+mul
+print
+push -274
+push 29
+mul
+print
+push -563
+push 40
+mod
+print
+push 677
+push 25
+add
+print
+push 112
+push 35
+swap
+print
+push -62
+push 5
+swap
+print
+push 611
+push 30
+swap
+print
+push 28
+push 25
+swap
+print
+push 253
+push 31
+mod
+print
+push -729
+push 41
+sub
+print
+push 415
+push 48
+add
+print
+push 267
+push 12
+swap
+print
+push 156
+push 33
+sub
+print
+push 809
+push 9
+add
+print
+push -972
+push 11
+add
+print
+push 205
+push 26
+sub
+print
+push -234
+push 31
+mul
+print
+push 117
+push 16
+add
+print
+push -578
+push 36
+add
+print
+push -157
+push 31
+add
+print
+push 99
+push 20
+mul
+print
+push -679
+push 27
+swap
+print
+push -534
+push 50
+add
+print
+push -693
+push 16
+swap
+print
+push -321
+push 47
+sub
+print
+push -351
+push 13
+sub
+print
+push -643
+push 47
+mod
+print
+push 213
+push 3
+swap
+print
+push -491
+push 23
+mul
+print
+push 695
+push 46
+mul
+print
+push -561
+push 44
+mul
+print
+push -990
+push 3
+mul
+print
+push 861
+push 19
+mul
+print
+push -36
+push 20
+swap
+print
+push 705
+push 42
+sub
+print
+push 345
+push 34
+mul
+print
+push -202
+push 48
+swap
+print
+push -809
+push 15
+swap
+print
+push 534
+push 22
+mul
+print
+push -88
+push 23
+mod
+print
+push 148
+push 31
+mod
+print
+push 254
+push 4
+mod
+print
+push 951
+push 34
+add
+print
+push -787
+push 33
+mul
+print
+push 202
+push 24
+swap
+print
+push 603
+push 10
+mul
+print
+push 234
+push 29
+swap
+print
+push 610
+push 21
+add
+print
+push 88
+push 11
+mul
+print
+push -325
+push 9
+swap
+print
+push -696
+push 10
+sub
+print
+push 97
+push 1
+add
+print
+push -449
+push 28
+add
+print
+push 338
+push 17
+add
+print
+push 568
+push 44
+mul
+print
+push 330
+push 17
+mul
+print
+push 281
+push 29
+swap
+print
+push -814
+push 33
+add
+print
+push 469
+push 26
+mod
+print
+push 781
+push 16
+mod
+print
+push 95
+push 43
+mul
+print
+push 303
+push 26
+swap
+print
+push -248
+push 2
+add
+print
+push -790
+push 39
+mul
+print
+push -842
+push 5
+mod
+print
+push -665
+push 47
+mod
+print
+push -606
+push 7
+mul
+print
+push -486
+push 40
+swap
+print
+push -846
+push 13
+mul
+print
+push 885
+push 22
+mod
+print
+push -241
+push 50
+mul
+print
+push 131
+push 43
+sub
+print
+push -958
+push 25
+mul
+print
+push 202
+push 3
+add
+print
+push 45
+push 31
+swap
+print
+push 933
+push 40
+mod
+print
+push -667
+push 45
+add
+print
+push -917
+push 44
+mod
+print
+push -117
+push 16
+sub
+print
+push -219
+push 28
+swap
+print
+push -175
+push 46
+mod
+print
+push 272
+push 1
+swap
+print
+push 851
+push 5
+swap
+print
+push -754
+push 9
+sub
+print
+push -216
+push 4
+mod
+print
+push -647
+push 20
+mod
+print
+push -28
+push 49
+swap
+print
+push -719
+push 16
+mul
+print
+push -955
+push 10
+sub
+print
+push -117
+push 35
+mod
+print
+push 878
+push 41
+add
+print
+push -216
+push 22
+sub
+print
+push -747
+push 39
+swap
+print
+push -881
+push 29
+sub
+print
+push -682
+push 35
+mod
+print
+push 107
+push 35
+mod
+print
+push 544
+push 15
+add
+print
+push 468
+push 7
+mod
+print
+push 190
+push 23
+add
+print
+push 698
+push 6
+mul
+print
+push 561
+push 47
+swap
+print
+push 366
+push 2
+mod
+print
+push -634
+push 45
+mul
+print
+push 409
+push 31
+sub
+print
+push 283
+push 6
+add
+print
+push 323
+push 10
+mul
+print
+push 523
+push 7
+sub
+print
+push 232
+push 9
+swap
+print
+push -885
+push 30
+sub
+print
+push 744
+push 20
+mod
+print
+push 458
+push 26
+sub
+print
+push -224
+push 34
+mod
+print
+push -739
+push 32
+mul
+print
+push 805
+push 34
+sub
+print
+push 896
+push 25
+swap
+print
+push -113
+push 26
+add
+print
+push -965
+push 38
+mul
+print
+push -95
+push 42
+mul
+print
+push -113
+push 20
+add
+print
+push -465
+push 27
+mod
+print
+push -642
+push 25
+swap
+print
+push 806
+push 15
+mod
+print
+push -628
+push 27
+mod
+print
+push -943
+push 14
+add
+print
+push 699
+push 8
+swap
+print
+push 414
+push 44
+mul
+print
+push -602
+push 31
+add
+print
+push 382
+push 7
+swap
+print
+push 532
+push 39
+swap
+print
+push -96
+push 2
+sub
+print
+push -808
+push 43
+sub
+print
+push 770
+push 14
+sub
+print
+push -683
+push 33
+add
+print
+push -298
+push 12
+swap
+print
+push -260
+push 37
+swap
+print
+push -21
+push 44
+mod
+print
+push 651
+push 14
+mod
+print
+push 86
+push 9
+sub
+print
+push -478
+push 44
+mod
+print
+push 984
+push 7
+sub
+print
+push -61
+push 13
+mod
+print
+push 165
+push 40
+mod
+print
+push 456
+push 10
+add
+print
+push -738
+push 28
+mul
+print
+push -643
+push 11
+sub
+print
+push 484
+push 7
+add
+print
+push -344
+push 37
+sub
+print
+push -393
+push 6
+mul
+print
+push -287
+push 11
+mod
+print
+push -976
+push 1
+sub
+print
+push -519
+push 29
+mod
+print
+push 48
+push 45
+swap
+print
+push 84
+push 29
+mod
+print
+push 986
+push 22
+add
+print
+push 686
+push 3
+add
+print
+push 157
+push 32
+mul
+print
+push -38
+push 11
+add
+print
+push 672
+push 11
+add
+print
+push 857
+push 34
+mul
+print
+push -24
+push 10
+mul
+print
+push 759
+push 3
+add
+print
+push -353
+push 12
+swap
+print
+push -819
+push 34
+mod
+print
+push -875
+push 26
+sub
+print
+push 900
+push 29
+sub
+print
+push 819
+push 10
+sub
+print
+push 862
+push 22
+mod
+print
+push -769
+push 37
+sub
+print
+push 726
+push 44
+add
+print
+push -120
+push 50
+sub
+print
+push -85
+push 40
+mod
+print
+push 847
+push 30
+mod
+print
+push -187
+push 9
+mul
+print
+push -237
+push 1
+mul
+print
+push 557
+push 49
+add
+print
+push 689
+push 37
+swap
+print
+push -163
+push 13
+swap
+print
+push -301
+push 50
+sub
+print
+push -766
+push 19
+sub
+print
+push 796
+push 32
+swap
+print
+push 561
+push 45
+sub
+print
+push 146
+push 19
+sub
+print
+push 731
+push 41
+swap
+print
+push 382
+push 23
+mul
+print
+push -786
+push 17
+swap
+print
+push -593
+push 48
+mod
+print
+push 433
+push 8
+mod
+print
+push -980
+push 2
+mul
+print
+push -578
+push 39
+mul
+print
+push -986
+push 9
+mod
+print
+push -90
+push 2
+add
+print
+push 339
+push 42
+mul
+print
+push 965
+push 13
+sub
+print
+push 640
+push 12
+mod
+print
+push -60
+push 20
+mod
+print
+push -463
+push 38
+mod
+print
+push 35
+push 12
+mul
+print
+push 541
+push 17
+mod
+print
+push -277
+push 1
+mod
+print
+push 780
+push 11
+sub
+print
+push -565
+push 42
+add
+print
+push 770
+push 5
+swap
+print
+push -243
+push 23
+swap
+print
+push -448
+push 27
+sub
+print
+push -178
+push 19
+add
+print
+push 392
+push 11
+mod
+print
+push 728
+push 10
+sub
+print
+push 918
+push 48
+mod
+print
+push 525
+push 21
+mod
+print
+push -768
+push 37
+sub
+print
+push 497
+push 13
+add
+print
+push -323
+push 23
+mul
+print
+push -132
+push 30
+add
+print
+push 277
+push 13
+mod
+print
+push 504
+push 24
+swap
+print
+push 893
+push 26
+swap
+print
+push 622
+push 37
+mod
+print
+push -117
+push 43
+sub
+print
+push 589
+push 22
+sub
+print
+push 63
+push 27
+mod
+print
+push -142
+push 2
+sub
+print
+push -404
+push 24
+add
+print
+push 932
+push 17
+mod
+print
+push -981
+push 47
+mul
+print
+push 189
+push 36
+sub
+print
+push 401
+push 15
+mod
+print
+push 720
+push 22
+mod
+print
+push 523
+push 39
+swap
+print
+push -257
+push 1
+mul
+print
+push 516
+push 49
+mul
+print
+push 200
+push 29
+mul
+print
+push 57
+push 2
+add
+print
+push -547
+push 25
+mul
+print
+push -830
+push 4
+add
+print
+push 679
+push 21
+mul
+print
+push -883
+push 18
+swap
+print
+push -556
+push 4
+swap
+print
+push -36
+push 35
+add
+print
+push 678
+push 28
+mod
+print
+push 805
+push 33
+mod
+print
+push -421
+push 6
+mul
+print
+push 782
+push 41
+add
+print
+push 698
+push 41
+swap
+print
+push -226
+push 12
+mod
+print
+push 906
+push 40
+add
+print
+push 405
+push 35
+add
+print
+push -394
+push 8
+mod
+print
+push 504
+push 4
+mul
+print
+push 81
+push 50
+mul
+print
+push 899
+push 19
+mod
+print
+push -634
+push 10
+mod
+print
+push -716
+push 40
+sub
+print
+push -135
+push 12
+mod
+print
+push 959
+push 24
+sub
+print
+push -261
+push 29
+sub
+print
+push -130
+push 4
+sub
+print
+push 786
+push 24
+mod
+print
+push -209
+push 40
+swap
+print
+push 125
+push 9
+mod
+print
+push -563
+push 30
+swap
+print
+push -496
+push 12
+mul
+print
+push -188
+push 25
+add
+print
+push 405
+push 11
+mul
+print
+push 730
+push 31
+add
+print
+push -672
+push 20
+mul
+print
+push 971
+push 15
+swap
+print
+push -86
+push 28
+sub
+print
+push 946
+push 33
+swap
+print
+push 916
+push 41
+mul
+print
+push -632
+push 7
+sub
+print
+push -582
+push 48
+mul
+print
+push -280
+push 1
+mul
+print
+push -92
+push 21
+sub
+print
+push -898
+push 49
+mod
+print
+push -628
+push 41
+swap
+print
+push 651
+push 25
+mod
+print
+push -337
+push 22
+sub
+print
+push -602
+push 16
+sub
+print
+push -288
+push 3
+add
+print
+push 197
+push 39
+add
+print
+push -697
+push 17
+sub
+print
+push -882
+push 43
+sub
+print
+push 518
+push 27
+mul
+print
+push 983
+push 26
+mul
+print
+push -22
+push 18
+mod
+print
+push 795
+push 24
+sub
+print
+push -70
+push 35
+swap
+print
+push -484
+push 42
+swap
+print
+push -910
+push 32
+add
+print
+push 530
+push 12
+add
+print
+push -355
+push 10
+mul
+print
+push 857
+push 33
+mod
+print
+push -694
+push 11
+swap
+print
+push -510
+push 41
+mod
+print
+push -257
+push 35
+mul
+print
+push -702
+push 15
+mul
+print
+push 628
+push 18
+sub
+print
+push 178
+push 44
+sub
+print
+push -807
+push 32
+mul
+print
+push -470
+push 40
+swap
+print
+push -254
+push 27
+mod
+print
+push 252
+push 33
+sub
+print
+push -803
+push 17
+add
+print
+push -847
+push 38
+sub
+print
+push 579
+push 48
+mod
+print
+push 866
+push 44
+swap
+print
+push 814
+push 44
+sub
+print
+push -637
+push 13
+mul
+print
+push 223
+push 20
+mul
+print
+push -866
+push 2
+sub
+print
+push -420
+push 15
+mod
+print
+push 584
+push 25
+mod
+print
+push 729
+push 30
+sub
+print
+push -909
+push 5
+sub
+print
+push -90
+push 26
+add
+print
+push 639
+push 22
+add
+print
+push -418
+push 33
+mul
+print
+push 387
+push 6
+add
+print
+push -679
+push 11
+sub
+print
+push 595
+push 9
+mul
+print
+push -166
+push 36
+sub
+print
+push -942
+push 26
+mul
+print
+push 362
+push 17
+add
+print
+push 582
+push 44
+swap
+print
+push 672
+push 1
+mul
+print
+push -18
+push 34
+add
+print
+push 426
+push 43
+mul
+print
+push 568
+push 5
+swap
+print
+push -165
+push 40
+sub
+print
+push 705
+push 24
+sub
+print
+push 95
+push 47
+mul
+print
+push -118
+push 48
+sub
+print
+push -371
+push 8
+add
+print
+push -67
+push 49
+mul
+print
+push -919
+push 18
+mul
+print
+push 638
+push 21
+add
+print
+push -475
+push 29
+mod
+print
+push -767
+push 43
+mul
+print
+push -168
+push 11
+swap
+print
+push -588
+push 41
+mod
+print
+push -595
+push 33
+mul
+print
+push -6
+push 32
+sub
+print
+push 210
+push 34
+sub
+print
+push -945
+push 35
+swap
+print
+push -429
+push 10
+mod
+print
+push 67
+push 20
+swap
+print
+push -397
+push 41
+mod
+print
+push -995
+push 48
+add
+print
+push -51
+push 30
+mul
+print
+push 260
+push 26
+swap
+print
+push -99
+push 49
+mod
+print
+push 115
+push 29
+add
+print
+push -588
+push 16
+mul
+print
+push 889
+push 12
+swap
+print
+push 106
+push 27
+swap
+print
+push -30
+push 20
+mul
+print
+push 301
+push 20
+add
+print
+push -665
+push 33
+sub
+print
+push -793
+push 15
+mod
+print
+push -802
+push 28
+add
+print
+push 740
+push 36
+mul
+print
+push 52
+push 21
+swap
+print
+push -506
+push 34
+swap
+print
+push 791
+push 9
+mul
+print
+push 813
+push 14
+mul
+print
+push -359
+push 34
+mul
+print
+push 604
+push 27
+add
+print
+push -315
+push 7
+add
+print
+push 115
+push 17
+mod
+print
+push 279
+push 30
+mul
+print
+push 144
+push 15
+mod
+print
+push 919
+push 44
+swap
+print
+push -482
+push 24
+mul
+print
+push -26
+push 17
+mod
+print
+push -96
+push 22
+add
+print
+push -104
+push 42
+mod
+print
+push -631
+push 36
+sub
+print
+push 910
+push 45
+add
+print
+push -789
+push 14
+sub
+print
+push -696
+push 30
+sub
+print
+push 197
+push 20
+add
+print
+push -885
+push 33
+sub
+print
+push 477
+push 41
+sub
+print
+push -808
+push 45
+sub
+print
+push 679
+push 20
+add
+print
+push -153
+push 6
+swap
+print
+push 323
+push 14
+mul
+print
+push -980
+push 15
+swap
+print
+push -731
+push 27
+swap
+print
+push 190
+push 20
+sub
+print
+push -622
+push 4
+mod
+print
+push 368
+push 25
+swap
+print
+push 218
+push 27
+add
+print
+push -160
+push 33
+mul
+print
+push -334
+push 16
+add
+print
+push -694
+push 4
+mul
+print
+push -41
+push 7
+add
+print
+push -325
+push 21
+mod
+print
+push -8
+push 16
+add
+print
+push 712
+push 3
+add
+print
+push 69
+push 16
+add
+print
+push 841
+push 39
+mul
+print
+push -597
+push 4
+mod
+print
+push -878
+push 8
+swap
+print
+push -79
+push 33
+mul
+print
+push -989
+push 3
+mod
+print
+push 85
+push 7
+swap
+print
+push -704
+push 1
+mul
+print
+push 608
+push 46
+swap
+print
+push -211
+push 26
+add
+print
+push 191
+push 31
+swap
+print
+push -990
+push 36
+mul
+print
+push -42
+push 5
+add
+print
+push 960
+push 43
+sub
+print
+push -198
+push 32
+sub
+print
+push 967
+push 13
+mod
+print
+push -576
+push 36
+add
+print
+push -726
+push 23
+mod
+print
+push -903
+push 39
+sub
+print
+push -243
+push 8
+mod
+print
+push -138
+push 4
+mul
+print
+push -304
+push 35
+add
+print
+push 224
+push 35
+sub
+print
+push -325
+push 15
+add
+print
+push 182
+push 19
+sub
+print
+push 721
+push 9
+mod
+print
+push 725
+push 29
+mul
+print
+push 611
+push 13
+sub
+print
+push -208
+push 6
+sub
+print
+push -880
+push 48
+sub
+print
+push 231
+push 37
+swap
+print
+push -158
+push 37
+swap
+print
+push 524
+push 31
+sub
+print
+push 860
+push 12
+add
+print
+push -1
+push 18
+mod
+print
+push 896
+push 14
+swap
+print
+push -481
+push 25
+add
+print
+push 713
+push 4
+mul
+print
+push -484
+push 36
+add
+print
+push -564
+push 38
+mod
+print
+push 622
+push 1
+mul
+print
+push 441
+push 35
+swap
+print
+push -961
+push 25
+add
+print
+push 236
+push 5
+mod
+print
+push 440
+push 33
+mod
+print
+push 691
+push 33
+mod
+print
+push 483
+push 12
+add
+print
+push -896
+push 31
+mul
+print
+push -820
+push 23
+add
+print
+push 708
+push 27
+swap
+print
+push 528
+push 12
+add
+print
+push 679
+push 39
+mul
+print
+push -694
+push 2
+mod
+print
+push 873
+push 9
+sub
+print
+push -368
+push 27
+add
+print
+push 510
+push 17
+swap
+print
+push -819
+push 47
+mod
+print
+push -273
+push 20
+swap
+print
+push -737
+push 16
+mul
+print
+push 664
+push 1
+sub
+print
+push -876
+push 21
+swap
+print
+push 557
+push 29
+mul
+print
+push 228
+push 11
+mul
+print
+push 691
+push 18
+swap
+print
+push 365
+push 35
+mod
+print
+push -90
+push 36
+mul
+print
+push 458
+push 42
+sub
+print
+push -498
+push 31
+sub
+print
+push 505
+push 15
+add
+print
+push 818
+push 4
+add
+print
+push 530
+push 18
+swap
+print
+push -413
+push 27
+mod
+print
+push -330
+push 6
+sub
+print
+push -677
+push 48
+add
+print
+push 576
+push 11
+mul
+print
+push 363
+push 31
+swap
+print
+push -323
+push 15
+add
+print
+push -633
+push 5
+mod
+print
+push -845
+push 6
+mod
+print
+push -827
+push 37
+mul
+print
+push 354
+push 7
+sub
+print
+push -457
+push 22
+add
+print
+push 438
+push 9
+mul
+print
+push 689
+push 36
+mul
+print
+push -295
+push 18
+sub
+print
+push -486
+push 50
+mod
+print
+push 63
+push 13
+mul
+print
+push 0
+push 38
+add
+print
+push -619
+push 23
+add
+print
+push 577
+push 30
+mod
+print
+push 723
+push 28
+mul
+print
+push -599
+push 30
+mod
+print
+push -529
+push 11
+mod
+print
+push -324
+push 8
+sub
+print
+push -88
+push 14
+add
+print
+push 637
+push 38
+mod
+print
+push -19
+push 28
+mod
+print
+push -73
+push 35
+sub
+print
+push 61
+push 28
+mul
+print
+push 628
+push 48
+sub
+print
+push -392
+push 5
+swap
+print
+push -939
+push 23
+mod
+print
+push 260
+push 42
+mod
+print
+push 378
+push 9
+add
+print
+push 301
+push 15
+sub
+print
+push 768
+push 30
+mod
+print
+push -303
+push 49
+sub
+print
+push 932
+push 40
+mod
+print
+push -897
+push 2
+swap
+print
+push -96
+push 7
+swap
+print
+push -663
+push 22
+sub
+print
+push 804
+push 16
+swap
+print
+push 210
+push 35
+sub
+print
+push 534
+push 12
+mul
+print
+push 837
+push 26
+mul
+print
+push -377
+push 49
+sub
+print
+push 962
+push 10
+mod
+print
+push 134
+push 48
+swap
+print
+push -890
+push 2
+add
+print
+push 863
+push 13
+sub
+print
+push 928
+push 10
+add
+print
+push -58
+push 32
+mul
+print
+push -144
+push 1
+sub
+print
+push 309
+push 20
+sub
+print
+push 197
+push 16
+mod
+print
+push 849
+push 1
+mul
+print
+push 455
+push 24
+swap
+print
+push 237
+push 14
+swap
+print
+push -616
+push 3
+mul
+print
+push 901
+push 17
+add
+print
+push -951
+push 48
+add
+print
+push 801
+push 9
+mod
+print
+push 224
+push 47
+mul
+print
+push 314
+push 15
+mul
+print
+push -279
+push 39
+mod
+print
+push 107
+push 17
+sub
+print
+push 266
+push 8
+add
+print
+push 953
+push 38
+swap
+print
+push -617
+push 17
+sub
+print
+push -583
+push 14
+mod
+print
+push 494
+push 8
+mod
+print
+push 783
+push 29
+mod
+print
+push 110
+push 10
+sub
+print
+push 798
+push 2
+swap
+print
+push 627
+push 21
+add
+print
+push -70
+push 38
+add
+print
+push -204
+push 50
+mod
+print
+push -166
+push 1
+mod
+print
+push 741
+push 35
+mul
+print
+push -240
+push 6
+mod
+print
+push -157
+push 23
+mul
+print
+push -905
+push 19
+swap
+print
+push -822
+push 1
+add
+print
+push 903
+push 14
+mod
+print
+push 182
+push 38
+add
+print
+push 616
+push 47
+add
+print
+push -147
+push 19
+add
+print
+push -535
+push 3
+mod
+print
+push -70
+push 50
+add
+print
+push 653
+push 26
+sub
+print
+push -615
+push 18
+sub
+print
+push 398
+push 16
+swap
+print
+push 536
+push 12
+add
+print
+push -601
+push 42
+swap
+print
+push 660
+push 8
+mod
+print
+push -377
+push 41
+sub
+print
+push 758
+push 31
+mod
+print
+push -922
+push 25
+mod
+print
+push 194
+push 22
+add
+print
+push -4
+push 18
+sub
+print
+push -417
+push 26
+mod
+print
+push -830
+push 37
+mod
+print
+push -931
+push 6
+swap
+print
+push 627
+push 19
+swap
+print
+push 532
+push 32
+mul
+print
+push 693
+push 26
+add
+print
+push -804
+push 37
+mul
+print
+push -210
+push 32
+sub
+print
+push -715
+push 27
+add
+print
+push 596
+push 5
+mul
+print
+push -844
+push 24
+sub
+print
+push -324
+push 12
+add
+print
+push -132
+push 33
+mul
+print
+push -315
+push 34
+add
+print
+push -29
+push 31
+mul
+print
+push -33
+push 39
+sub
+print
+push -735
+push 50
+mul
+print
+push -294
+push 32
+mod
+print
+push -330
+push 3
+sub
+print
+push 282
+push 17
+mod
+print
+push 370
+push 12
+add
+print
+push -921
+push 12
+mul
+print
+push -639
+push 5
+swap
+print
+push 906
+push 36
+swap
+print
+push 152
+push 7
+sub
+print
+push -311
+push 43
+mod
+print
+push -973
+push 18
+sub
+print
+push 981
+push 21
+swap
+print
+push 836
+push 18
+sub
+print
+push 64
+push 25
+sub
+print
+push 80
+push 40
+mul
+print
+push 50
+push 22
+mod
+print
+push 318
+push 33
+mul
+print
+push 109
+push 28
+add
+print
+push 645
+push 45
+swap
+print
+push -362
+push 32
+swap
+print
+push 856
+push 16
+mod
+print
+push 267
+push 6
+swap
+print
+push 540
+push 7
+add
+print
+push -797
+push 18
+add
+print
+push 189
+push 9
+swap
+print
+push 222
+push 4
+mul
+print
+push 627
+push 12
+mod
+print
+push -465
+push 32
+mul
+print
+push 581
+push 28
+sub
+print
+push -428
+push 46
+swap
+print
+push -133
+push 18
+sub
+print
+push -205
+push 5
+mod
+print
+push 701
+push 43
+mod
+print
+push 10
+push 31
+mul
+print
+push 606
+push 12
+swap
+print
+push -729
+push 22
+mod
+print
+push -225
+push 30
+mod
+print
+push 243
+push 4
+sub
+print
+push -111
+push 25
+sub
+print
+push -555
+push 3
+mul
+print
+push -708
+push 33
+mul
+print
+push -177
+push 32
+add
+print
+push -543
+push 33
+add
+print
+push -849
+push 43
+mul
+print
+push 75
+push 26
+add
+print
+push 378
+push 14
+mod
+print
+push -27
+push 9
+swap
+print
+push 697
+push 45
+add
+print
+push -995
+push 21
+mod
+print
+push -384
+push 1
+swap
+print
+push -342
+push 47
+mul
+print
+push -113
+push 32
+swap
+print
+push 282
+push 26
+add
+print
+push -387
+push 48
+mul
+print
+push 710
+push 35
+mul
+print
+push 27
+push 24
+add
+print
+push -348
+push 36
+mul
+print
+push 446
+push 32
+mul
+print
+push 121
+push 49
+mod
+print
+push 162
+push 19
+mod
+print
+push 573
+push 7
+swap
+print
+push -916
+push 49
+sub
+print
+push -411
+push 36
+mod
+print
+push 668
+push 33
+sub
+print
+push 527
+push 41
+mul
+print
+push -528
+push 15
+mod
+print
+push -945
+push 31
+swap
+print
+push 36
+push 17
+sub
+print
+push -689
+push 11
+mul
+print
+push -408
+push 39
+mul
+print
+push -11
+push 49
+sub
+print
+push -353
+push 19
+mod
+print
+push 524
+push 40
+swap
+print
+push -895
+push 44
+add
+print
+push -112
+push 24
+sub
+print
+push 545
+push 35
+add
+print
+push 377
+push 27
+add
+print
+push -985
+push 44
+mod
+print
+push -230
+push 28
+mod
+print
+push -160
+push 34
+mod
+print
+push 788
+push 29
+swap
+print
+push -345
+push 41
+mul
+print
+push -661
+push 28
+swap
+print
+push 695
+push 46
+mul
+print
+push -967
+push 42
+add
+print
+push 19
+push 1
+sub
+print
+push -665
+push 23
+mul
+print
+push 482
+push 48
+swap
+print
+push -959
+push 13
+mul
+print
+push 722
+push 8
+mul
+print
+push 527
+push 2
+swap
+print
+push 443
+push 43
+swap
+print
+push -484
+push 3
+mul
+print
+push 235
+push 23
+sub
+print
+push 211
+push 1
+add
+print
+push 812
+push 42
+add
+print
+push 314
+push 2
+mod
+print
+push 234
+push 1
+swap
+print
+push 863
+push 32
+mod
+print
+push -89
+push 48
+add
+print
+push 752
+push 21
+mul
+print
+push 265
+push 28
+add
+print
+push 806
+push 7
+swap
+print
+push -893
+push 49
+swap
+print
+push 608
+push 21
+mod
+print
+push -689
+push 23
+add
+print
+push -644
+push 8
+swap
+print
+push 334
+push 50
+add
+print
+push -872
+push 33
+add
+print
+push 890
+push 3
+mul
+print
+push -75
+push 6
+add
+print
+push 326
+push 9
+swap
+print
+push -45
+push 35
+mod
+print
+push -457
+push 35
+add
+print
+push 201
+push 18
+mod
+print
+push 166
+push 30
+sub
+print
+push 40
+push 17
+mod
+print
+push -637
+push 12
+mul
+print
+push -959
+push 28
+mul
+print
+push 484
+push 31
+swap
+print
+push 19
+push 41
+mod
+print
+push -60
+push 19
+swap
+print
+push 454
+push 43
+add
+print
+push 841
+push 12
+sub
+print
+push -929
+push 38
+add
+print
+push 507
+push 27
+swap
+print
+push 748
+push 37
+add
+print
+push -207
+push 12
+swap
+print
+push 940
+push 49
+sub
+print
+push -689
+push 47
+mod
+print
+push -7
+push 14
+sub
+print
+push -119
+push 15
+mul
+print
+push 523
+push 45
+mul
+print
+push 777
+push 7
+mul
+print
+push 357
+push 41
+mod
+print
+push 256
+push 27
+mod
+print
+push 995
+push 8
+add
+print
+push -292
+push 44
+mul
+print
+push 895
+push 17
+mul
+print
+push -629
+push 5
+mul
+print
+push 668
+push 36
+sub
+print
+push 285
+push 46
+swap
+print
+push 382
+push 4
+add
+print
+push 48
+push 19
+mod
+print
+push -662
+push 7
+mul
+print
+push -563
+push 17
+swap
+print
+push 704
+push 5
+add
+print
+push 173
+push 33
+mod
+print
+push 32
+push 22
+swap
+print
+push -26
+push 30
+mul
+print
+push 310
+push 20
+mod
+print
+push -594
+push 19
+swap
+print
+push -706
+push 16
+sub
+print
+push 468
+push 31
+mul
+print
+push -985
+push 6
+mod
+print
+push -830
+push 50
+swap
+print
+push 808
+push 17
+mod
+print
+push 176
+push 43
+sub
+print
+push 379
+push 28
+mod
+print
+push -7
+push 29
+sub
+print
+push 954
+push 2
+mul
+print
+push -438
+push 25
+mod
+print
+push 502
+push 40
+mod
+print
+push 67
+push 37
+mod
+print
+push -274
+push 6
+swap
+print
+push 639
+push 28
+mod
+print
+push 942
+push 26
+sub
+print
+push -695
+push 33
+swap
+print
+push 106
+push 18
+swap
+print
+push -273
+push 49
+sub
+print
+push 846
+push 34
+sub
+print
+push -964
+push 41
+mod
+print
+push -214
+push 16
+swap
+print
+push 967
+push 1
+add
+print
+push 471
+push 13
+add
+print
+push -834
+push 35
+mod
+print
+push -674
+push 11
+add
+print
+push -791
+push 12
+swap
+print
+push -507
+push 17
+swap
+print
+push -973
+push 25
+mul
+print
+push -215
+push 30
+add
+print
+push 250
+push 4
+add
+print
+push -85
+push 9
+sub
+print
+push -463
+push 20
+swap
+print
+push 652
+push 16
+sub
+print
+push 30
+push 48
+mul
+print
+push 220
+push 31
+mod
+print
+push -499
+push 16
+sub
+print
+push -649
+push 33
+mul
+print
+push -378
+push 40
+mod
+print
+push 86
+push 35
+add
+print
+push -731
+push 38
+mul
+print
+push 679
+push 18
+sub
+print
+push -585
+push 2
+mul
+print
+push 630
+push 40
+swap
+print
+push 17
+push 22
+add
+print
+push -828
+push 41
+mul
+print
+push -267
+push 21
+add
+print
+push 901
+push 17
+mod
+print
+push -280
+push 21
+add
+print
+push -295
+push 43
+sub
+print
+push -777
+push 46
+mod
+print
+push -531
+push 43
+sub
+print
+push -510
+push 46
+sub
+print
+push 542
+push 3
+mul
+print
+push -20
+push 12
+swap
+print
+push 410
+push 10
+mod
+print
+push 938
+push 27
+mod
+print
+push 483
+push 36
+sub
+print
+push -644
+push 12
+mod
+print
+push -285
+push 39
+mul
+print
+push -609
+push 42
+add
+print
+push 144
+push 45
+mul
+print
+push 615
+push 36
+sub
+print
+push -776
+push 40
+mod
+print
+push -154
+push 31
+swap
+print
+push 363
+push 20
+swap
+print
+push 102
+push 26
+mod
+print
+push 311
+push 39
+sub
+print
+push -760
+push 8
+mul
+print
+push -343
+push 6
+mul
+print
+push 325
+push 50
+add
+print
+push 295
+push 43
+mul
+print
+push 785
+push 5
+sub
+print
+push -56
+push 9
+swap
+print
+push -518
+push 27
+sub
+print
+push 193
+push 4
+swap
+print
+push 962
+push 48
+sub
+print
+push -203
+push 7
+sub
+print
+push -825
+push 3
+sub
+print
+push 560
+push 4
+mod
+print
+push 950
+push 28
+sub
+print
+push -78
+push 21
+swap
+print
+push -619
+push 24
+swap
+print
+push -140
+push 24
+mul
+print
+push 825
+push 48
+swap
+print
+push -984
+push 17
+mod
+print
+push -810
+push 33
+add
+print
+push 532
+push 20
+swap
+print
+push 800
+push 42
+sub
+print
+push 100
+push 44
+mod
+print
+push 86
+push 35
+mod
+print
+push -519
+push 48
+add
+print
+push -234
+push 36
+sub
+print
+push 542
+push 6
+mod
+print
+push 154
+push 19
+swap
+print
+push 178
+push 29
+swap
+print
+push 582
+push 41
+sub
+print
+push -425
+push 40
+mod
+print
+push 538
+push 38
+add
+print
+push -900
+push 45
+swap
+print
+push 291
+push 46
+mod
+print
+push 671
+push 1
+sub
+print
+push -223
+push 44
+sub
+print
+push 167
+push 18
+add
+print
+push 619
+push 3
+mul
+print
+push 344
+push 10
+mod
+print
+push 845
+push 15
+add
+print
+push 773
+push 7
+mod
+print
+push 703
+push 29
+swap
+print
+push -456
+push 37
+sub
+print
+push -355
+push 7
+mod
+print
+push -826
+push 16
+swap
+print
+push 610
+push 50
+sub
+print
+push 763
+push 36
+add
+print
+push -574
+push 39
+sub
+print
+push 160
+push 38
+mod
+print
+push -360
+push 4
+sub
+print
+push 233
+push 34
+mod
+print
+push -420
+push 8
+mod
+print
+push 94
+push 22
+swap
+print
+push -238
+push 42
+sub
+print
+push -800
+push 39
+swap
+print
+push -52
+push 21
+sub
+print
+push 995
+push 4
+sub
+print
+push -922
+push 37
+mod
+print
+push -183
+push 37
+sub
+print
+push -295
+push 13
+mul
+print
+push 878
+push 29
+mod
+print
+push -830
+push 34
+add
+print
+push -349
+push 44
+mul
+print
+push -607
+push 2
+mul
+print
+push -362
+push 4
+sub
+print
+push 467
+push 29
+add
+print
+push 729
+push 36
+sub
+print
+push 616
+push 6
+add
+print
+push -777
+push 48
+mod
+print
+push -653
+push 39
+add
+print
+push -264
+push 27
+swap
+print
+push -648
+push 33
+swap
+print
+push -759
+push 40
+sub
+print
+push 851
+push 44
+sub
+print
+push 795
+push 36
+sub
+print
+push -820
+push 12
+sub
+print
+push -501
+push 4
+sub
+print
+push 121
+push 23
+swap
+print
+push -52
+push 32
+mod
+print
+push -226
+push 50
+mod
+print
+push -712
+push 13
+mul
+print
+push 971
+push 6
+mul
+print
+push -606
+push 27
+sub
+print
+push 923
+push 32
+swap
+print
+push -432
+push 42
+swap
+print
+push 94
+push 35
+sub
+print
+push -18
+push 8
+add
+print
+push -468
+push 2
+sub
+print
+push 701
+push 18
+mul
+print
+push -501
+push 29
+add
+print
+push 599
+push 39
+add
+print
+push 909
+push 47
+sub
+print
+push -230
+push 31
+swap
+print
+push -688
+push 49
+sub
+print
+push 678
+push 32
+swap
+print
+push -64
+push 6
+sub
+print
+push 368
+push 14
+swap
+print
+push -773
+push 42
+mod
+print
+push -566
+push 35
+sub
+print
+push 940
+push 50
+mod
+print
+push -239
+push 8
+swap
+print
+push 419
+push 44
+mod
+print
+push -837
+push 29
+sub
+print
+push 716
+push 16
+add
+print
+push -2
+push 31
+sub
+print
+push 491
+push 8
+mod
+print
+push -39
+push 10
+swap
+print
+push 373
+push 1
+add
+print
+push 569
+push 29
+swap
+print
+push 546
+push 47
+sub
+print
+push -720
+push 24
+add
+print
+push -360
+push 14
+add
+print
+push -642
+push 25
+sub
+print
+push -974
+push 30
+sub
+print
+push -226
+push 43
+mod
+print
+push -767
+push 30
+sub
+print
+push 519
+push 46
+add
+print
+push -914
+push 15
+mul
+print
+push 820
+push 21
+mul
+print
+push -87
+push 5
+sub
+print
+push 51
+push 12
+mul
+print
+push -522
+push 30
+mul
+print
+push 345
+push 13
+mod
+print
+push 272
+push 15
+mod
+print
+push 499
+push 40
+mod
+print
+push 476
+push 32
+sub
+print
+push 807
+push 40
+mul
+print
+push 470
+push 42
+swap
+print
+push -228
+push 50
+mod
+print
+push -715
+push 22
+swap
+print
+push 856
+push 47
+mod
+print
+push -770
+push 20
+add
+print
+push -380
+push 9
+mod
+print
+push -961
+push 32
+mul
+print
+push -150
+push 8
+mul
+print
+push -339
+push 18
+add
+print
+push -392
+push 7
+sub
+print
+push -57
+push 25
+mod
+print
+push 483
+push 20
+mod
+print
+push 176
+push 47
+sub
+print
+push -667
+push 39
+mul
+print
+push -842
+push 37
+sub
+print
+push 107
+push 40
+sub
+print
+push 535
+push 27
+mod
+print
+push 200
+push 50
+sub
+print
+push 806
+push 12
+add
+print
+push -635
+push 6
+sub
+print
+push -238
+push 9
+sub
+print
+push -754
+push 43
+swap
+print
+push 352
+push 21
+mul
+print
+push 335
+push 14
+swap
+print
+push 210
+push 15
+sub
+print
+push 794
+push 1
+mod
+print
+push -254
+push 29
+mul
+print
+push -793
+push 42
+mul
+print
+push -175
+push 49
+sub
+print
+push -411
+push 5
+mul
+print
+push 23
+push 6
+mod
+print
+push 628
+push 33
+sub
+print
+push -27
+push 11
+sub
+print
+push 698
+push 36
+add
+print
+push 844
+push 44
+mod
+print
+push -910
+push 27
+swap
+print
+push 612
+push 21
+add
+print
+push -709
+push 47
+mod
+print
+push 411
+push 28
+mod
+print
+push -159
+push 38
+swap
+print
+push -264
+push 19
+swap
+print
+push 416
+push 32
+add
+print
+push 951
+push 12
+sub
+print
+push 164
+push 12
+mod
+print
+push -468
+push 48
+mod
+print
+push -314
+push 7
+add
+print
+push -961
+push 14
+swap
+print
+push -854
+push 37
+sub
+print
+push -535
+push 20
+sub
+print
+push 440
+push 7
+mul
+print
+push -114
+push 7
+add
+print
+push 571
+push 21
+mul
+print
+push 397
+push 18
+sub
+print
+push 59
+push 38
+mul
+print
+push 598
+push 37
+sub
+print
+push 669
+push 31
+add
+print
+push 917
+push 6
+sub
+print
+push -898
+push 50
+add
+print
+push -31
+push 28
+mod
+print
+push -105
+push 24
+swap
+print
+push -493
+push 35
+swap
+print
+push 183
+push 2
+sub
+print
+push -485
+push 12
+swap
+print
+push -567
+push 5
+add
+print
+push -602
+push 14
+sub
+print
+push 385
+push 24
+sub
+print
+push -440
+push 17
+mod
+print
+push -815
+push 45
+swap
+print
+push 122
+push 23
+mod
+print
+push -341
+push 43
+mul
+print
+push -571
+push 20
+mod
+print
+push 228
+push 48
+add
+print
+push 476
+push 24
+swap
+print
+push 948
+push 32
+swap
+print
+push 456
+push 12
+mul
+print
+push 744
+push 23
+mod
+print
+push -460
+push 27
+mod
+print
+push 443
+push 1
+add
+print
+push 10
+push 17
+swap
+print
+push -510
+push 10
+add
+print
+push 771
+push 29
+sub
+print
+push -393
+push 5
+swap
+print
+push 906
+push 28
+mod
+print
+push -650
+push 42
+mod
+print
+push -536
+push 32
+mul
+print
+push -909
+push 47
+add
+print
+push 806
+push 18
+swap
+print
+push 62
+push 34
+add
+print
+push 129
+push 3
+mul
+print
+push -894
+push 42
+sub
+print
+push -428
+push 40
+add
+print
+push -630
+push 45
+mod
+print
+push 346
+push 8
+add
+print
+push 142
+push 31
+sub
+print
+push 323
+push 26
+swap
+print
+push -799
+push 41
+sub
+print
+push -355
+push 42
+mul
+print
+push -651
+push 23
+sub
+print
+push -443
+push 39
+add
+print
+push -421
+push 19
+swap
+print
+push -42
+push 11
+mod
+print
+push -272
+push 43
+swap
+print
+push -747
+push 35
+add
+print
+push -181
+push 42
+mul
+print
+push -294
+push 4
+add
+print
+push 549
+push 26
+mul
+print
+push -505
+push 30
+mul
+print
+push -328
+push 50
+sub
+print
+push -361
+push 48
+add
+print
+push -790
+push 4
+swap
+print
+push 254
+push 27
+sub
+print
+push -67
+push 30
+mod
+print
+push -680
+push 43
+mul
+print
+push -143
+push 50
+mod
+print
+push 402
+push 29
+mod
+print
+push -316
+push 17
+mul
+print
+push -693
+push 7
+sub
+print
+push -70
+push 12
+mod
+print
+push 458
+push 5
+add
+print
+push 672
+push 38
+mul
+print
+push 801
+push 22
+mul
+print
+push -970
+push 13
+swap
+print
+push 810
+push 16
+swap
+print
+push 701
+push 10
+swap
+print
+push 256
+push 37
+swap
+print
+push 569
+push 47
+mod
+print
+push -991
+push 10
+mul
+print
+push 485
+push 5
+sub
+print
+push -396
+push 37
+swap
+print
+push 726
+push 32
+add
+print
+push 462
+push 20
+add
+print
+push 62
+push 46
+swap
+print
+push 482
+push 31
+swap
+print
+push 6
+push 34
+sub
+print
+push -463
+push 29
+mul
+print
+push 863
+push 43
+mod
+print
+push -280
+push 30
+add
+print
+push -259
+push 46
+add
+print
+push 679
+push 50
+sub
+print
+push -433
+push 38
+sub
+print
+push 789
+push 40
+add
+print
+push 608
+push 47
+mul
+print
+push -103
+push 30
+mod
+print
+push 43
+push 25
+mul
+print
+push 212
+push 22
+sub
+print
+push 935
+push 6
+mul
+print
+push 618
+push 5
+sub
+print
+push 9
+push 33
+sub
+print
+push -794
+push 18
+mod
+print
+push 267
+push 45
+mod
+print
+push -716
+push 12
+swap
+print
+push -302
+push 11
+mul
+print
+push -495
+push 8
+swap
+print
+push 8
+push 14
+mod
+print
+push 880
+push 42
+swap
+print
+push -910
+push 20
+swap
+print
+push -966
+push 4
+add
+print
+push 57
+push 14
+mul
+print
+push 219
+push 43
+add
+print
+push -889
+push 31
+mul
+print
+push 682
+push 49
+mod
+print
+push 82
+push 15
+swap
+print
+push -634
+push 3
+mul
+print
+push -38
+push 38
+mod
+print
+push -492
+push 35
+add
+print
+push -197
+push 34
+swap
+print
+push 166
+push 43
+swap
+print
+push -48
+push 21
+mod
+print
+push -571
+push 38
+sub
+print
+push 183
+push 13
+mod
+print
+push 252
+push 30
+sub
+print
+push 531
+push 10
+mod
+print
+push 251
+push 12
+swap
+print
+push -585
+push 6
+mod
+print
+push 407
+push 43
+swap
+print
+push 18
+push 20
+mul
+print
+push 755
+push 35
+sub
+print
+push -679
+push 36
+swap
+print
+push 23
+push 14
+sub
+print
+push 484
+push 23
+mod
+print
+push -355
+push 41
+mod
+print
+push 158
+push 13
+add
+print
+push 733
+push 14
+swap
+print
+push -432
+push 34
+sub
+print
+push -620
+push 13
+swap
+print
+push -515
+push 6
+sub
+print
+push 474
+push 20
+mod
+print
+push -916
+push 22
+sub
+print
+push -402
+push 50
+mod
+print
+push -820
+push 41
+swap
+print
+push 966
+push 19
+mod
+print
+push -633
+push 20
+add
+print
+push 668
+push 47
+mul
+print
+push -637
+push 36
+sub
+print
+push 357
+push 37
+sub
+print
+push -772
+push 22
+sub
+print
+push 784
+push 11
+swap
+print
+push -974
+push 45
+sub
+print
+push 520
+push 16
+add
+print
+push -374
+push 20
+mod
+print
+push 36
+push 7
+sub
+print
+push 229
+push 45
+mod
+print
+push -701
+push 8
+swap
+print
+push 242
+push 24
+mod
+print
+push -588
+push 40
+sub
+print
+push 552
+push 5
+mod
+print
+push 759
+push 5
+swap
+print
+push 641
+push 39
+swap
+print
+push -159
+push 4
+mul
+print
+push 57
+push 25
+sub
+print
+push 269
+push 20
+mul
+print
+push -277
+push 42
+swap
+print
+push -433
+push 10
+sub
+print
+push 972
+push 18
+mul
+print
+push 338
+push 10
+add
+print
+push 820
+push 36
+swap
+print
+push -942
+push 37
+mod
+print
+push -778
+push 22
+sub
+print
+push -118
+push 43
+mul
+print
+push 692
+push 15
+swap
+print
+push 473
+push 45
+swap
+print
+push 605
+push 29
+mul
+print
+push 238
+push 4
+add
+print
+push -499
+push 45
+swap
+print
+push 222
+push 24
+mul
+print
+push -65
+push 45
+sub
+print
+push 429
+push 13
+mod
+print
+push -542
+push 26
+mod
+print
+push -308
+push 39
+mul
+print
+push -482
+push 42
+mod
+print
+push -207
+push 46
+swap
+print
+push -834
+push 23
+add
+print
+push 891
+push 15
+mod
+print
+push 682
+push 2
+mul
+print
+push -630
+push 7
+mul
+print
+push 122
+push 48
+add
+print
+push 870
+push 42
+swap
+print
+push 166
+push 30
+mod
+print
+push 460
+push 40
+mul
+print
+push 494
+push 40
+mul
+print
+push -142
+push 18
+mul
+print
+push 969
+push 27
+swap
+print
+push 428
+push 50
+add
+print
+push 495
+push 41
+mod
+print
+push -622
+push 43
+sub
+print
+push -899
+push 31
+swap
+print
+push 271
+push 20
+swap
+print
+push -20
+push 32
+sub
+print
+push -606
+push 20
+swap
+print
+push -346
+push 48
+swap
+print
+push -471
+push 4
+mod
+print
+push 810
+push 1
+mul
+print
+push 480
+push 34
+add
+print
+push 199
+push 32
+sub
+print
+push -914
+push 21
+mod
+print
+push -506
+push 18
+sub
+print
+push -716
+push 10
+swap
+print
+push 441
+push 38
+mul
+print
+push 139
+push 43
+mod
+print
+push 44
+push 22
+sub
+print
+push -531
+push 29
+swap
+print
+push 11
+push 35
+mod
+print
+push 161
+push 20
+mul
+print
+push 285
+push 30
+sub
+print
+push -67
+push 5
+mod
+print
+push -854
+push 32
+mod
+print
+push -297
+push 42
+swap
+print
+push -836
+push 43
+swap
+print
+push -240
+push 44
+swap
+print
+push 796
+push 7
+sub
+print
+push -927
+push 27
+swap
+print
+push 9
+push 49
+mul
+print
+push 418
+push 20
+swap
+print
+push 100
+push 19
+mul
+print
+push 247
+push 9
+add
+print
+push -174
+push 1
+swap
+print
+push 780
+push 38
+mul
+print
+push -864
+push 2
+mul
+print
+push 533
+push 21
+mod
+print
+push 675
+push 23
+mod
+print
+push -166
+push 34
+mul
+print
+push 649
+push 50
+swap
+print
+push -770
+push 9
+add
+print
+push -407
+push 20
+mul
+print
+push -357
+push 3
+mod
+print
+push -212
+push 15
+mul
+print
+push -637
+push 31
+mod
+print
+push 714
+push 29
+swap
+print
+push -699
+push 22
+mod
+print
+push -673
+push 7
+mod
+print
+push 812
+push 35
+mod
+print
+push -242
+push 49
+add
+print
+push -145
+push 44
+mul
+print
+push 886
+push 39
+sub
+print
+push 175
+push 10
+swap
+print
+push 535
+push 8
+sub
+print
+push 664
+push 35
+mul
+print
+push 85
+push 49
+add
+print
+push -198
+push 30
+mul
+print
+push 188
+push 25
+add
+print
+push 484
+push 39
+mod
+print
+push 585
+push 35
+swap
+print
+push -501
+push 37
+mul
+print
+push -710
+push 6
+swap
+print
+push 369
+push 47
+mul
+print
+push 786
+push 6
+mul
+print
+push 893
+push 11
+mul
+print
+push -498
+push 43
+mod
+print
+push -6
+push 24
+sub
+print
+push -415
+push 2
+swap
+print
+push 862
+push 27
+mul
+print
+push 50
+push 7
+mod
+print
+push 753
+push 29
+mul
+print
+push 741
+push 2
+mod
+print
+push -284
+push 46
+mul
+print
+push -97
+push 22
+sub
+print
+push -652
+push 11
+sub
+print
+push -866
+push 39
+sub
+print
+push 701
+push 48
+add
+print
+push -840
+push 11
+mul
+print
+push -735
+push 33
+mod
+print
+push -341
+push 2
+mul
+print
+push 37
+push 38
+mul
+print
+push 562
+push 18
+add
+print
+push -493
+push 40
+add
+print
+push -864
+push 31
+mul
+print
+push -247
+push 41
+sub
+print
+push 401
+push 41
+mul
+print
+push 333
+push 19
+add
+print
+push -445
+push 21
+mod
+print
+push 193
+push 39
+add
+print
+push 291
+push 36
+sub
+print
+push -65
+push 50
+add
+print
+push 835
+push 23
+swap
+print
+push 609
+push 11
+sub
+print
+push -475
+push 28
+mul
+print
+push -742
+push 36
+sub
+print
+push 571
+push 23
+sub
+print
+push -565
+push 6
+mul
+print
+push 482
+push 41
+sub
+print
+push -126
+push 16
+mod
+print
+push -11
+push 23
+add
+print
+push -82
+push 28
+mod
+print
+push -160
+push 21
+swap
+print
+push 180
+push 24
+sub
+print
+push -127
+push 11
+sub
+print
+push 177
+push 4
+mul
+print
+push 616
+push 50
+mod
+print
+push -612
+push 22
+swap
+print
+push -634
+push 41
+swap
+print
+push -61
+push 5
+mul
+print
+push -281
+push 17
+mul
+print
+push 57
+push 34
+add
+print
+push 670
+push 6
+sub
+print
+push -286
+push 9
+mul
+print
+push 891
+push 30
+sub
+print
+push -591
+push 5
+mul
+print
+push -509
+push 23
+sub
+print
+push 725
+push 27
+mul
+print
+push -495
+push 4
+sub
+print
+push -748
+push 5
+mod
+print
+push -476
+push 24
+swap
+print
+push 125
+push 5
+sub
+print
+push -753
+push 49
+swap
+print
+push 216
+push 18
+add
+print
+push -239
+push 45
+mul
+print
+push 721
+push 3
+add
+print
+push -26
+push 17
+add
+print
+push 29
+push 16
+mod
+print
+push 893
+push 10
+add
+print
+push 285
+push 34
+sub
+print
+push -754
+push 26
+mod
+print
+push 94
+push 24
+swap
+print
+push 261
+push 38
+mod
+print
+push 580
+push 19
+mod
+print
+push -15
+push 9
+mul
+print
+push 645
+push 2
+mod
+print
+push -986
+push 9
+sub
+print
+push -17
+push 28
+swap
+print
+push -207
+push 43
+add
+print
+push 942
+push 8
+sub
+print
+push -400
+push 21
+add
+print
+push -670
+push 46
+sub
+print
+push 717
+push 4
+mod
+print
+push 934
+push 23
+mod
+print
+push -809
+push 32
+add
+print
+push 211
+push 34
+mul
+print
+push 261
+push 21
+mod
+print
+push 567
+push 46
+mul
+print
+push 116
+push 11
+swap
+print
+push 559
+push 12
+add
+print
+push -143
+push 38
+sub
+print
+push -951
+push 43
+add
+print
+push -60
+push 28
+sub
+print
+push 647
+push 36
+sub
+print
+push 915
+push 22
+add
+print
+push 891
+push 47
+sub
+print
+push -522
+push 41
+mul
+print
+push -890
+push 27
+sub
+print
+push 336
+push 28
+mul
+print
+push 271
+push 26
+sub
+print
+push 448
+push 29
+mod
+print
+push 165
+push 21
+mod
+print
+push -788
+push 8
+mod
+print
+push -386
+push 42
+add
+print
+push -532
+push 8
+mul
+print
+push -921
+push 16
+mul
+print
+push -684
+push 29
+add
+print
+push 520
+push 6
+mod
+print
+push -892
+push 28
+sub
+print
+push -208
+push 30
+mod
+print
+push -764
+push 49
+swap
+print
+push -289
+push 34
+mul
+print
+push -875
+push 34
+add
+print
+push 395
+push 48
+swap
+print
+push 707
+push 14
+mul
+print
+push -662
+push 31
+sub
+print
+push 536
+push 31
+sub
+print
+push -928
+push 46
+sub
+print
+push 198
+push 46
+swap
+print
+push 674
+push 22
+mul
+print
+push -150
+push 12
+swap
+print
+push 289
+push 36
+add
+print
+push 937
+push 19
+sub
+print
+push 287
+push 24
+add
+print
+push 479
+push 15
+add
+print
+push -613
+push 1
+swap
+print
+push 253
+push 12
+mul
+print
+push -903
+push 48
+mod
+print
+push 837
+push 11
+mod
+print
+push -376
+push 31
+swap
+print
+push -192
+push 22
+mul
+print
+push 303
+push 48
+mod
+print
+push 646
+push 11
+sub
+print
+push -926
+push 17
+sub
+print
+push 835
+push 22
+swap
+print
+push 712
+push 23
+sub
+print
+push 527
+push 45
+add
+print
+push -425
+push 4
+mul
+print
+push 232
+push 42
+mul
+print
+push -451
+push 35
+mod
+print
+push -80
+push 33
+swap
+print
+push 507
+push 19
+mod
+print
+push 172
+push 31
+sub
+print
+push -518
+push 6
+sub
+print
+push 291
+push 46
+mul
+print
+push 621
+push 38
+swap
+print
+push -231
+push 10
+add
+print
+push -152
+push 40
+add
+print
+push 709
+push 14
+mod
+print
+push -434
+push 29
+mul
+print
+push 927
+push 47
+sub
+print
+push -807
+push 36
+swap
+print
+push -17
+push 23
+mul
+print
+push 620
+push 2
+sub
+print
+push 351
+push 32
+swap
+print
+push 79
+push 3
+mod
+print
+push -890
+push 15
+add
+print
+push 728
+push 42
+mul
+print
+push -148
+push 41
+sub
+print
+push -797
+push 29
+mul
+print
+push 54
+push 4
+mod
+print
+push -412
+push 10
+mul
+print
+push -882
+push 48
+mod
+print
+push 700
+push 21
+swap
+print
+push -615
+push 19
+add
+print
+push 434
+push 4
+sub
+print
+push 401
+push 31
+swap
+print
+push -934
+push 29
+add
+print
+push 973
+push 42
+sub
+print
+push -766
+push 6
+mul
+print
+push 104
+push 5
+mul
+print
+push 922
+push 22
+add
+print
+push -795
+push 27
+sub
+print
+push 912
+push 31
+mod
+print
+push -465
+push 3
+add
+print
+push -185
+push 37
+mod
+print
+push -702
+push 28
+mul
+print
+push 814
+push 10
+mul
+print
+push 840
+push 33
+mul
+print
+push 165
+push 43
+mod
+print
+push -41
+push 29
+mod
+print
+push -394
+push 40
+mod
+print
+push -475
+push 14
+mod
+print
+push -242
+push 34
+sub
+print
+push -495
+push 15
+sub
+print
+push -221
+push 27
+sub
+print
+push -302
+push 50
+add
+print
+push 844
+push 33
+mul
+print
+push -202
+push 7
+mod
+print
+push -637
+push 50
+mul
+print
+push -228
+push 24
+mod
+print
+push -375
+push 25
+mod
+print
+push 816
+push 45
+sub
+print
+push -838
+push 28
+add
+print
+push 245
+push 45
+mod
+print
+push 65
+push 49
+add
+print
+push 190
+push 37
+mul
+print
+push 107
+push 26
+mod
+print
+push 148
+push 49
+swap
+print
+push -208
+push 40
+swap
+print
+push -842
+push 38
+mul
+print
+push -437
+push 49
+add
+print
+push 866
+push 1
+swap
+print
+push -560
+push 36
+add
+print
+push 598
+push 4
+sub
+print
+push -485
+push 2
+mul
+print
+push 432
+push 35
+mod
+print
+push -965
+push 35
+mod
+print
+push -207
+push 31
+mul
+print
+push 351
+push 9
+mod
+print
+push 885
+push 38
+swap
+print
+push 205
+push 32
+mul
+print
+push -202
+push 27
+mod
+print
+push -487
+push 44
+swap
+print
+push -380
+push 50
+mul
+print
+push 548
+push 7
+mul
+print
+push -795
+push 40
+add
+print
+push -79
+push 5
+add
+print
+push -626
+push 41
+swap
+print
+push -217
+push 9
+add
+print
+push -495
+push 20
+add
+print
+push -384
+push 16
+sub
+print
+push -938
+push 11
+swap
+print
+push -810
+push 38
+swap
+print
+push 424
+push 25
+sub
+print
+push 493
+push 18
+add
+print
+push -145
+push 39
+mul
+print
+push -286
+push 2
+add
+print
+push -181
+push 24
+sub
+print
+push 141
+push 24
+add
+print
+push 583
+push 17
+swap
+print
+push -545
+push 2
+swap
+print
+push 414
+push 35
+mul
+print
+push -582
+push 20
+sub
+print
+push -79
+push 22
+mod
+print
+push -855
+push 16
+sub
+print
+push 908
+push 33
+mod
+print
+push 976
+push 26
+add
+print
+push -650
+push 9
+mul
+print
+push 172
+push 34
+mod
+print
+push -318
+push 1
+swap
+print
+push -750
+push 1
+swap
+print
+push -863
+push 22
+add
+print
+push 858
+push 29
+sub
+print
+push -48
+push 13
+swap
+print
+push 597
+push 20
+sub
+print
+push 122
+push 46
+mul
+print
+push -507
+push 15
+swap
+print
+push 596
+push 15
+mul
+print
+push 248
+push 19
+sub
+print
+push 308
+push 33
+sub
+print
+push -320
+push 44
+add
+print
+push -450
+push 39
+mul
+print
+push -975
+push 36
+sub
+print
+push -129
+push 8
+swap
+print
+push 167
+push 21
+add
+print
+push -315
+push 23
+sub
+print
+push -926
+push 13
+mul
+print
+push 472
+push 18
+mul
+print
+push -602
+push 32
+mod
+print
+push 808
+push 22
+swap
+print
+push 320
+push 37
+sub
+print
+push -149
+push 7
+mod
+print
+push 452
+push 21
+swap
+print
+push -19
+push 12
+sub
+print
+push 956
+push 42
+add
+print
+push -539
+push 42
+mod
+print
+push -419
+push 4
+swap
+print
+push 390
+push 5
+add
+print
+push 736
+push 34
+mod
+print
+push -494
+push 37
+mod
+print
+push 35
+push 31
+mul
+print
+push -23
+push 26
+add
+print
+push 287
+push 7
+mul
+print
+push -228
+push 46
+swap
+print
+push -196
+push 21
+swap
+print
+push 764
+push 30
+swap
+print
+push 397
+push 36
+mod
+print
+push 125
+push 6
+sub
+print
+push -954
+push 34
+mod
+print
+push -81
+push 16
+sub
+print
+push 409
+push 15
+mod
+print
+push -934
+push 16
+sub
+print
+push 624
+push 12
+mod
+print
+push 553
+push 26
+add
+print
+push 916
+push 27
+add
+print
+push 548
+push 10
+mod
+print
+push -184
+push 39
+mul
+print
+push 76
+push 35
+sub
+print
+push 612
+push 7
+sub
+print
+push -789
+push 48
+add
+print
+push -433
+push 1
+mul
+print
+push 187
+push 11
+sub
+print
+push 552
+push 34
+mul
+print
+push 681
+push 47
+add
+print
+push -494
+push 50
+sub
+print
+push 581
+push 46
+mod
+print
+push -427
+push 15
+swap
+print
+push 421
+push 14
+mod
+print
+push -641
+push 7
+sub
+print
+push 918
+push 25
+swap
+print
+push -444
+push 8
+swap
+print
+push 466
+push 49
+mod
+print
+push 638
+push 48
+add
+print
+push 242
+push 23
+swap
+print
+push 62
+push 6
+mod
+print
+push 395
+push 15
+mul
+print
+push -707
+push 24
+swap
+print
+push 315
+push 22
+swap
+print
+push 626
+push 4
+sub
+print
+push 181
+push 22
+swap
+print
+push 675
+push 12
+mul
+print
+push -464
+push 25
+swap
+print
+push -144
+push 31
+mul
+print
+push -849
+push 10
+mod
+print
+push 725
+push 27
+mul
+print
+push 48
+push 34
+swap
+print
+push 646
+push 35
+mod
+print
+push -186
+push 12
+sub
+print
+push 716
+push 39
+mul
+print
+push -229
+push 42
+sub
+print
+push -807
+push 7
+mul
+print
+push 188
+push 50
+add
+print
+push -130
+push 32
+swap
+print
+push 669
+push 23
+sub
+print
+push 390
+push 42
+sub
+print
+push 623
+push 37
+mod
+print
+push 4
+push 26
+mod
+print
+push -213
+push 40
+add
+print
+push -970
+push 40
+swap
+print
+push -442
+push 10
+add
+print
+push -612
+push 14
+mod
+print
+push -81
+push 25
+add
+print
+push 58
+push 25
+add
+print
+push -339
+push 7
+mod
+print
+push 692
+push 8
+swap
+print
+push -165
+push 24
+mul
+print
+push -548
+push 49
+mod
+print
+push -689
+push 5
+mod
+print
+push -692
+push 28
+swap
+print
+push -187
+push 32
+mod
+print
+push 622
+push 1
+sub
+print
+push 52
+push 27
+sub
+print
+push 664
+push 49
+add
+print
+push 561
+push 30
+mul
+print
+push -735
+push 28
+mul
+print
+push 12
+push 36
+swap
+print
+push 303
+push 4
+sub
+print
+push 742
+push 42
+mul
+print
+push -860
+push 37
+add
+print
+push 735
+push 7
+mul
+print
+push -963
+push 11
+add
+print
+push -777
+push 46
+mod
+print
+push -265
+push 31
+add
+print
+push 776
+push 20
+sub
+print
+push -890
+push 1
+sub
+print
+push 501
+push 50
+swap
+print
+push -16
+push 4
+mod
+print
+push -252
+push 38
+swap
+print
+push -569
+push 31
+add
+print
+push -63
+push 50
+add
+print
+push 604
+push 17
+mul
+print
+push -950
+push 45
+add
+print
+push 983
+push 46
+add
+print
+push -694
+push 34
+swap
+print
+push 962
+push 8
+add
+print
+push 300
+push 26
+swap
+print
+push 959
+push 48
+mod
+print
+push -258
+push 18
+mul
+print
+push -434
+push 21
+add
+print
+push -986
+push 1
+sub
+print
+push 789
+push 33
+add
+print
+push 785
+push 20
+mul
+print
+push 164
+push 13
+add
+print
+push -107
+push 1
+add
+print
+push -606
+push 15
+add
+print
+push 373
+push 11
+mod
+print
+push -131
+push 38
+swap
+print
+push -217
+push 45
+sub
+print
+push -766
+push 14
+add
+print
+push 826
+push 12
+mod
+print
+push -493
+push 21
+add
+print
+push 483
+push 41
+add
+print
+push -949
+push 45
+mod
+print
+push 126
+push 24
+swap
+print
+push 996
+push 27
+mod
+print
+push -566
+push 24
+swap
+print
+push 565
+push 50
+mod
+print
+push 702
+push 25
+swap
+print
+push 673
+push 11
+swap
+print
+push 885
+push 37
+swap
+print
+push 144
+push 3
+mul
+print
+push -253
+push 48
+mul
+print
+push -130
+push 17
+mod
+print
+push 30
+push 25
+add
+print
+push -455
+push 39
+sub
+print
+push -383
+push 3
+swap
+print
+push -865
+push 3
+swap
+print
+push 433
+push 14
+swap
+print
+push 896
+push 34
+sub
+print
+push -151
+push 13
+mul
+print
+push -731
+push 11
+mod
+print
+push -738
+push 39
+mod
+print
+push -804
+push 9
+add
+print
+push 891
+push 30
+swap
+print
+push 714
+push 34
+swap
+print
+push 389
+push 24
+add
+print
+push -630
+push 16
+add
+print
+push 425
+push 40
+mod
+print
+push -540
+push 41
+mul
+print
+push 225
+push 14
+swap
+print
+push 241
+push 5
+mod
+print
+push 68
+push 11
+sub
+print
+push -593
+push 36
+sub
+print
+push 429
+push 42
+add
+print
+push 804
+push 36
+mod
+print
+push 238
+push 2
+add
+print
+push 692
+push 25
+add
+print
+push -596
+push 29
+mul
+print
+push 535
+push 5
+sub
+print
+push 349
+push 15
+mod
+print
+push 685
+push 4
+sub
+print
+push -708
+push 42
+add
+print
+push -381
+push 40
+add
+print
+push 320
+push 7
+add
+print
+push 679
+push 35
+mod
+print
+push -445
+push 37
+add
+print
+push -366
+push 17
+mod
+print
+push -534
+push 20
+sub
+print
+push 204
+push 4
+sub
+print
+push 60
+push 26
+add
+print
+push -792
+push 25
+sub
+print
+push -954
+push 44
+mul
+print
+push -862
+push 28
+sub
+print
+push 397
+push 48
+sub
+print
+push 120
+push 40
+sub
+print
+push -43
+push 42
+sub
+print
+push -852
+push 39
+swap
+print
+push 527
+push 31
+mod
+print
+push 684
+push 12
+swap
+print
+push 708
+push 45
+swap
+print
+push 754
+push 30
+add
+print
+push 162
+push 36
+swap
+print
+push 532
+push 30
+sub
+print
+push -135
+push 5
+mul
+print
+push -308
+push 11
+mul
+print
+push -119
+push 2
+swap
+print
+push 633
+push 1
+swap
+print
+push 488
+push 42
+add
+print
+push -317
+push 37
+mul
+print
+push 488
+push 44
+add
+print
+push -53
+push 43
+add
+print
+push 927
+push 33
+swap
+print
+push -891
+push 14
+sub
+print
+push -110
+push 48
+mul
+print
+push 741
+push 35
+mod
+print
+push -377
+push 48
+add
+print
+push -169
+push 2
+sub
+print
+halt

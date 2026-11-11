@@ -6,7 +6,8 @@
 // `korin test` roda os testes públicos (no servidor, ou `--local` na sua máquina);
 // `korin submit` roda todos, inclusive os ocultos, e marca o desafio como resolvido.
 //
-// Instalação: veja /cli no site. Atualize com `korin update`.
+// Instalação: `curl -fsSL <site>/install.sh | bash` (Windows: `irm <site>/install.ps1 | iex`).
+// Atualize com `korin update`.
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync, chmodSync } from "node:fs";
 import { homedir, platform } from "node:os";
@@ -14,7 +15,7 @@ import path from "node:path";
 import { createInterface } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
-const VERSION = "0.6.0";
+const VERSION = "0.7.0";
 const WORKSPACE = ".korin.json";
 const DEFAULT_URL = "https://the-korin-tower.vercel.app";
 
@@ -96,8 +97,8 @@ async function api(cfg, method, route, body) {
 
 // ---- argumentos -------------------------------------------------------------------
 // Flags: --nome valor | --nome=valor | -x valor | --booleana. O resto é posicional.
-const BOOL_FLAGS = new Set(["todo", "json", "pick", "fresh", "local", "help", "version", "yes", "all"]);
-const SHORT = { c: "category", l: "language", d: "dir", i: "input", u: "url", t: "token", h: "help", v: "version" };
+const BOOL_FLAGS = new Set(["todo", "json", "pick", "fresh", "local", "help", "version", "yes", "all", "open"]);
+const SHORT = { c: "category", l: "language", d: "dir", i: "input", u: "url", t: "token", h: "help", v: "version", a: "floor" };
 
 function parseArgs(argv) {
   const flags = {};
@@ -214,8 +215,10 @@ commands.help = async () => {
 
 ${bold("Começando")}
   korin login [--url URL] [--token TOKEN]   guarda o token (gere em <site>/conta)
-  korin whoami                              confere o token e mostra seus pontos
-  korin list [-c CATEGORIA] [--todo]        lista os desafios (--todo: só os não resolvidos)
+  korin status                              seu andar, pontos, esferas e o que falta para subir
+  korin next [--pick]                       o próximo desafio da torre (--pick já baixa)
+  korin list [-a ANDAR] [-c CATEGORIA] [--todo]   os desafios, andar por andar
+  korin tracks                              os detonados e seu progresso em cada um
   korin daily [--pick]                      desafio do dia (--pick já baixa)
 
 ${bold("Resolvendo")}
@@ -231,6 +234,7 @@ ${bold("Resolvendo")}
   korin open                                abre o desafio no navegador
 
 ${bold("Outros")}
+  korin doctor                              confere Node, token, servidor e compiladores locais
   korin config [lang=LINGUAGEM] [url=URL]   preferências
   korin update                              baixa a versão mais nova do site
   korin logout
@@ -279,12 +283,71 @@ commands.config = async ({ pos }) => {
   console.log(green("✔ salvo"));
 };
 
-commands.whoami = async () => {
+commands.status = async () => {
   const cfg = loadConfig();
   if (!cfg.token) fail("sem login. Rode: korin login");
   const me = await api(cfg, "GET", "/api/cli/me");
   console.log(`${bold(me.username)}${me.isAdmin ? dim(" (admin)") : ""} @ ${cfg.url}`);
-  console.log(`pontos: ${me.points}   resolvidos: ${me.solved}   desistências: ${me.gaveUp}`);
+  console.log(`andar ${bold(me.floor)}/${me.floorsTotal}   pontos: ${me.points}   resolvidos: ${me.solved}   esferas: ${me.balls}/${me.ballsTotal}`);
+  for (const f of [...me.floors].reverse()) {
+    const tag = f.scored === 0 ? dim("em obras") : f.open ? green("aberto") : dim("trancado");
+    const bar = f.scored ? `${f.solved}/${f.scored}` : "";
+    const need = f.open && f.missingForNext > 0 && f.n < me.floorsTotal ? dim(` · faltam ${f.missingForNext} para o andar ${f.n + 1}`) : "";
+    console.log(`  ${f.n === me.floor ? yellow("▶") : " "} andar ${f.n}  ${f.name.padEnd(22)} ${tag} ${bar}${need}`);
+  }
+};
+commands.whoami = (...a) => commands.status(...a);
+
+commands.next = async ({ flags }) => {
+  const cfg = loadConfig();
+  const { next } = await api(cfg, "GET", "/api/cli/next" + (flags.track ? `?track=${encodeURIComponent(flags.track)}` : ""));
+  if (!next) return console.log(dim("nada aberto por enquanto: você fez tudo que a torre tem."));
+  const why = next.track ? `continua o detonado ${bold(next.track.title)}` : next.reason === "floor" ? `andar ${next.floor}` : `andar ${next.floor} (abaixo do seu)`;
+  console.log(`${yellow("▶")} ${bold(next.title)} ${stars(next.difficulty)}  ${dim(next.slug)}  ${dim(why)}`);
+  if (!cfg.token) console.log(dim("(sem login o próximo é sempre o primeiro da torre: korin login)"));
+  if (flags.pick) await commands.pick({ flags, pos: [next.slug] });
+  else console.log(`korin pick ${next.slug}`);
+};
+
+commands.tracks = async () => {
+  const { tracks } = await api(loadConfig(), "GET", "/api/cli/tracks");
+  for (const t of tracks) {
+    const done = t.done === t.total && t.total > 0;
+    console.log(`\n${bold(cyan(t.title))}  ${done ? green("ZERADO ★") : dim(`${t.done}/${t.total}`)}  ${dim(t.id)}`);
+    console.log(dim(`  ${t.description}`));
+    for (const s of t.steps) {
+      const mark = s.state === "solved" ? green("✔") : s.slug === t.next ? yellow("▶") : dim("·");
+      console.log(`  ${mark} ${s.slug.padEnd(28)} ${stars(s.difficulty)}  ${s.title}${s.scored ? "" : dim(" [livre]")}`);
+    }
+  }
+  console.log(dim("\nkorin next --track <id> --pick baixa o próximo passo de um detonado."));
+};
+
+commands.doctor = async () => {
+  const cfg = loadConfig();
+  const [maj, min] = process.versions.node.split(".").map(Number);
+  const nodeOk = maj > 22 || (maj === 22 && min >= 7);
+  console.log(`${nodeOk ? green("✔") : red("✘")} node ${process.versions.node}${nodeOk ? "" : " (precisa de 22.7+)"}`);
+  console.log(`${green("✔")} korin ${VERSION} em ${fileURLToPath(import.meta.url)}`);
+  console.log(`${dim("·")} config em ${configFile()}`);
+  try {
+    const r = await fetch(`${cfg.url}/api/cli/challenges`, { headers: { accept: "application/json" } });
+    console.log(`${r.ok ? green("✔") : red("✘")} servidor ${cfg.url} (${r.status})`);
+  } catch (e) {
+    console.log(`${red("✘")} servidor ${cfg.url}: ${e.message}`);
+  }
+  if (!cfg.token) console.log(`${yellow("!")} sem token: korin login`);
+  else {
+    try {
+      const me = await api(cfg, "GET", "/api/cli/me");
+      console.log(`${green("✔")} token de ${bold(me.username)}`);
+    } catch (e) {
+      console.log(`${red("✘")} token inválido: ${e.message.split("\n")[0]}`);
+    }
+  }
+  const tools = [["gcc", "c"], ["g++", "cpp"], ["rustc", "rust"]];
+  const found = tools.filter(([bin]) => !spawnSync(bin, ["--version"], { stdio: "ignore" }).error);
+  console.log(`${dim("·")} compiladores para korin test --local: ${found.length ? found.map(([b, l]) => `${b} (${l})`).join(", ") : dim("nenhum no PATH; use o servidor")}`);
 };
 
 commands.list = async ({ flags }) => {
@@ -293,22 +356,24 @@ commands.list = async ({ flags }) => {
   const data = await api(cfg, "GET", "/api/cli/challenges" + q);
   let list = data.challenges;
   if (flags.todo) list = list.filter((c) => c.state !== "solved");
+  if (flags.floor) list = list.filter((c) => c.floor === Number(flags.floor));
   if (flags.json) return console.log(JSON.stringify(list, null, 2));
   if (!list.length) return console.log(dim("nada por aqui."));
   const cats = new Map(data.categories.map((c) => [c.id, c.name]));
-  let current = null;
   const width = Math.max(...list.map((c) => c.slug.length));
-  for (const c of list) {
-    if (c.category !== current) {
-      current = c.category;
-      console.log(`\n${bold(cyan(cats.get(c.category) ?? c.category))}`);
+  for (const f of data.floors ?? []) {
+    const here = list.filter((c) => c.floor === f.n);
+    if (!here.length) continue;
+    const state = f.scored === 0 ? dim("em obras") : f.open ? green(`${f.solved}/${f.scored}`) : dim("trancado");
+    console.log(`\n${bold(cyan(`andar ${f.n} · ${f.name}`))}  ${state}`);
+    for (const c of here) {
+      const daily = c.slug === data.daily ? yellow(" ☀ hoje") : "";
+      const kind = c.kind !== "stdio" ? dim(` [${c.kind}]`) : "";
+      const locked = c.locked ? dim(" (trancado)") : "";
+      console.log(`  ${stateTag(c.state)}  ${c.slug.padEnd(width)}  ${stars(c.difficulty)}  ${c.title}  ${dim(cats.get(c.category) ?? c.category)}${kind}${daily}${locked}`);
     }
-    const daily = c.slug === data.daily ? yellow(" ☀ hoje") : "";
-    const kind = c.kind !== "stdio" ? dim(` [${c.kind}]`) : "";
-    const locked = c.locked ? dim(" (andar trancado)") : "";
-    console.log(`  ${stateTag(c.state)}  ${c.slug.padEnd(width)}  ${stars(c.difficulty)}  ${c.title}${kind}${daily}${locked}`);
   }
-  console.log(dim(`\n${list.length} desafio(s). korin pick <slug> para começar.`));
+  console.log(dim(`\n${list.length} desafio(s). korin next --pick baixa o próximo; korin pick <slug> escolhe um.`));
 };
 
 commands.daily = async ({ flags }) => {
@@ -521,12 +586,6 @@ const LOCAL_BUILD = {
   c: (f) => [["gcc", "-std=c17", "-O2", "-Wall", "-o", EXE, f, "-lm"]],
   cpp: (f) => [["g++", "-std=c++20", "-O2", "-Wall", "-o", EXE, f]],
   rust: (f) => [["rustc", "--edition", "2021", "-O", "-o", EXE, f]],
-  go: (f) => [["go", "build", "-o", EXE, f]],
-  zig: (f) => [["zig", "build-exe", f, "-O", "ReleaseSafe", `-femit-bin=${EXE}`]],
-  nasm: (f) => [["nasm", "-felf64", f, "-o", "main.o"], ["ld", "main.o", "-o", EXE]],
-  d: (f) => [["gdc", "-O2", "-o", EXE, f]],
-  pascal: (f) => [["fpc", "-O2", "-v0", `-o${EXE}`, f]],
-  fortran: (f) => [["gfortran", "-O2", "-o", EXE, f]],
 };
 
 function normalize(s) {

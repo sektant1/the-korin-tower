@@ -1,3001 +1,3001 @@
 3000
-pop
+push 3
 push -4
+top
+pop
 pop
+push -5
+pop
+push 3
 top
-push -4
+pop
+push -5
+pop
+push 0
 push -3
-push -2
+pop
+pop
+top
 push 4
 pop
-push 5
+top
+top
 pop
 pop
+push -4
 pop
 push 4
-push 4
-push 5
 pop
-top
-push 0
-push 0
 pop
-top
+push -1
 top
 pop
-push 0
-push 1
-push 1
-top
+pop
+pop
+pop
+push -1
 push -2
-top
-push 1
+push 5
 top
+push -1
+push 5
+pop
 top
-push -2
+pop
+pop
+push 3
+pop
+push 4
+push -1
+push -1
 top
-push -3
 push -4
-push 4
 pop
-push -4
-push -4
 push 0
-push 5
 pop
+push 1
 pop
 pop
 pop
-push -3
-push 3
+push -1
 top
-push 1
 pop
+push -5
+push 5
+push -5
+push -5
 pop
-push 0
-top
 pop
-push 5
-push 3
-push 3
 pop
-push -1
+pop
+pop
+push -5
 pop
+push 2
+pop
+pop
+pop
 top
+push 0
+push -3
 pop
-push -2
+pop
 top
+top
+top
+pop
+pop
 pop
+push 4
+push -2
+top
 push 2
 top
-push -1
+push 5
 pop
 push 3
-push -1
-push 4
+push -4
 pop
 pop
-push -2
-push -2
-push 3
-push 1
 push 2
+pop
+push 3
+push -3
 push -5
+push -3
 pop
-top
 pop
-push 2
 pop
 pop
-push -4
+push 5
+push -2
 pop
+push 4
 pop
+top
+push -2
 pop
+push 4
+push -2
 pop
 push -1
 pop
-push 2
 pop
 top
+pop
+push 3
 pop
+push -2
 push -4
-top
 pop
 pop
-push 1
 push -4
 pop
-push 0
-push 5
+push -5
+top
 pop
 pop
-push -4
+pop
 pop
+push 3
 pop
 top
 top
+push 5
 pop
-push -3
-push 0
-push -1
 pop
-push -2
-push 1
-top
+push 4
+push 4
 pop
-push -2
-push 0
-top
-top
-push 2
 pop
+push 4
+push -4
+push -4
+push -4
+push -1
+push 1
+push 5
+push -4
 push 1
+pop
 pop
+push -3
 push 2
-push -2
 pop
-push -5
-push 1
+push 2
+push 2
 pop
-push -2
-top
+push 0
 pop
 pop
 pop
-top
-top
-push -2
-top
-push -4
 pop
 pop
-push 0
+pop
 push 4
-push -3
 top
 pop
+push -4
 push 1
 pop
+pop
 top
+pop
+pop
 top
-push -2
-push 4
 push 2
-push 0
-push 5
+push 1
+pop
+top
+pop
 push 5
-push 4
+top
+pop
+push -5
+top
+pop
+push 2
+push 1
+pop
+push 1
+push -4
 pop
 push 3
+push 4
 pop
+push 2
+push -5
+push 0
 top
+push 3
 pop
 pop
-push 0
 push -3
+push 2
+push 4
 pop
+push 0
 pop
 pop
 pop
-push -4
 top
+pop
+push 0
+push -5
+push 1
 push -4
+push 3
+push -1
+push 4
+pop
 pop
 top
 push -2
 push -3
+push 0
 top
-push -2
-push -1
-push 2
+pop
 push -3
+push 1
+pop
+push 4
+pop
 push 3
 push -1
-push 3
-push -4
-pop
 top
-push 4
+push 3
 top
 push -1
+push 2
+pop
+top
+push -5
 pop
+push -2
 pop
+push 0
 push -3
+top
+push 1
+push -4
+pop
 pop
 top
 pop
+pop
+push -4
+push 1
 top
-push -3
 pop
 pop
-push 5
+pop
 push -2
-push 2
-top
-push -3
+pop
+push 3
 push -5
 top
-push -2
-pop
 top
+pop
+push -3
+pop
 top
-push -1
+push -3
 push -1
-push 2
-top
-push 1
 top
-push 3
-pop
-push 3
-push -1
+push 2
 push 2
 pop
 pop
-push 2
+top
 push 2
-pop
 push 5
 pop
-push -1
-push -1
-pop
-push -4
-push -3
-push -2
+push 0
 push 1
+top
+top
+top
+push 5
 push 0
-push -2
+push -3
+push -5
+top
+push 3
+push 3
 pop
-push 4
+top
 pop
 pop
-push 5
-push -3
-push -3
-push -4
-push 3
-push 2
 pop
-push 1
 pop
 top
-push 4
-push 3
-push -2
+push -1
 pop
-top
 push 2
-pop
+push 0
 pop
+push 4
 push 3
+push 4
+push 5
 pop
 push -2
-push -2
-push 3
-push -2
-push -1
+push 1
 push -5
+top
+push -2
 top
 push -4
-pop
 push 5
-top
+push -5
+push 5
 pop
 top
-push -2
-push -5
+push -3
 pop
-push 4
-push -2
+push 5
+push -4
 pop
+push -1
+push 2
 pop
-push 1
-push 5
-push 5
+push 4
 top
-push 1
+push 4
+push -3
 pop
-push 0
+push 2
 pop
 pop
-push -3
+push 2
 top
 pop
-push 4
-push 5
-push 5
-push 0
 pop
-push 4
-push 3
-push -4
-push 4
-top
 push -1
 push 0
 pop
-push -4
+pop
+top
 pop
+push 0
 push 5
+push 2
+push 3
 pop
 pop
+push 2
+push 1
 pop
-push -4
-push 4
-top
+push -5
+push -5
 top
-push 0
-pop
-pop
+push 2
 push 4
+push -1
 push -5
-pop
-push -3
-push -3
-pop
+push 2
 pop
 pop
-push -4
-push -5
+top
 pop
 pop
 push -2
-pop
+push 4
+push 2
+push 3
 push 0
-push -5
-top
-push -3
-pop
-push -2
-pop
-top
-push -3
-pop
 push 1
-push 3
-push 4
-push -5
+push 5
 pop
-push -1
+push 5
 pop
-push -2
 pop
+push 2
 top
+push 2
 pop
-push -2
-push -1
+pop
 push -4
 pop
-push 0
+push 2
 push -1
+top
 top
 pop
 pop
+push 0
+push 0
 pop
+push -2
 pop
+push 5
 pop
-top
-top
+push 2
+push -5
+push -5
 pop
-push 1
 pop
-push 4
+push -4
+push -5
 top
 top
+push -2
+push -3
+pop
+push -5
+push 4
+pop
 top
 push 1
-top
 pop
 pop
-push -4
 push 0
+push 2
 pop
+pop
+pop
+pop
 push 5
-push -4
 pop
-top
-top
 pop
-push -4
+pop
 pop
+push -5
+push -2
+push 0
 pop
+push -1
 pop
 pop
 pop
 pop
-push 1
 pop
+top
 pop
-push -1
-push -4
-push -4
-push 1
-push 3
 pop
-push 2
-push 5
+push -2
+push -2
 pop
-push 1
+push 0
+push -4
+push -5
+top
+top
+push -3
+push -3
+push 4
 push 2
-push 5
 top
-push 0
+top
+push -5
+top
+push -3
 pop
 pop
-push -1
+push -5
+push 4
 push 3
 top
-push 3
+top
+top
+push 4
+top
+pop
+push -5
 pop
 push -3
+pop
+push 3
+push 2
+push -2
+push -2
 top
 pop
-push 0
 push 5
-top
+push -4
+push 0
+push -5
 pop
 pop
 push -3
 push -2
-pop
-push 3
-pop
-push 4
+push 0
+push -1
+push -3
 pop
+push 5
 pop
 pop
-push -1
-push -1
+push -5
+push 5
 pop
+push 1
 pop
+push 0
+push 1
 pop
+push 5
+push 5
+push -3
+push 0
+push 5
 push 4
-top
-pop
-push 2
-push 3
-push -2
 top
-pop
 pop
 pop
-push -3
-push -5
 pop
+push 1
 pop
 pop
-top
-push -5
 push 2
-pop
+top
 push 4
-pop
+push 0
 push 2
 push -3
-pop
 pop
-pop
-push 1
 top
 pop
-push 5
+top
+top
+push 4
+top
+top
+top
+push 3
 pop
+push 1
 pop
 push -3
-push 5
-pop
-push 3
-push -5
+push -2
 push -3
-pop
-pop
-pop
-top
+push -4
+push 0
 top
+pop
 push -2
-top
+push -5
+push 5
 push -2
-pop
 pop
 pop
-top
-pop
+push -4
+push 1
 push 4
-push 5
-pop
 push -5
-push 1
-push 3
 pop
-push -2
-push 0
-push -2
-push -5
 pop
+push 1
 top
-push -1
-push -1
-push 5
-push -1
-pop
 pop
-push 0
 pop
 top
-push -3
+push 2
 top
-pop
 push 3
-push -3
-pop
-pop
-push -1
-pop
-pop
+push 1
 pop
-top
 push -2
-push 2
 top
-push -2
-push 2
-push 5
 top
+top
 push -4
-push -3
-push 5
-push -2
-push 0
-push 5
 pop
+push -2
+push -5
+push -4
+top
 pop
-push 1
+push -2
 push 0
-pop
-pop
-pop
-push 2
-push 4
+push 5
+push 3
 pop
 pop
-push -5
 pop
-push 4
 top
-pop
-pop
-pop
 push 5
-pop
-push -5
 pop
-pop
-push -3
+top
 push -4
-pop
-push 0
-push -5
 pop
 pop
-push 2
-push -2
-push -3
 pop
 pop
 push 5
-push 1
-push -5
-push -2
-push -1
-pop
 pop
-pop
-push 2
-push -1
-push 5
-push -3
-push -5
+push -2
 push 0
-pop
 pop
-push -1
-push -1
 pop
 push -4
-pop
+push -5
 push -1
-push 3
-push 4
+push 1
+push -2
+top
 pop
 pop
-push -4
 push 1
+push 3
 pop
+push 3
 push -3
 push 0
-push 5
-push 5
+push -3
 push -1
 top
-push -3
+push 4
 pop
-push 0
+pop
+push -4
+top
 push -5
 top
+push 1
 pop
-push -3
+push -5
 pop
 pop
-top
-top
+push 3
+push 5
+push 0
+push -2
 pop
-top
 pop
+top
+top
 pop
-push 4
-push 2
-push -3
+push -4
 pop
 pop
-push 1
-push 0
-push 3
-push -1
 push -2
-push 0
+pop
+push 4
 top
 pop
-push 3
 pop
-top
-push -2
-push -5
-push 3
 top
-pop
+push 2
 top
-push 5
 pop
 pop
 pop
+push -2
 pop
 push 2
-top
 pop
+push -3
+push 4
 top
+push -5
 push 1
-push 0
-push 3
-push -3
-push -2
 top
 top
-pop
 pop
-push 2
 top
 push 1
-push -2
+push 1
+push -4
+push 0
 top
-push 4
+push 3
+push -2
+push 2
+push -5
 pop
+push -1
 pop
 pop
-top
 pop
-push -5
-push -2
 pop
-push -4
+pop
 pop
+pop
+pop
+push -5
+top
 push -2
 pop
 push 4
-push -1
-push 2
-push -2
-push -1
-push 2
-push -2
+push 1
 pop
 top
-push 3
+top
 pop
-push 2
-push 1
 pop
 pop
 push -3
-pop
-push 5
+push -4
 pop
-push 4
+push 1
 pop
-push 0
-top
-push -1
 pop
+push 5
 pop
 pop
 pop
-push -5
-push -4
+push 3
+push 1
 push 2
-push -4
-push 4
-top
-pop
-top
 push -2
-push -4
+push -1
 pop
+top
+push 4
 pop
+push 0
+push 3
 pop
-push -2
+push -5
 push 5
-pop
-push -2
 pop
 top
+push 4
+push 2
 pop
+push 5
+push 4
+push 3
 push -5
 pop
-pop
 top
-push -1
+top
 pop
+push -2
+push -2
+push 2
+top
 push -5
-push 0
+push -4
 pop
 pop
 pop
-push 4
-push 1
-top
+push 5
+push 0
+push -5
 push -4
+push -1
 pop
-push -3
 pop
-push -1
+pop
 push 2
 pop
-push -3
-push -2
 push 4
-push 0
-push 1
-push -5
 pop
-push -3
 pop
-push 4
-push 1
+push -2
+push -3
+push -1
 pop
 pop
 pop
 pop
-push 0
 push 5
-top
 push -1
-pop
-top
-push 3
-top
-push 3
-pop
 push 4
-push -1
-pop
-top
-push 2
-push -5
-pop
-pop
-push -1
-push 5
-push 1
-top
-pop
-push 0
-push -1
-push -3
 push -2
 pop
-pop
-push -5
-top
-top
-top
-push 5
+push 1
 pop
-push -5
-top
+push 3
 pop
+push 3
 pop
-push 0
+push 2
 pop
 pop
 pop
 pop
 pop
-push -3
 push 0
 pop
 push 1
 pop
-top
-top
 top
+pop
+push 4
+pop
 top
-push -2
 push 2
-push 5
+top
 pop
+push 1
+push -3
+push -5
 pop
 pop
+push 5
 pop
+top
+top
+push -2
 push 3
-push 0
-push -5
-pop
 pop
 push -3
-push -4
 top
-pop
 pop
-push 2
 push 0
 top
+pop
+push -3
+push 5
 top
 top
-push 5
-pop
-pop
 top
-push -5
+push -1
+push 1
 top
 pop
+push 2
 pop
+push 2
 push -3
-pop
-push 1
-push 0
+push -1
+push 4
 push -4
-push 3
-push 3
+pop
+push 4
 push -1
-push 3
+push -2
+push 1
 top
 pop
 pop
 pop
-pop
 top
-push 4
+push -5
+push -1
+push 2
+push 3
 push 0
-push 5
-top
+push 4
+push 1
+push -2
+push -1
 push 1
+pop
+pop
 pop
 push -3
+push -2
+pop
+push -4
+pop
+push -2
 push 3
+push 1
 top
+push 1
+pop
+pop
+push 4
+pop
+pop
 push 3
-top
+push -5
 top
+push 2
 pop
-push 4
+top
 push -1
-push -5
-push 0
-push 3
-push -3
 push 4
-top
 pop
+pop
+push -4
+push -1
+push 0
 pop
 top
-push 2
+push 4
+push 1
 top
+pop
 top
-push 0
 pop
 pop
-push -1
-top
+pop
 pop
+top
+push -4
 push 4
 pop
 pop
+pop
+top
+push -4
+pop
 top
+push -1
+push -2
 pop
+pop
+push 5
 push 4
 pop
+push 5
+push 3
+pop
 push 4
-top
-top
+push 5
+push 4
+push 0
+push 3
+push -4
+push 1
+push -4
 pop
-push -3
+push 0
+push 1
 pop
+push 3
+push 3
+push -1
 pop
 push 0
+push 0
+push 3
 push -2
+push 3
+push -1
 pop
-push -3
 pop
-top
 push -3
-top
+push 5
+pop
+push 2
+push 1
+push -1
 top
-push -5
-push 4
 pop
-push 5
+top
+push 3
 pop
 pop
-push -3
-push -3
 pop
-push 4
+push 3
 pop
-push 4
 pop
 top
-pop
+push 1
 top
+push 2
 top
 pop
-push -3
+push -1
 pop
 pop
-push 5
-push -2
-push 0
-push 3
+push 4
+push 2
 push 3
-push -2
+push 0
+push 5
 pop
 top
 pop
 pop
-top
-push -3
-push 3
-push 2
-push -5
-push 2
-push 2
-push 0
-push 5
 pop
 top
+push 3
 top
 pop
-push -1
+push 2
+push 3
 pop
 push 2
 pop
-top
+push 1
+push -2
 top
-push 5
+push -4
+pop
 push 5
-push 3
 pop
+push 4
+push 4
+push 0
+push 3
 pop
-push -3
 pop
+push -2
+push 4
+top
+push 0
 pop
+top
+top
 pop
 pop
+push 5
+push -5
+push 3
 pop
+top
+push -2
 pop
 push 3
-push -3
 top
 push -4
+push -3
+push -5
 pop
 push -1
 push -5
 pop
+push -3
 pop
-top
-push 3
+pop
+pop
 push -5
-push -3
-push -4
 push -5
-top
 pop
+push -2
 push 5
-push -1
-pop
+top
 pop
-push 2
-push 2
+top
 pop
 push -4
+push -5
 pop
 pop
-push -1
 pop
-top
-push -4
-push 2
-push 4
-push -3
-push -5
 push -1
+push 1
+pop
 push 3
-push 0
-push -3
+pop
 push 3
-push -4
-push 2
+push 0
 pop
-push 2
-push -1
+pop
+push 5
 top
-push 1
-push -2
 pop
+top
 pop
-push 5
+push 3
 push 5
 pop
 pop
-pop
-push -4
 push 1
-push 2
-push 2
-push -4
-pop
 pop
-push -4
-push 2
-push -1
-push 1
+push 5
 top
 push 0
-pop
-push -1
-pop
-push -5
-push 1
-push 1
-push 5
-push -3
+push -4
 pop
-push -2
-push 4
+top
+top
 pop
 pop
 pop
-push -1
 pop
+top
 pop
-push 5
 pop
 top
-push -5
 push 5
-push -1
-pop
 push 2
+pop
+pop
 push -2
-push -4
+push 2
+pop
+push 0
 top
 pop
+push 4
+push 0
+top
 pop
-push 1
+push 3
 push -2
-push 2
+push -2
+top
 pop
+pop
+push 4
 push -2
 pop
+push -3
 top
-push 3
+pop
+pop
+push -3
+pop
 pop
+push 4
+pop
 pop
+push -3
+push -5
+push 1
 push 0
+pop
+push -1
+pop
 pop
+push -5
+pop
+pop
+pop
+push 5
+pop
+push -4
 pop
+push -1
 push 2
 pop
+pop
+pop
+pop
+push -5
+top
+push -4
 push -2
+push -4
+top
+push 1
+pop
+push 3
+push -4
 top
 push -3
-push -1
-push 4
+pop
 push 5
+push 1
 pop
-push -3
 pop
+push -1
 push 0
+push -3
 top
-push 5
 pop
+push -2
+push 2
+push 3
+push 2
 top
-push 5
+push 0
+push -1
 pop
+push 3
+push 4
 top
 top
-push -1
 pop
 push -5
-push 0
-push 2
 pop
-top
-pop
+push -5
+push -3
 pop
 pop
-push 5
 pop
 push -3
 pop
-push 2
-push 3
+push -5
 pop
 pop
+pop
 top
-push 3
-push 5
-push -3
 pop
+top
 push -2
 pop
-push -1
-push -3
-push 1
 pop
-push -3
+pop
 pop
+push -2
+push 0
+top
 push 2
+push -2
 push 0
-pop
+push -1
 pop
+top
 push 3
 pop
-push 1
+top
+push 2
+push 2
+push -1
 push -1
 pop
-top
+push 0
+push -3
 pop
+push -1
 pop
-push 0
-push -4
+top
 push 4
+push -4
 pop
-push 2
-push 5
+push 3
 pop
-push -1
-push -1
 pop
+push -1
 push -2
-push 3
+push 4
 pop
 push 2
+push -2
 pop
-push 0
-push 3
-push -5
-top
-push 1
-top
 pop
-push 1
 pop
 push -2
+pop
+pop
+pop
 push 5
+push -5
+pop
+push 4
+push 0
+pop
 push -2
 top
 pop
-push -5
+pop
+push 3
 pop
+push 5
+push -1
+push 1
+push -2
 push -3
+pop
+pop
+push -1
 top
-push 1
-push 3
+pop
+pop
 pop
+pop
 top
 pop
-push 4
 top
+push 3
 pop
-push -3
-push 1
 pop
-push 1
+push 0
+top
+push -1
+push -4
 pop
+top
 pop
+push 0
 pop
-push -1
 push 3
 push 0
+push 2
 pop
 push 3
+top
 pop
-push 1
 pop
-push 2
-push 2
+push 3
+push -3
 pop
+push -1
 pop
-push 3
-push 3
-push 3
+push 1
 pop
-push -3
-top
 pop
+push 1
 push -3
 top
+push 1
+pop
 push 2
+push 3
+pop
+push -3
 pop
 pop
-top
+pop
+pop
+pop
+push -4
+push -1
 push -2
 pop
 top
-push -5
 push 4
-push 1
-top
-push -3
-top
+push -5
 pop
-push 2
 pop
-push 4
 push -4
-push 2
+push -2
 pop
-top
+push 0
+push -2
 pop
+push -2
+push 3
+push 0
+push 2
+pop
 top
-push -4
 pop
 push -1
-push 2
-push -4
 pop
-push 3
-push 2
-push 3
+push 1
 pop
+push -5
+pop
 top
 top
-push 3
-push 3
+pop
 top
-push -1
-top
+pop
 top
-push -3
-push 3
+push 5
 push 1
-push -2
 push 0
+push -5
 top
+push -3
 top
 pop
+push -2
+push 5
 pop
-top
 pop
-push -3
-push 0
+push 3
 pop
 top
-push -3
-push -1
-push 4
+top
 pop
+push 1
 pop
-top
+push 1
 top
-push -4
+push 4
 pop
-top
 push 3
-pop
 top
 push -1
-push -5
-push 1
+top
 pop
 pop
 pop
-top
-top
 top
-push -4
+push -1
 push 2
+push -3
+pop
+push 5
 top
 pop
-push 0
+push -1
+pop
+push 2
 push 4
 push -5
-push 0
-top
-top
-top
-top
-top
-top
-push 2
-push -1
-push -2
-push -1
+push -5
 pop
+push -5
 pop
-push -2
+top
 pop
-push 3
 push -5
-top
-push -3
+push 0
+push -4
 pop
-top
+push -1
 pop
 pop
-push 4
-top
+pop
 push -3
-push -2
+push 2
+push -5
+push 0
 push 1
-top
-top
 pop
+pop
+push -1
+push -2
+push 5
 push -5
-top
 pop
 pop
-push 2
 push 5
-push 2
-push -2
-push 3
+top
 pop
-push 2
-push -4
+top
+push -2
+push -5
 pop
 push 4
+top
 pop
-push 1
-push 2
-push -2
 pop
+push 3
 pop
-top
-push -1
+push -5
+push -5
 pop
 top
 pop
+push 2
+push -1
+push 4
+push 0
+push 4
 pop
 push 5
-push -1
+top
 pop
 pop
-push -1
 push -2
-push -1
-push -1
-top
+push 4
+push -3
 push 3
-push 0
-push 0
 push -2
-pop
-pop
-pop
 push 5
 top
-push -3
-push 1
-push 0
-pop
-pop
-pop
-pop
-pop
-push 1
+push 2
 pop
-push -3
 pop
 push -4
-push -3
-top
-pop
-top
-pop
-push -5
-pop
-push 0
 push 2
-push 3
-push -1
-push -4
-push 5
+push 1
 push 4
 pop
-pop
-pop
+push 4
 push -4
-push -2
-pop
-push 0
 top
-pop
+push -2
+push -4
 top
-pop
-push 3
 top
 push -5
-pop
+push -5
 pop
+push -1
+push 1
+top
 push 0
 top
+push -4
+push 5
 top
 pop
-push -3
-push 1
+push -5
 pop
 pop
 top
-pop
 push 5
-push -5
-top
 push 5
-push 1
+push 3
 push -3
-push 2
-push 0
-top
+push -4
+push -2
+pop
 push 2
 pop
 push -2
 push -2
-push 5
+top
+pop
+push 0
+push 4
+push -4
+push -2
 push 4
 push -2
 push -5
-push 5
-pop
-push 0
-pop
-pop
 pop
 top
-push -2
-pop
-pop
-push -3
 pop
-push -4
-top
 pop
+push -5
+push 0
 pop
+push -2
 top
-pop
 top
+push -2
+push 3
+push 1
 top
-pop
 push -2
-pop
-push -4
-pop
+top
+push 5
+push 0
 pop
 push -4
-push -5
-push 2
 pop
-pop
+push -1
 pop
-push -4
-push -2
-top
-push -2
 pop
 pop
+push 0
+push 3
+push 2
 top
+push 0
 pop
+push -2
 push -5
-pop
-pop
+push 4
+push 5
 pop
-top
-push 3
 pop
-push -4
 push 4
 pop
 push -4
-top
-push 4
 pop
+push -2
 pop
+push -3
 pop
-push -2
 pop
 pop
+push -3
 pop
+push 4
+push 4
+push 5
+push 2
 top
-push 1
-pop
+push -5
+push -3
+push -2
 pop
 pop
 push 1
-pop
 pop
 pop
-push -3
-push 3
-top
-top
-top
-push -4
 top
 pop
-push 1
-push -1
-top
 pop
-push 3
-top
-push 5
-push -4
 pop
+push 4
 pop
+push -2
+push 4
+push -2
 push 4
+push 4
+top
 pop
-push 2
 pop
+push -3
 push -1
+top
 push 0
-push -1
-push -4
+push 5
+pop
+push 4
+push 4
+push 3
+push 5
 push 0
+pop
 top
 pop
+push -5
 pop
+push 0
 push 3
-pop
 pop
-push 1
-pop
-push -1
 pop
-top
-push 4
-push -5
+push 0
 push 3
-pop
-push 5
 top
+push 2
+push -4
+push -3
+push -2
 push -3
 push 3
-push 4
+push -2
 push -3
-pop
 pop
+push 1
+push 0
+push 0
+push 1
 push -4
-top
+push 3
+push 3
 pop
 push 1
-push -3
-pop
-push -3
-pop
-push 3
-push -3
 push -4
-top
-push -5
+push 4
 pop
-push -5
 pop
+top
+push -1
+top
 push 0
-push -5
-pop
-pop
-pop
+push -2
+push 3
 pop
-push 5
 pop
-push 2
-push 5
-push -3
-push 5
 pop
 pop
-push -3
-push 5
-push 5
 push 4
-push -2
-push 3
-push 1
-push -2
 pop
-push 2
-push -5
-pop
-pop
+push -4
 pop
-push -3
-top
-push -3
+push 2
+push 3
+push 3
 push 0
+top
+push -5
 push 0
-push -2
-push 5
 push 2
+top
 pop
-push 3
+top
+top
 pop
 push -5
 pop
-push 1
+push -2
 push -3
+pop
 push 3
-push 1
-push -5
-top
+push 4
 top
 push 3
-top
-top
-push -3
 top
 top
-push -1
-pop
 pop
+top
 push -3
-pop
-pop
+push 4
+push -5
 pop
+push 3
 top
+push 4
 push -1
 push 1
-push -2
+push 2
+push -4
+push 5
 pop
 push 2
-push -3
 pop
+push 5
 top
 pop
 push -1
-top
-pop
-push 5
-push 5
-pop
-push 5
-pop
-pop
-pop
-push 3
-pop
-pop
 push 0
-push -3
-pop
-push 1
-push -3
-push -3
-push 2
 push 1
-push 5
-top
-top
-push -4
-push 0
+pop
+pop
 push -2
-push 0
-push -4
-push 5
-push 2
+top
+push 3
 pop
 pop
+push 3
 pop
+push 4
 pop
-push -1
-push -2
-push -5
 push 3
-push -2
-pop
 push 4
-push 5
+push -1
+pop
+top
+pop
 pop
 push -4
 push 5
 top
-pop
+push 5
+push -3
 pop
+push -2
+push -3
 pop
-push -4
+push -2
 pop
-push 3
-push 2
 pop
 top
-push 3
 top
-pop
-pop
-push 3
-push 0
 push -1
 pop
 pop
+pop
+push 0
 push -5
-push 5
+top
+top
+top
+push 0
 pop
-push -4
 pop
+push -2
+push 3
 top
-pop
+push -3
 push 0
 top
-pop
-pop
 pop
 top
-push 3
+push -5
+push 4
+push -2
+push -1
 pop
 pop
-push 1
-push -5
-push 5
-push 3
 pop
-push 1
-push -3
 top
 push 5
-pop
-pop
-push 0
+push -4
 pop
-push 0
 pop
-push 1
-push -3
 push 3
-push 1
-push -2
 pop
-push -2
-pop
+push -1
 pop
+push 0
 push 1
-push 2
-push 4
+push -1
 pop
-push -3
-push 4
+top
 pop
 pop
+push -4
 pop
-push 1
+push -5
+push -1
+push -2
+pop
 push 0
+push -5
 top
-push 2
-pop
-push -3
+push -5
 pop
+top
+push -4
 pop
-push 2
 pop
+push 0
+top
 pop
+push 3
 pop
-push 1
+push 2
+push -4
 pop
-push 4
+push -2
+top
+top
+push 3
 pop
+push 2
 pop
-push 1
+push -2
+push -5
 top
+push -5
 push 4
 top
+push -5
 pop
+top
 top
 pop
 pop
+top
+push -3
 push -4
 pop
-pop
+push 1
+top
+top
 pop
+push 2
+push -2
+push -5
+push 4
 push 4
 pop
 pop
-push -1
+push 5
 pop
-push -2
+top
+push 1
 pop
+push -4
 push -1
 top
-push 1
-push 5
-push 0
 pop
-push 0
+push -1
 pop
+push 2
+push 2
 push -5
-push 3
-push -4
-push 5
 push -3
 pop
-push 2
-push -3
-push -5
-top
-push 1
-push 1
+pop
 push -2
-push -1
-push 4
-push 0
-push 3
-push 2
-push -4
+push 1
 pop
-top
 pop
+push 1
+push 0
+push -3
 pop
 pop
+push -3
+push 5
+top
+push -4
 pop
 push 2
-push -5
+push 5
 push -5
 pop
+top
 pop
+push 3
 pop
+push -3
+push -1
 pop
 pop
-push 5
-push 3
-push 3
-push -4
+push 0
 push -2
+push -3
+push 2
+push 3
 pop
 pop
-push -5
-top
 pop
-top
-push -4
 pop
 pop
-push -2
-push -2
-top
+pop
 push -2
 pop
-push -1
-push -4
 top
-push -3
+push 5
 top
-push -2
 top
-push -4
 pop
 top
-push -3
-pop
-pop
-pop
-push -3
+push 3
+top
+top
+top
+top
+push 4
 push 1
-pop
-pop
-push 0
-pop
-push -2
-pop
-push -1
+push 5
 top
+push 1
+push 1
+push -5
+push -1
+pop
 push 2
-top
+push 2
+push 3
 top
 push -2
-push 1
+push 4
+pop
 top
 pop
+push -5
+push 1
+pop
+top
 top
 pop
+top
 push -5
-push -1
+push -5
 pop
-push 5
-push 0
 pop
+push 3
 pop
 push 3
-top
+push 4
 top
+pop
 push 0
-push 1
-push 3
-push -1
-top
 pop
-push 3
 pop
-push 5
-push 2
-push -1
-top
-top
-push -3
-push 3
 pop
-push -1
 push 4
-push 2
 pop
-push 2
-push 4
-push 2
-push -4
+pop
+push -5
+pop
 push 2
-push 1
-push 4
-push -3
-push 5
-push 4
-push -1
 top
+push 5
+pop
+pop
+push 0
+pop
+pop
+pop
+push 3
+push -4
 pop
 pop
-push -4
 pop
-push -4
-push -2
-push 2
 pop
 push 5
 push -1
-push 4
-pop
-push 2
 pop
-push 1
 top
-push -2
-push -4
-push 5
-push 0
-top
-push 1
 pop
+push -2
+push -2
 push -1
 top
-push -3
-push -1
-push -1
-push -3
 pop
 pop
-push -5
+push -3
+top
+push 0
 top
 pop
+push 4
 pop
-push 2
-push -3
+push 5
 pop
-push 3
+pop
 push -5
+pop
+push 1
+top
+push 1
 pop
 top
 pop
 pop
-push 2
 top
-push 3
-push -1
+push -3
+top
+push 5
+top
+top
+push -4
 push 4
 top
 top
-push -1
-push -2
 pop
 pop
-push -5
+push 3
+push 1
+pop
 push -3
+push 2
 pop
-push -2
+push -5
 top
-push 5
+pop
+push -3
+pop
+pop
+push 1
 push 1
+top
 pop
 pop
+push -3
+push 5
 push 3
 push -5
-push 0
-push -2
-push -4
+push 5
 pop
+push -5
 push 5
-push -4
 pop
+push -2
+push 1
 pop
-push -3
+push -5
 push -2
+top
 pop
 pop
+pop
+pop
 push -4
-push 2
-push -1
+push -3
 pop
+push -2
+push -4
 pop
-push -1
-push 0
-top
 pop
-push 5
-push 0
+pop
+push -5
+push 4
+pop
+top
+top
 push 0
 top
 top
-pop
-push -3
+top
 pop
-push 3
 push 2
 top
-push 4
-push 2
-push -5
 pop
+push 0
+push -4
 top
-push -1
-push 4
+pop
+pop
 push -5
+push 5
 pop
-top
+push 4
 pop
+pop
+top
+push 4
 top
 pop
 pop
-push 3
 top
-top
 push -3
-push -5
-top
+push 4
+push 3
 push -4
+pop
 push 3
+push 0
 pop
+push 3
 pop
-push 2
-push 4
 pop
 pop
-push -3
-push 2
-push 1
-push -3
+push 5
+push 0
 pop
-push 4
+pop
+pop
+push 5
 push -1
-push -4
-push 1
 pop
-push 1
 pop
-push -3
-push 1
 pop
-push 4
 pop
-push 0
+push -1
 pop
-top
-push 3
-push 4
 pop
-push -5
 pop
-push -2
+push -4
 push 1
-pop
-push -2
-push 0
+top
 pop
 push 4
-push -1
 pop
+push 2
+top
+push 5
 push 0
 pop
 push 2
+push 4
+pop
+push -2
+push 5
 push -4
 pop
 pop
+push 5
+push -4
+pop
+push 4
+push -2
+push -2
+push -2
 pop
+push 2
+push 0
 pop
+push 5
+top
+push 5
+push 0
+top
 pop
 pop
+push 3
 pop
+push 0
 pop
+push 2
 pop
+push -5
 pop
 pop
 push -1
-push -1
 top
-push 0
+push 2
+push 1
 top
-pop
-pop
-push 4
 push -5
-push 5
-push 3
-pop
-push 0
-push 5
-push 5
+top
 push -2
+push 3
 pop
 pop
+push -4
 top
 pop
-push 3
-top
-push -2
-push -4
-push -5
-push 4
 pop
-top
+pop
+push -3
 push -2
+top
 pop
-push 0
 pop
+top
 pop
 pop
-push -4
-top
 pop
-push 0
-push 0
 pop
-push 5
-push -1
-push -3
 pop
-push 4
+push -3
 pop
 pop
+top
+push -3
+push -2
+push -5
 push 3
-push -1
 push -3
+push 4
+pop
 pop
+pop
+push -3
 push -3
 pop
-top
+push 4
 pop
-push -2
+pop
 pop
+push 4
 push 0
+push -1
+pop
+push -2
 pop
+push 1
 pop
 pop
-push 3
 pop
+push -3
+top
 push 3
-push 1
+push 4
+push -3
+top
+pop
+pop
+push 4
+pop
+push -5
+push -4
 push 1
-push -2
 pop
+push -5
 pop
+push -3
+top
+push 4
+push 4
 pop
 push 4
+top
+push 3
+top
+push 0
+push -3
+pop
+pop
+push 0
+push 0
+push -2
 pop
 top
 pop
 pop
 pop
 pop
+push 5
+push -4
+push -5
 pop
 pop
-push -2
 top
 pop
+push -3
 pop
+push 0
 push -4
-top
 push -2
-push 0
-top
-pop
-pop
-pop
 top
-push 0
-push -2
-pop
 push -3
-push 3
-pop
-push -3
 push -5
+push 5
+push -4
 push -1
 pop
+push 0
+push 4
+push 0
+top
+top
 push -1
+top
 pop
-push 2
-push -1
+push 4
+push -2
 top
+push 2
 pop
+pop
 push -3
+push -1
 push -3
 pop
-top
+push 1
 push 2
-push 0
 pop
+push 5
 push -4
-push 1
 pop
-push 5
-push 4
 top
-push -4
-push 3
-push 2
-push 5
-push 5
 push -1
-push -4
-top
-push 1
-push 4
-push 1
-pop
 top
-push 1
-pop
 top
 pop
-push -2
 push -5
-push -3
-push 3
 pop
+push 5
 push -2
 push -2
+push -4
+push 0
 pop
 top
-push -1
-pop
-push -5
+push 5
+top
+push -4
+push -2
 pop
 pop
 pop
-top
-push 1
 top
+push 2
 push -3
+push 5
+pop
+push 5
+push 1
+push 5
 push -5
 pop
+push -3
+push 4
+push 5
 pop
+top
+push 4
 pop
-push -2
+push -5
 pop
-top
-top
 top
+pop
 push -1
-push -5
 push 5
-push 2
-top
+pop
 push -5
 top
-pop
 pop
-top
-push -2
-push 5
 pop
+push -3
+push 3
 push 0
+push 2
 pop
-push -1
 push -3
-top
-top
-pop
-pop
-pop
-push 5
-pop
 pop
+push -1
 pop
+push 3
+push -1
 pop
-push 4
 pop
+push 5
 top
+push -3
 pop
+push 5
 push 0
-top
-pop
-pop
-top
-push -4
+push 0
 pop
-push -2
-push -3
+push 1
 push 1
+push -1
+push -1
+top
 push -3
-push 2
-push -4
 push 0
-push 4
+push 0
+pop
+push -4
 push -3
+push 0
+push -5
 pop
 pop
+push -1
+push 1
+push -1
+top
 pop
 push -1
-push -3
 top
-push 2
-push -2
+pop
 top
-push 2
+pop
+pop
 push -1
+top
+top
+push 5
 pop
 pop
-push -2
-push -5
 pop
 pop
+push 2
 pop
 top
-push 3
+push 1
+push -4
+push -2
+top
 pop
 pop
+push -3
 pop
 push -2
 pop
-top
+push -4
 pop
-push -2
-push -2
+top
 pop
 pop
 push -1
-top
 top
-pop
+push -3
 pop
 pop
 push -4
 pop
-push 1
+push -5
 pop
+push 1
 pop
-push -1
-push -1
-push -5
-push 4
-push -4
 pop
+push 0
 pop
 pop
-top
 push 3
 pop
-push 5
-push 1
-push -5
-push 2
-push -3
+push -1
+push -2
+push 4
 top
-push -3
+push 0
 top
+push -3
 push 4
 pop
 pop
 pop
 push -2
-push 2
+push -1
+push -4
 pop
-top
 pop
-top
-push 2
+push 5
 pop
 pop
 push 0
-pop
+push 1
 top
-pop
+push -3
 push 2
-pop
-push 4
-push 3
+push 2
 pop
-push -4
-push 5
+push 1
 pop
 pop
-push 1
 pop
-push -3
-top
-top
+push 0
+push -5
 pop
-top
+push -5
 top
-push 1
-push 3
-pop
+push -4
 pop
 pop
 pop
-push 5
-push -5
-push 3
 push 2
+top
+top
 pop
-push 0
-push -5
 push -1
-pop
+push -5
+push -2
 push 2
-push 0
 top
-push -2
 pop
-top
+push -2
 push 0
+push 1
+top
 push 2
-push 3
-push 5
-push 4
-pop
-push -4
-push 0
-pop
-pop
-push 4
 push -3
-push 3
+top
 pop
-push -3
+top
+push -1
+push -2
+top
 pop
+top
 pop
-push 1
+push -5
+push -2
 pop
-push 2
-push -4
 top
-pop
 pop
-push 0
+push 2
+push 1
 push 5
-pop
+push 5
+push 0
 push 4
-push 1
-push 1
 top
-pop
-push 2
 push -3
 pop
-top
 pop
-push -3
 top
-push 1
+push 2
 top
+push 2
 pop
-push 1
-push 3
-push -2
-push 4
-top
-push 5
+push 2
 top
-push -5
-push -5
 pop
 pop
+top
 push -1
 push -3
 pop
 pop
 pop
-push 3
-push -2
-push 2
+push -3
 pop
-top
+push 2
 push -4
 pop
-push -2
-top
-push 5
+push -1
 pop
+pop
 push 4
+pop
 top
+push 5
+pop
+push -5
 push 2
-push 1
+push -4
 push 3
+push -2
 pop
-push -1
-push -5
-push 1
 push -5
-pop
-pop
-pop
 push -3
-pop
+top
 pop
+push 0
+push 3
 pop
 push -2
 pop
 pop
-push -5
-top
-pop
+push 5
+push -4
 pop
-push -1
-top
-top
 pop
-top
-push 3
 pop
+push 1
 pop
-push -5
-push -5
-push -5
 push -1
-top
-push 1
 push 3
-push -1
-top
-push 5
-push -4
-push -5
+push 2
 pop
 push 3
+top
+pop
+top
+top
 pop
+push 5
 pop
 pop
-push -2
 pop
-push 0
 pop
-top
 top
-push 0
 pop
 push 4
-push 0
+top
+push 5
 push -3
-push 1
 push -5
 pop
+push 2
 push 1
-push -3
-push 3
-push -1
-push 0
+push 4
 pop
-push 2
-top
-top
-push -1
 pop
+push -1
+push 4
+push 4
+push 2
 pop
+top
 top
+push 0
 pop
+push 1
 pop
+push 0
 pop
 top
-push -1
+push -3
 push 3
-push 5
+push -3
+push 4
+push -1
 push -2
-push 1
-pop
-push 5
-top
-push -4
+push -1
+push -1
 push -3
-top
-push 2
-push -5
 top
-push 0
-push -3
+pop
 pop
 push -1
-push 0
-push -3
-push -4
 pop
-push 5
-push 1
-push 3
-push 4
-push 1
-push 5
-push 4
-push -5
 top
-push 1
 pop
-push -4
+top
 pop
-push 3
+push -4
 pop
-push 0
 push 4
-pop
-top
-push 5
-top
 pop
+push 3
+push -2
+push -4
 pop
-push 0
 top
-push -3
+push 1
+pop
 top
 top
-push -3
-push 0
-push 3
 pop
+push -4
+push -1
 top
-push -3
-push 1
+push -2
+pop
+pop
 top
-push 4
-push -5
 pop
 pop
+pop
+pop
 push 1
-push -1
+push 0
 push 3
 pop
-push 4
-pop
 pop
+push 3
+push -1
+push 2
+push -4
+push -2
 pop
+push 2
 pop
+push 2
 pop
 pop
-push 5
-push 5
 top
 top
-push 1
-push -1
-push -4
-push -1
 pop
-push 3
+push -5
 pop
-top
+push -5
+push -3
 pop
 pop
-push -3
-push -5
-push -1
 pop
 pop
-push 4
-push 3
-push 4
-push -2
-push -2
+push 1
+pop
+push 5
+pop
 pop
 top
 pop
 pop
-push -5
-push -4
 push 2
 top
-push -2
 push 1
-push 2
-push 2
-push 5
 push -2
+push 3
+push -3
 pop
-push -4
-push -2
-push 5
+push 3
+push 1
 pop
+push -5
+push -2
+push -2
+push -5
+push -1
 pop
-push 0
+push -5
+push -5
+push -5
+push 1
 pop
 push 2
+push -1
+push -4
+push -1
+push -4
+push 3
 pop
-top
+push 4
+push 1
 pop
 pop
 pop
 pop
 pop
 pop
-push -4
+top
 push 2
-pop
+push 2
+top
+top
 push 1
 pop
+push -3
+push -3
+push -2
 pop
-push -4
 pop
-push 3
 pop
-top
-push 2
 pop
 top
-top
+push -1
 push 0
-push -5
-pop
 top
+pop
+push -2
+push 1
+pop
 push 3
-push -3
-push 4
-push 4
+push 5
 pop
+top
+top
 pop
-push -4
+pop
+push -1
 pop
 top
 pop
-pop
-push 2
-push -4
+top
+top
 pop
+push -1
+push -1
 push -5
 push -2
 pop
+push 2
 pop
-push 3
 top
-push 1
-pop
-pop
-push -3
+top
 pop
+push 4
+push 5
 pop
 pop
 pop
 pop
-push -4
-push 5
-push -4
+push 2
+top
 push -3
+push 2
+push 3
 top
-push -5
 pop
-push 0
-pop
 top
-push 2
 pop
-top
+push -1
 pop
+push 3
+push 3
+push -3
+push 1
+top
 pop
+push 3
+push 2
+top
+push -4
+push -4
 pop
+push 2
 pop
-push -5
-top
-push 3
-push 4
+push -3
+push -3
 pop
 pop
 pop
-push 0
-top
-push -1
-push -5
-push 1
 push -3
+pop
 push 4
-push -4
 push 0
 top
 pop
+push 2
 push -4
-push 3
-top
-top
-top
+push 1
 pop
-push 4
-push 0
+push 5
+push -3
+push -3
 push 5
+push 4
 pop
 top
-pop
 push 1
 push 4
+push -3
+top
 pop
 pop
-push -4
+push 2
+push 3
+top
 pop
+push -5
 pop
+top
 top
+push -4
+push -3
+push -3
+push 2
 pop
-push 3
 pop
-top
 push -3
+push -1
 pop
 pop
+push -5
 pop
+push 4
+push 4
+push -4
+top
+push -1
+push 4
+push 4
+top
+push 2
 push -2
 top
+push -3
+push -1
 pop
-push 5
+push -2
+pop
+pop
 push 3
 top
 pop
-push 4
+push 5
 push -2
-push -1
-top
+push 5
 pop
 push 3
-push -2
 push -5
 pop
-push 4
-push 2
 top
-pop
-push -5
-push 1
 pop
+push 3
 top
-pop
-push -5
-push -2
-push 4
-push -2
-pop
-pop
-push 1
 pop
-push 1
 push -5
 top
-push 1
-push -5
-push 5
 pop
 push 4
-push -4
-push 5
+top
 pop
-push 4
-push 1
+top
 pop
 pop
 pop
-push 0
 pop
-push -2
+push 5
+top
 push 3
-pop
+push -3
 pop
+push -4
 push 3
+push -1
+push 4
+push 5
+push -5
+push 1
 pop
+push 4
+push -1
+push 2
+push 3
+top
+push -1
+push 3
 pop
+top
+push -5
+push -5
+push -5
 pop
-push 0
 pop
-top
+push 3
+push 2
+push 2
+push -1
 push 0
 pop
-pop
-top
+push -4
 pop
+push 5
+push 5
+push 0
 pop
-push -5
+push 1
+push -3
 pop
 pop
 pop
-top
-push 4
+push -2
 top
 pop
 push -1
-pop
-push 4
+push 1
+top
+push -5
 pop
 pop
-push 0
-top
 push -5
+push -3
+push 5
+top
+push -4
 pop
 top
+push -3
 push -5
 top
 top
 pop
-top
 push 5
-push 2
+push 0
+pop
 push 1
-top
-push 2
-top
-push 3
-top
-push -4
-top
-push 4
-top
 pop
 top
-pop
-push 1
 top
-push -5
-push -2
 pop
-push -1
+push 5
 pop
-push -1
+push 5
+top
+push 3
 pop
 pop
 push 0
+push -2
+top
 pop
-push 0
+push 5
 pop
-push 2
+push 4
 push 5
 push 5
 pop
-push 3
 push 3
+push -2
 top
-push 2
+push -5
 pop
+push -4
+push -1
 pop
+push 4
 pop
 pop
+push -1
+push 3
+push -4
+top
+push -3
+top
+push 0
 pop
 pop
+push -4
 push 5
+push -2
+top
 pop
-push -1
+pop
 pop
+pop
 push -1
-push -5
 pop
+push -2
+top
+push -4
+push 0
+top
+top
+top
 pop
 pop
 pop
+push -3
+push -4
+top
 pop
 push 4
-push -4
+push -3
 push -5
-push 3
+push 0
+push -4
 pop
-push -3
+pop
+pop
+push -4
+push 1
+pop
+push -5
+push -4
+push 1
+push 5
+push -1
+push -2
