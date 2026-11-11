@@ -27,15 +27,16 @@ const PALETTES: Record<EditorTheme, Palette> = {
   // Cores padrão do Vim (:syntax on sem colorscheme, fundo escuro), de
   // runtime/syntax/syncolor.vim: Statement #ffff60, Constant #ffa0a0,
   // Comment #80a0ff, Identifier #40ffff, Type #60ff60, PreProc #ff80ff.
+  // O fundo segue o escuro roxo dos painéis do site em vez do preto puro.
   vim: {
     dark: true,
-    bg: "#000000",
-    fg: "#ffffff",
-    gutterBg: "#000000",
-    gutterFg: "#cd7f32", // LineNr: Brown
+    bg: "#100a1d",
+    fg: "#f2ecff",
+    gutterBg: "#0c0716",
+    gutterFg: "#8a76c4",
     cursor: "#ffffff",
-    selection: "#00008b", // Visual: azul marinho
-    activeLine: "#101010",
+    selection: "#3a2d5c",
+    activeLine: "#1a1230",
     keyword: "#ffff60",
     string: "#ffa0a0",
     number: "#ffa0a0",
@@ -127,8 +128,8 @@ const PALETTES: Record<EditorTheme, Palette> = {
   },
 };
 
-// Fonte de código da época (Lucida Console, Win 3.1/95) e legível.
-const CODE_FONT = "'Lucida Console', 'Courier New', Courier, monospace";
+// Mesma pilha de código do resto do site (globals.css: --font-code).
+const CODE_FONT = "Consolas, 'Lucida Console', 'DejaVu Sans Mono', 'Liberation Mono', Menlo, monospace";
 
 export function editorTheme(id: EditorTheme, fontSize = 15): Extension {
   const p = PALETTES[id] ?? PALETTES.vim;
@@ -138,7 +139,8 @@ export function editorTheme(id: EditorTheme, fontSize = 15): Extension {
       ".cm-content": { fontFamily: CODE_FONT, caretColor: p.cursor, lineHeight: "1.55" },
       ".cm-scroller": { fontFamily: CODE_FONT },
       ".cm-content, .cm-gutter": { minHeight: "100%" },
-      ".cm-gutters": { backgroundColor: p.gutterBg, color: p.gutterFg, border: "none", borderRight: `2px solid ${p.gutterFg}` },
+      ".cm-gutters": { backgroundColor: p.gutterBg, color: p.gutterFg, border: "none", borderRight: `1px solid ${p.gutterFg}55` },
+      ".cm-lineNumbers .cm-gutterElement": { padding: "0 8px 0 10px" },
       ".cm-activeLine": { backgroundColor: p.activeLine },
       ".cm-activeLineGutter": { backgroundColor: p.activeLine },
       "&.cm-focused .cm-cursor": { borderLeftColor: p.cursor },

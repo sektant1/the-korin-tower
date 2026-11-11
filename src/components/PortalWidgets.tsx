@@ -2,42 +2,9 @@
 // Widgets de "portal pessoal" dos anos 90, com tempero Dragon Ball.
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useProgress } from "@/lib/client/store";
 import { KONAMI_LINES } from "@/lib/site-content";
 import { GIFS } from "@/lib/gifs";
 import { Gif } from "./Gif";
-
-/** As 7 esferas: uma acende para cada desafio resolvido neste navegador. */
-export function DragonBalls() {
-  const solved = Object.values(useProgress()).filter((v) => v === "solved").length;
-  const found = Math.min(7, solved);
-  return (
-    <div className="dragon-balls">
-      <div className="balls" role="img" aria-label={`${found} de 7 esferas encontradas`}>
-        {Array.from({ length: 7 }, (_, i) => (
-          <Gif key={i} gif={GIFS.sphere} height={22} className={i < found ? "ball on" : "ball"} />
-        ))}
-      </div>
-      {found < 7 ? (
-        <p className="balls-text">{found}/7 esferas</p>
-      ) : (
-        <p className="balls-text wish">
-          Shenlong apareceu! Faça seu pedido no <Link href="/guestbook">guestbook</Link>.
-        </p>
-      )}
-    </div>
-  );
-}
-
-/** Nível de poder do jogador (pontuação) com o clássico da dublagem. */
-export function PowerLevel({ score }: { score: number }) {
-  return (
-    <div className="power-level">
-      <span>NÍVEL DE PODER</span> <b>{score}</b>
-      {score > 8000 && <div className="over-8000">É MAIS DE 8000!</div>}
-    </div>
-  );
-}
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 

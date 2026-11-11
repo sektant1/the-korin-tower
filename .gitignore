@@ -12,3 +12,14 @@ next-env.d.ts
 .vercel
 .env*
 !.env.example
+
+# material de referência do dono do site (fica local; o site usa só public/andares, korin-banner.png, snake-way.svg, buttons/ e fonts/*.ttf)
+public/zones_backgrounds/
+public/zones_backgrounds.zip
+public/bg.png
+public/KorinTowerBanner.png
+public/website-banner.jpg
+public/website-banner-ofc.jpg
+public/8280809093_6712d79afc_c.jpg
+public/fonts/saiyan_sans.zip
+public/fonts/dbz.png

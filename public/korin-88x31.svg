@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a4fd6"/>
+      <stop offset="1" stop-color="#2a1458"/>
+    </linearGradient>
+  </defs>
+  <rect width="88" height="31" fill="url(#g)"/>
+  <rect x="0.5" y="0.5" width="87" height="30" fill="none" stroke="#ffd34d"/>
+  <circle cx="13" cy="15.5" r="8.5" fill="#ff9a1f" stroke="#7a3000"/>
+  <circle cx="10.5" cy="12.5" r="2" fill="#ffe9a8" opacity="0.85"/>
+  <polygon points="13,11.5 14.2,14.4 17.3,14.6 14.9,16.6 15.7,19.6 13,18 10.3,19.6 11.1,16.6 8.7,14.6 11.8,14.4" fill="#c81e1e"/>
+  <text x="26" y="13" font-family="Verdana, Arial, sans-serif" font-size="8.5" font-weight="bold" fill="#ffe36b">KORIN</text>
+  <text x="26" y="24" font-family="Verdana, Arial, sans-serif" font-size="8.5" font-weight="bold" fill="#ffffff">TOWER</text>
+  <text x="85" y="28" font-family="Arial, sans-serif" font-size="5" fill="#ffd34d" text-anchor="end">C/C++/ASM</text>
+</svg>

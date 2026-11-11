@@ -38,6 +38,17 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 - **CLI (Fase 6):** `korin pick <slug>` baixa enunciado, template e testes públicos para uma pasta; `korin test`/`korin submit` usam a mesma `/api/run` do site, autenticados por token pessoal (`Authorization: Bearer korin_...`, gerado em `/conta`). A CLI é um arquivo Node servido pelo próprio site em `/cli/korin.mjs`. Design em [docs/fase-6.md](docs/fase-6.md).
 - **Pontos:** 100 × dificuldade; resolver o desafio do dia no próprio dia vale +50%; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
 
+## A Torre (progressão)
+
+Regras em `src/lib/tower.ts` (puras, com testes), usadas pelo servidor (`/api/run`, perfil, CLI) e pelo navegador (`src/components/Tower.tsx`):
+
+- Cada **andar é uma dificuldade** (1 a 5), com um lugar de Dragon Ball por andar (`FLOOR_NAMES`, imagens em `public/andares`). O andar 1 está sempre aberto; o andar N+1 abre quando o jogador resolve 2 desafios com testes do andar N (ou todos, se há menos que 2). A torre tem 8 andares no mapa: os sem desafios ficam "em obras" e não abrem.
+- **Detonados** (`challenges/tracks.yml`) são escadas: o próximo passo de um detonado abre mesmo com o andar trancado. O desafio do dia também abre sempre.
+- Só desafios `stdio` contam para subir; shader e canvas seguem o andar mas são passos livres.
+- **Esferas do Dragão**: uma por detonado zerado. Medalhas "Meio da Torre" e "Topo da Torre" ao abrir os andares 3 e 5.
+- Convidado: a tranca é só no navegador (o progresso mora no `localStorage`). Com conta, `/api/run` recusa desafio trancado.
+- A home mostra um único "continuar": detonado em andamento, senão o primeiro desafio aberto do andar atual.
+
 ## Estrutura de pastas
 
 ```

@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { PostForm } from "@/components/PostForm";
 import { PostList } from "@/components/PostList";
 import { Difficulty } from "@/components/Retro";
+import { ChallengeGate, FloorStrip, TrackBar } from "@/components/Tower";
+import { getTrack } from "@/lib/tracks";
+import { floorOf } from "@/lib/tower";
 import { ChallengeWorkspace } from "@/components/workspace/ChallengeWorkspace";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getChallenge } from "@/lib/challenges";
@@ -16,7 +19,7 @@ import { DAILY_BONUS } from "@/lib/scoring";
 import { COMMENT_MAX, listComments } from "@/lib/social";
 import { addComment, deleteComment } from "./actions";
 
-type Params = { params: Promise<{ slug: string }> };
+type Params = { params: Promise<{ slug: string }>; searchParams: Promise<{ trilha?: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const c = await getChallenge((await params).slug);
@@ -48,20 +51,22 @@ function RecordTable({ title, unit, rows }: { title: string; unit: string; rows:
   );
 }
 
-export default async function ChallengePage({ params }: Params) {
-  const { slug } = await params;
+export default async function ChallengePage({ params, searchParams }: Params) {
+  const [{ slug }, { trilha }] = await Promise.all([params, searchParams]);
   const c = await getChallenge(slug);
   if (!c) notFound();
 
   const user = await getCurrentUser();
-  const [statement, notes, saved, comments, records, daily] = await Promise.all([
+  const [statement, notes, saved, comments, records, daily, track] = await Promise.all([
     renderMarkdown(c.statement, c.slug),
     c.notes ? renderMarkdown(c.notes, c.slug) : null,
     user ? getChallengeProgress(user.id, c.id) : null,
     listComments(user, c.id),
     c.kind === "stdio" ? getRecords(c.id) : null,
     getDaily(),
+    trilha ? getTrack(trilha) : null,
   ]);
+  const inTrack = track?.steps.some((st) => st.slug === c.slug) ? track : null;
   const isDaily = daily?.challengeId === c.id;
   const publicTests = c.tests.filter((t) => !t.hidden);
   const hiddenCount = c.tests.length - publicTests.length;
@@ -73,9 +78,12 @@ export default async function ChallengePage({ params }: Params) {
           <span>enunciado.txt</span>
         </div>
         <div className="window-body">
+          <FloorStrip n={floorOf(c)} className="statement-scene" />
           <nav className="crumbs" aria-label="Você está em">
-            <Link href="/desafios">Desafios</Link> » <Link href={`/categoria/${c.category.id}`}>{c.category.name}</Link>
+            <Link href="/desafios">A Torre</Link> » <Link href={`/desafios#andar-${floorOf(c)}`}>Andar {floorOf(c)}</Link> »{" "}
+            <Link href={`/desafios?sala=${c.category.id}`}>{c.category.name}</Link>
           </nav>
+          {inTrack && <TrackBar trackId={inTrack.id} current={c.slug} />}
           {/* Só no celular: o enunciado fica empilhado acima do editor. */}
           <a href="#editor" className="btn98 small mobile-only">
             ↓ Ir para o editor
@@ -168,8 +176,10 @@ export default async function ChallengePage({ params }: Params) {
         </div>
       </article>
 
+      <ChallengeGate slug={c.slug}>
       <ChallengeWorkspace
         slug={c.slug}
+        trackId={inTrack?.id ?? null}
         kind={c.kind}
         languages={c.languages}
         templates={c.templates}
@@ -179,6 +189,7 @@ export default async function ChallengePage({ params }: Params) {
         defaultStdin={publicTests[0]?.input ?? ""}
         saved={saved && { drafts: saved.drafts, hintsRevealed: saved.hintsRevealed }}
       />
+      </ChallengeGate>
     </div>
   );
 }

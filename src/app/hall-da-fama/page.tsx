@@ -22,11 +22,11 @@ export default async function HallOfFamePage() {
         <Gif gif={GIFS.sphere} height={34} /> HALL OF FAME <Gif gif={GIFS.sphere} height={34} />
       </FlameTitle>
       <p className="center tournament">-=[ TORNEIO DE ARTES MARCIAIS DA TORRE ]=-</p>
-      {/* Campeão no centro, ladeado por dois guerreiros carregando ki (nenhum golpe cruza a cena). */}
+      {/* Campeão no centro; de um lado quem treina, do outro o rival de braços cruzados. */}
       <div className="arena" aria-hidden="true">
         <Gif gif={GIFS.powerUp} height={110} className="arena-left" />
         <Gif gif={GIFS.gokuWon} height={130} className="arena-champion" />
-        <Gif gif={GIFS.gotenksPowerUp} height={110} className="arena-right" />
+        <Gif gif={GIFS.vegeta} height={110} className="arena-right" />
       </div>
       <div className="highscores">
         <p className="hs-title">

@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { updateSettings, useSettings } from "@/lib/client/store";
-import { useAccount, useProgressMap } from "./Account";
-import { PowerLevel } from "./PortalWidgets";
+import { useProgressMap } from "./Account";
 
 /** Reflete as preferências em atributos do <html> (o CSS faz o resto). */
 export function SettingsApplier() {
@@ -88,26 +87,6 @@ export function VisitCounter() {
           </span>
         ))}
       </span>
-    </div>
-  );
-}
-
-/** Placar do "jogador 1": pontos da conta (logado) ou desafios resolvidos neste navegador. */
-export function PlayerOne({ total }: { total: number }) {
-  const account = useAccount();
-  const progress = useProgressMap();
-  const solved = Object.values(progress).filter((v) => v === "solved").length;
-  const score = account ? account.points : solved * 100;
-  const pct = total ? Math.round((solved / total) * 100) : 0;
-  return (
-    <div className="player-one">
-      <PowerLevel score={score} />
-      <div className="xp-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Desafios resolvidos">
-        <span style={{ width: `${pct}%` }} />
-      </div>
-      <div className="p1-foot">
-        {solved}/{total} desafios
-      </div>
     </div>
   );
 }

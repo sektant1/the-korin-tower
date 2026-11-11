@@ -3,12 +3,14 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { listCategories, listChallenges } from "@/lib/challenges";
 import { getDaily } from "@/lib/daily";
 import { getProgressSummary } from "@/lib/progress";
+import { floorOf, isOpen } from "@/lib/tower";
+import { getTowerData } from "@/lib/tower-server";
 
 // `korin list`: todos os desafios, com o estado do jogador quando há token.
 // Público sem token (a lista já aparece no site sem login).
 export async function GET(req: Request) {
   const category = new URL(req.url).searchParams.get("category") ?? undefined;
-  const [challenges, categories, daily, user] = await Promise.all([listChallenges(category), listCategories(), getDaily(), getCurrentUser()]);
+  const [challenges, categories, daily, user, tower] = await Promise.all([listChallenges(category), listCategories(), getDaily(), getCurrentUser(), getTowerData()]);
   const progress = user ? (await getProgressSummary(user.id)).map : {};
   return NextResponse.json({
     daily: daily?.slug ?? null,
@@ -18,6 +20,9 @@ export async function GET(req: Request) {
       title: c.title,
       category: c.categoryId,
       difficulty: c.difficulty,
+      floor: floorOf(c),
+      // sem token não há progresso: nada aparece trancado
+      locked: user ? !isOpen(tower, progress, c.slug) : false,
       kind: c.kind,
       languages: c.languages,
       tags: c.tags,

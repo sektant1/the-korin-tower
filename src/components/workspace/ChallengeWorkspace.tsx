@@ -17,6 +17,7 @@ import { renderShaderPpm } from "@/lib/client/shader";
 import type { RunResponse } from "@/lib/run-api";
 import { HINT_PENALTY } from "@/lib/scoring";
 import { useAccount, useProgressMap } from "../Account";
+import { NextStepBar } from "../Tower";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { ShaderCanvas } from "./ShaderCanvas";
@@ -41,6 +42,8 @@ interface Props {
   hintsTotal: number;
   hasSolution: boolean;
   defaultStdin: string;
+  /** detonado pelo qual o jogador chegou (?trilha=), para o "próximo" seguir a ordem dele */
+  trackId: string | null;
   /** Com login: o que está salvo na conta. Sem login: null (usa o localStorage). */
   saved: { drafts: Partial<Record<LanguageId, string>>; hintsRevealed: number } | null;
 }
@@ -292,7 +295,7 @@ export function ChallengeWorkspace(p: Props) {
       submit: () => void execute("submit"),
       quit: () => {
         save(false);
-        router.push("/desafios");
+        router.push(p.trackId ? `/trilhas/${p.trackId}` : "/desafios");
       },
       hint: () => void nextHint(),
       stdin: () => {
@@ -302,7 +305,7 @@ export function ChallengeWorkspace(p: Props) {
       output: () => setTab("out"),
       setTheme: (t: EditorTheme) => updateSettings({ editorTheme: t }),
     }),
-    [execute, nextHint, router, save],
+    [execute, nextHint, router, save, p.trackId],
   );
 
   const switchLang = (next: LanguageId) => {
@@ -382,8 +385,8 @@ export function ChallengeWorkspace(p: Props) {
               </button>
             </>
           )}
-          <button type="button" className="btn98" onClick={() => nextHint()} title=":hint">
-            Dica
+          <button type="button" className="btn98" onClick={() => setTab("hints")} title="abre as dicas (:hint revela a próxima)">
+            Dicas
           </button>
           <label className="check98">
             <input type="checkbox" checked={settings.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Vim
@@ -414,6 +417,7 @@ export function ChallengeWorkspace(p: Props) {
       </div>
 
       <div className="ws-io">
+        <NextStepBar slug={p.slug} trackId={p.trackId} />
         <div className="tabs98" role="tablist" aria-label="Painel de saída">
           {tabs.map((t) => (
             <button

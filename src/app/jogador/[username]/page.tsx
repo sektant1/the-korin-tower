@@ -7,6 +7,7 @@ import { Difficulty, FlameTitle, Window, arcade } from "@/components/Retro";
 import { normalizeUsername } from "@/lib/auth/password";
 import { GIFS } from "@/lib/gifs";
 import { getPlayerProfile } from "@/lib/profile";
+import { FLOORS } from "@/lib/tower";
 
 type Params = { params: Promise<{ username: string }> };
 
@@ -28,6 +29,8 @@ export default async function PlayerPage({ params }: Params) {
             <Gif gif={GIFS.goku} alt="" />
           </p>
           <dl className="stats98">
+            <dt>Andar</dt>
+            <dd>{profile.floorsOpen} de {FLOORS}</dd>
             <dt>Pontos</dt>
             <dd>{profile.points}</dd>
             <dt>Resolvidos</dt>

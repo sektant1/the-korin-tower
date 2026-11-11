@@ -20,13 +20,13 @@ export function TrackProgress({ slugs }: { slugs: string[] }) {
 }
 
 /** Primeiro passo ainda não resolvido: é para onde o botão "continuar" leva. */
-export function TrackNext({ steps }: { steps: { slug: string; title: string }[] }) {
+export function TrackNext({ trackId, steps }: { trackId: string; steps: { slug: string; title: string }[] }) {
   const progress = useProgressMap();
   const next = steps.find((s) => progress[s.slug] !== "solved");
-  if (!next) return <p className="pass">Trilha zerada.</p>;
+  if (!next) return <p className="pass">Detonado zerado. Uma Esfera do Dragão é sua.</p>;
   return (
     <p>
-      <Link href={`/desafio/${next.slug}`} className="btn98 play">
+      <Link href={`/desafio/${next.slug}?trilha=${trackId}`} className="btn98 play">
         {steps[0].slug === next.slug ? "COMEÇAR" : "CONTINUAR"}: {next.title} <span className="arrow" aria-hidden="true">►</span>
       </Link>
     </p>

@@ -6,7 +6,9 @@ import { judge, type TestOutcome } from "@/lib/judge/judge";
 import { getRunner, flagWarnings, sanitizeFlags } from "@/lib/runner";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getDaily } from "@/lib/daily";
-import { recordSolve } from "@/lib/progress";
+import { getProgressSummary, recordSolve } from "@/lib/progress";
+import { lockInfo } from "@/lib/tower";
+import { getTowerData } from "@/lib/tower-server";
 import { recordSubmission } from "@/lib/records";
 import { clientKey, rateLimit, Semaphore } from "@/lib/rate-limit";
 import type { RunResponse } from "@/lib/run-api";
@@ -98,6 +100,12 @@ export async function POST(req: Request) {
   if (!challenge.languages.includes(language)) return bad(400, `${language} não é permitida neste desafio`);
 
   const user = await getCurrentUser();
+  // A torre tranca por andar. Convidado é travado só no navegador (o progresso dele mora lá).
+  if (user) {
+    const [tower, progress] = await Promise.all([getTowerData(), getProgressSummary(user.id)]);
+    const lock = lockInfo(tower, progress.map, slug);
+    if (lock) return bad(403, `andar ${lock.floor} trancado: resolva mais ${lock.missing} desafio(s) do andar ${lock.from}`);
+  }
   const limit = rateLimit(user ? `user:${user.id}` : `ip:${clientKey(req.headers)}`, Number(process.env.RUN_RATE_PER_MINUTE ?? 20));
   if (!limit.ok) {
     return bad(429, `muitas execuções; tente de novo em ${limit.retryAfterS}s`, { "retry-after": String(limit.retryAfterS) });

@@ -26,18 +26,18 @@ export default async function TrackPage({ params }: Params) {
         <h2 className="track-title">{track.title}</h2>
         <p>{track.description}</p>
         <TrackProgress slugs={track.steps.filter((s) => s.scored).map((s) => s.slug)} />
-        <TrackNext steps={track.steps.filter((s) => s.scored)} />
+        <TrackNext trackId={track.id} steps={track.steps.filter((s) => s.scored)} />
         <ol className="track-steps">
           {track.steps.map((s, i) => (
             <li key={s.slug}>
               <span className="floor-n">PASSO {String(i + 1).padStart(2, "0")}</span>
-              <Link href={`/desafio/${s.slug}`}>{s.title}</Link>
+              <Link href={`/desafio/${s.slug}?trilha=${track.id}`}>{s.title}</Link>
               <span className="dim small">{s.categoryName}</span>
               <Difficulty level={s.difficulty} />
               {s.scored ? (
                 <ProgressBadge slug={s.slug} />
               ) : (
-                <span className="tag" title="Roda no navegador, sem testes; não conta para zerar a trilha">
+                <span className="tag" title="Roda no navegador, sem testes; não conta para zerar o detonado">
                   livre
                 </span>
               )}

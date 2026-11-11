@@ -216,11 +216,13 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
 
   if (r.mode === "run") {
     const run = r.run;
+    // Executar não compara com gabarito: "WA" aqui só significa que a saída não é vazia.
+    const failed = run ? run.verdict === "TLE" || run.verdict === "RE" || run.verdict === "OLE" : false;
     return (
       <>
         {run && (
-          <div className={`out-head ${run.verdict === "AC" ? "" : "bad"}`}>
-            {run.verdict === "AC" ? "programa terminou" : VERDICT[run.verdict]}
+          <div className={`out-head ${failed ? "bad" : "ok"}`}>
+            {failed ? VERDICT[run.verdict] : "programa terminou"}
             <span className="out-head-meta">{metrics(run, true)}</span>
           </div>
         )}

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <!-- Fundo do site: o céu do Caminho da Serpente, só gradientes e nuvens. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a1160"/>
+      <stop offset="0.22" stop-color="#4b1d8c"/>
+      <stop offset="0.45" stop-color="#8a2ba6"/>
+      <stop offset="0.62" stop-color="#c34aa8"/>
+      <stop offset="0.74" stop-color="#e08bba"/>
+      <stop offset="0.82" stop-color="#f2c37a"/>
+      <stop offset="0.9" stop-color="#f5a63a"/>
+      <stop offset="1" stop-color="#e8862a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.84" r="0.6">
+      <stop offset="0" stop-color="#fff0c0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#fff0c0" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="softer" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+    <filter id="haze" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+
+  <!-- véus de nuvem no céu -->
+  <g fill="#ff7ad9" opacity="0.18" filter="url(#softer)">
+    <ellipse cx="300" cy="300" rx="420" ry="40"/>
+    <ellipse cx="1500" cy="200" rx="520" ry="34"/>
+    <ellipse cx="1100" cy="470" rx="640" ry="36"/>
+    <ellipse cx="420" cy="600" rx="500" ry="30"/>
+  </g>
+
+  <!-- mar de nuvens douradas: camadas, do fundo para a frente -->
+  <g filter="url(#softer)" opacity="0.85">
+    <ellipse cx="200" cy="860" rx="520" ry="70" fill="#f7b35a"/>
+    <ellipse cx="900" cy="850" rx="700" ry="60" fill="#f9c070"/>
+    <ellipse cx="1650" cy="865" rx="560" ry="70" fill="#f7ad4e"/>
+  </g>
+  <g filter="url(#soft)">
+    <ellipse cx="120" cy="930" rx="380" ry="95" fill="#ffb24a"/>
+    <ellipse cx="560" cy="960" rx="460" ry="110" fill="#ff9d3a"/>
+    <ellipse cx="1040" cy="975" rx="520" ry="105" fill="#ffb74f"/>
+    <ellipse cx="1560" cy="950" rx="470" ry="105" fill="#ff9f3c"/>
+    <ellipse cx="1900" cy="990" rx="300" ry="90" fill="#ffb24a"/>
+    <ellipse cx="960" cy="1090" rx="1200" ry="150" fill="#ef7a1c"/>
+  </g>
+  <g fill="#ffe7b0" opacity="0.6" filter="url(#haze)">
+    <ellipse cx="60" cy="880" rx="170" ry="34"/>
+    <ellipse cx="420" cy="905" rx="150" ry="28"/>
+    <ellipse cx="790" cy="890" rx="220" ry="36"/>
+    <ellipse cx="1240" cy="915" rx="190" ry="30"/>
+    <ellipse cx="1800" cy="885" rx="180" ry="32"/>
+  </g>
+  <g fill="#e2641a" opacity="0.35" filter="url(#soft)">
+    <ellipse cx="300" cy="1040" rx="260" ry="40"/>
+    <ellipse cx="1300" cy="1050" rx="320" ry="44"/>
+  </g>
+
+  <!-- escurece um pouco para o conteúdo ler bem por cima -->
+  <rect width="1920" height="1080" fill="#120820" opacity="0.28"/>
+</svg>

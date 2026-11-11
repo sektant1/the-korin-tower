@@ -4,17 +4,21 @@ import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
 import Link from "next/link";
 import { AccountProvider, type AccountData } from "@/components/Account";
-import { PlayerOne, SanityToggle, SettingsApplier, StarTrail, VisitCounter } from "@/components/ClientEffects";
-import { DragonBalls, FlyingCloud, KonamiCode } from "@/components/PortalWidgets";
+import { SanityToggle, SettingsApplier, StarTrail, VisitCounter } from "@/components/ClientEffects";
+import { FlyingCloud, KonamiCode } from "@/components/PortalWidgets";
+import { FloorNav, TowerPlayer, TowerProvider } from "@/components/Tower";
+import { getTowerData } from "@/lib/tower-server";
 import { Gif } from "@/components/Gif";
 import { MobileMenu } from "@/components/MobileMenu";
 import { GIFS } from "@/lib/gifs";
-import { RainbowHr } from "@/components/Retro";
+import { ButtonWall, Difficulty, RainbowHr } from "@/components/Retro";
+import { NEWS } from "@/lib/site-content";
+import { getDaily } from "@/lib/daily";
+import { getProgressSummary, hallOfFame } from "@/lib/progress";
+import { DAILY_BONUS } from "@/lib/scoring";
 import { logout } from "@/app/entrar/actions";
 import { getCurrentUser } from "@/lib/auth/session";
-import { listCategories } from "@/lib/challenges";
 import { prisma } from "@/lib/db";
-import { getProgressSummary } from "@/lib/progress";
 import type { Settings } from "@/lib/client/store";
 import { captionOf, getFanart } from "@/lib/fanart";
 
@@ -33,7 +37,7 @@ export const metadata: Metadata = {
 
 const MENU = [
   { href: "/", label: "Home" },
-  { href: "/desafios", label: "Desafios" },
+  { href: "/desafios", label: "A Torre" },
   { href: "/trilhas", label: "Detonados" },
   { href: "/compilador", label: "Compilador" },
   { href: "/cli", label: "CLI" },
@@ -64,14 +68,13 @@ async function loadAccount(): Promise<AccountData | null> {
 const EARLY = `try{var s=JSON.parse(localStorage.getItem('korin:settings')||'{}');document.documentElement.dataset.sanity=s.sanity?'on':'off'}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [categories, fanart, account] = await Promise.all([listCategories(), getFanart(), loadAccount()]);
+  const [tower, fanart, account, daily, top] = await Promise.all([getTowerData(), getFanart(), loadAccount(), getDaily(), hallOfFame(3)]);
   const menu = [
     ...MENU,
     account ? { href: "/conta", label: "Minha conta" } : { href: "/entrar", label: "Entrar" },
     ...(account?.isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
   ];
   const sideArt = fanart.gallery.length ? fanart.gallery[Math.floor(Math.random() * fanart.gallery.length)] : null;
-  const total = categories.reduce((n, c) => n + c.count, 0);
 
   return (
     <html lang="pt-BR" className={`${pixel.variable} ${vt.variable}`} suppressHydrationWarning>
@@ -80,6 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <AccountProvider account={account}>
+        <TowerProvider data={tower}>
           <a href="#conteudo" className="skip-link">
             Pular para o conteúdo
           </a>
@@ -89,21 +93,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           <header className="site-header">
             <FlyingCloud />
-            <Link href="/" className="logo-link" aria-label="The Korin Tower, página inicial">
-              <Gif gif={GIFS.logo} height={80} className="header-logo-gif" pixelated={false} />
-              <span className="logo-title">
-                <Gif gif={GIFS.sphere} height={34} />
-                <span className="flame logo-text">THE KORIN TOWER</span>
-                <Gif gif={GIFS.sphere} height={34} />
-              </span>
+            <Link href="/" className="banner-link" aria-label="The Korin Tower, página inicial">
+              {/* eslint-disable-next-line @next/next/no-img-element -- banner estático em public/ */}
+              <img src="/korin-banner.png" alt="The Korin Tower: desafios de programação" className="site-banner" width={2048} height={768} />
             </Link>
-            {fanart.banner && (
-              // eslint-disable-next-line @next/next/no-img-element -- GIF animado do dono do site
-              <img src={fanart.banner} alt="" className="header-banner" />
-            )}
-            <p className="tagline">
-              ~*~ desafios de programação para devs de <i>baixo nível</i> ~*~
-            </p>
+            {/* Páginas de editor: só o nome, numa linha, para sobrar tela. */}
+            <Link href="/" className="logo-link logo-compact" aria-label="The Korin Tower, página inicial">
+              <Gif gif={GIFS.sphere} height={20} />
+              <span className="flame logo-text">THE KORIN TOWER</span>
+              <Gif gif={GIFS.sphere} height={20} />
+            </Link>
           </header>
 
           <MobileMenu items={menu} />
@@ -123,23 +122,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
               <div className="side-box">
                 <h2 className="side-title">ANDARES</h2>
-                <ul className="nav-list">
-                  {categories.map((c) => (
-                    <li key={c.id}>
-                      <Link href={`/categoria/${c.id}`}>
-                        {c.name} <span className="count">({c.count})</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <FloorNav />
               </div>
+            </nav>
 
+            <main id="conteudo" className="content" tabIndex={-1}>
+              {children}
+            </main>
+
+            {/* Direita: o jogador e o que muda todo dia. A esquerda fica só com navegação. */}
+            <aside className="sidebar sidebar-right" aria-label="Jogador e novidades">
               <div className="side-box">
                 <h2 className="side-title">JOGADOR</h2>
                 <Gif gif={GIFS.goku} alt="" className="p1-avatar" />
                 <p className="p1-name">{account ? account.username : "convidado"}</p>
-                <PlayerOne total={total} />
-                <DragonBalls />
+                <TowerPlayer />
                 {account ? (
                   <form action={logout} className="side-action">
                     <button type="submit" className="btn98 small">
@@ -155,6 +152,45 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 )}
               </div>
 
+              {daily && (
+                <div className="side-box">
+                  <h2 className="side-title">DESAFIO DO DIA</h2>
+                  <p className="side-daily-title">
+                    <Link href={`/desafio/${daily.slug}`}>{daily.title}</Link>
+                  </p>
+                  <p className="side-daily-meta">
+                    <Difficulty level={daily.difficulty} /> <span>+{DAILY_BONUS * 100}% hoje</span>
+                  </p>
+                  <p className="side-action">
+                    <Link href={`/desafio/${daily.slug}`} className="btn98 small" aria-label={`Jogar o desafio do dia: ${daily.title}`}>
+                      JOGAR <span className="arrow" aria-hidden="true">►</span>
+                    </Link>
+                  </p>
+                </div>
+              )}
+
+              <div className="side-box">
+                <h2 className="side-title">TOP 3</h2>
+                {top.length === 0 ? (
+                  <p className="side-empty">ninguém ainda</p>
+                ) : (
+                  <ol className="side-top">
+                    {top.map((e, i) => (
+                      <li key={e.username} className={account?.username === e.username ? "me" : undefined}>
+                        <span className="side-top-rank">{i + 1}</span>
+                        <Link href={`/jogador/${e.username}`}>{e.username}</Link>
+                        <span className="side-top-pts">{e.points}</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                <p className="side-action">
+                  <Link href="/hall-da-fama" className="small">
+                    Hall of Fame
+                  </Link>
+                </p>
+              </div>
+
               {sideArt && (
                 <div className="side-box">
                   <h2 className="side-title">FAN ART</h2>
@@ -165,15 +201,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </div>
               )}
 
+              <div className="side-box">
+                <h2 className="side-title">BOTOES</h2>
+                <ButtonWall className="side-buttons" kinds={["dbz-amazing", "vegeta-alliance", "vim", "cpp", "powered-by-asm", "gnu-linux", "cli", "rss-feed", "any-browser", "8-bit"]} />
+              </div>
+
               <div className="side-box side-misc">
                 <VisitCounter />
                 <SanityToggle />
               </div>
-            </nav>
-
-            <main id="conteudo" className="content" tabIndex={-1}>
-              {children}
-            </main>
+            </aside>
           </div>
 
           <footer className="site-footer">
@@ -186,32 +223,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Link href="/aleatorio">aleatório</Link>
               <Link href="/desafios">próximo ►</Link>
             </div>
-            <div className="buttons-88">
-              <Link href="/guestbook" className="b88-img" title="Assine o guestbook">
-                <Gif gif={GIFS.guestbookButton} alt="Guestbook" />
-              </Link>
-              <span className="b88 b-netscape">
-                <b>Netscape</b>
-                <small>NOW!</small>
-              </span>
-              <span className="b88 b-notepad">
-                <b>Made with</b>
-                <small>Notepad</small>
-              </span>
-              <span className="b88 b-vim">
-                <b>VIM</b>
-                <small>powered</small>
-              </span>
-              <span className="b88 b-800">
-                <b>800x600</b>
-                <small>best view</small>
-              </span>
-            </div>
+            <ButtonWall kinds={["korin", "guest-book", "netscape-now", "made-with-notepad", "best-viewed-800x600", "web-rings", "y2k-neocities", "open-eyes", "ki"]} />
             <p className="best-viewed">
-              Best viewed in Netscape Navigator 4.0 at 800x600 · © 1998–{new Date().getFullYear()} The Korin Tower ·{" "}
-              <Link href="/guestbook">guestbook</Link> · <a href="/feed.xml">RSS</a>
+              Atualizado em {NEWS[0]?.date} · Best viewed in Netscape Navigator 4.0 at 800x600 · © 1998–{new Date().getFullYear()} The Korin Tower ·{" "}
+              <Link href="/sobre#botao">linke para cá</Link> · <a href="#conteudo">▲ topo</a>
             </p>
           </footer>
+        </TowerProvider>
         </AccountProvider>
       </body>
     </html>

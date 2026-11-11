@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { BADGES, earnedBadges, type BadgeStats } from "./badges";
 
-const empty: BadgeStats = { solved: [], points: 0, tracksDone: 0, guestbookSigned: false, comments: 0, bestStreak: 0, records: 0 };
+const empty: BadgeStats = { solved: [], points: 0, tracksDone: 0, guestbookSigned: false, comments: 0, bestStreak: 0, records: 0, floorsOpen: 1 };
 const ids = (s: BadgeStats) => earnedBadges(s).map((b) => b.id);
 
 test("jogador novo não tem medalhas", () => {
@@ -24,8 +24,10 @@ test("medalhas de progresso", () => {
 });
 
 test("medalhas sociais e de sequência", () => {
-  assert.deepEqual(ids({ ...empty, guestbookSigned: true, comments: 3, tracksDone: 1, bestStreak: 7, records: 1 }), [
+  assert.deepEqual(ids({ ...empty, guestbookSigned: true, comments: 3, tracksDone: 1, bestStreak: 7, records: 1, floorsOpen: 8 }), [
     "detonado",
+    "andar-3",
+    "topo",
     "livro-de-visitas",
     "comentarista",
     "treino-diario",

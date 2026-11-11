@@ -1,0 +1,31 @@
+Botões 88x31 da parede do site. Copiados de 'The Repository for 88x31 Buttons'
+(github.com/transicle/88x31-Button-Scraper), que arquiva botões de sites pessoais antigos.
+Os direitos são dos autores originais. Nome aqui -> arquivo original no repositório:
+
+dbz-amazing.gif  <-  MotorCity_Garage_5631_amazingdbz.gif
+best-dbz-br.gif  <-  br.geocities.com_pokemonbestbr2001_DBZbestBR.gif
+vegeta-alliance.gif  <-  bulmachan2000_vegetaalliance.gif
+goku.gif  <-  gohanrage1_goku.gif
+majin-vegeta.gif  <-  gohanrage1_majinvegetasmile.gif
+planete-dbz.gif  <-  goku_power2001_minipdbz.gif
+assembly.gif  <-  Athens_Forum_2417_HOP_assemblysm.gif
+cpp.gif  <-  powered-cpp_1.gif
+powered-by-asm.gif  <-  poweredbyasm_88x31.gif
+vim.gif  <-  vim__copy_1_.gif
+gnu-linux.gif  <-  gnu-linux.gif
+dos-page.gif  <-  dos.gif
+hand-coded.gif  <-  handcoded.gif
+open-source.png  <-  open_source_88x31.png
+hacker-powered.gif  <-  ResearchTriangle_Thinktank_9418_resource_buttons_hacker.gif
+netscape-now.gif  <-  Area51_7685_netscape.gif
+made-with-notepad.gif  <-  1notepad7.gif
+best-viewed-800x600.gif  <-  800x600_1.gif
+any-browser.gif  <-  Area51_Atlantis_4051_anybrowser.gif
+rss-feed.gif  <-  1rss.gif
+guest-book.gif  <-  1guestbook3.gif
+web-rings.gif  <-  Colosseum_Track_2223_webring.gif
+8-bit.gif  <-  8bit.gif
+open-eyes.gif  <-  CapeCanaveral_Lab_8018_bestview.gif
+w3c-html401.png  <-  Athens_Styx_3807_files_html401.png
+made-with-css.gif  <-  1css.gif
+y2k-neocities.png  <-  000-Y2K-NEOCITIES-BUTTON-01.png

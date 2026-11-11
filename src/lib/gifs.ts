@@ -15,6 +15,8 @@ export const GIFS = {
   logo: g(`${T}/logo-dbz.gif`, 183, 65),
   sphere: g(`${BASE}/dragon-sphere-z.gif`, 50, 50),
   goku: g(`${BASE}/goku.gif`, 83, 72),
+  gokuStand: g(`${BASE}/8.gif`, 77, 100),
+  vegeta: g(`${BASE}/v_do.gif`, 151, 127),
   gokuSsj: g(`${BASE}/goku_ssjf.gif`, 500, 637),
   gokuKick: g(`${BASE}/g_kick.gif`, 91, 87),
   gokuKame: g(`${BASE}/g_kame.gif`, 256, 77),

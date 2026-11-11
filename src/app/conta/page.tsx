@@ -10,6 +10,7 @@ import { BadgeShelf } from "@/components/Badges";
 import { getPlayerProfile } from "@/lib/profile";
 import { getProgressSummary } from "@/lib/progress";
 import { listApiTokens } from "@/lib/auth/tokens";
+import { FLOORS } from "@/lib/tower";
 import { siteUrl } from "@/lib/site-url";
 import { dropApiToken } from "./actions";
 import { PasswordForm } from "./PasswordForm";
@@ -35,6 +36,8 @@ export default async function AccountPage() {
       <div className="two-col">
         <Window title={`Jogador: ${me.username}`}>
           <dl className="stats98">
+            <dt>Andar</dt>
+            <dd>{profile?.floorsOpen ?? 1} de {FLOORS}</dd>
             <dt>Pontos</dt>
             <dd>{summary.points}</dd>
             <dt>Resolvidos</dt>

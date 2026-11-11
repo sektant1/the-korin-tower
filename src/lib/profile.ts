@@ -4,6 +4,8 @@ import { computeStreak, siteDay, type Streak } from "@/lib/dates";
 import { prisma } from "@/lib/db";
 import { countRecordsHeld } from "@/lib/records";
 import { countTracksDone } from "@/lib/tracks";
+import { currentFloor } from "@/lib/tower";
+import { getTowerData } from "@/lib/tower-server";
 
 // Cartão do jogador: perfil público (/jogador/<nome>) e Minha conta.
 export interface PlayerProfile {
@@ -11,6 +13,7 @@ export interface PlayerProfile {
   createdAt: Date;
   points: number;
   gaveUp: number;
+  floorsOpen: number;
   streak: Streak;
   badges: Badge[];
   solved: { slug: string; title: string; difficulty: number; points: number; dailyBonus: boolean; solvedAt: Date | null }[];
@@ -39,13 +42,15 @@ export async function getPlayerProfile(username: string): Promise<PlayerProfile 
   const solved = progress.filter((p) => p.state === "solved");
   const points = solved.reduce((n, p) => n + p.points, 0);
   const streak = computeStreak(solved.flatMap((p) => (p.solvedAt ? [siteDay(p.solvedAt)] : [])), siteDay());
-  const tracksDone = await countTracksDone(new Set(solved.map((p) => p.challenge.slug)));
+  const [tracksDone, tower] = await Promise.all([countTracksDone(new Set(solved.map((p) => p.challenge.slug))), getTowerData()]);
+  const floorsOpen = currentFloor(tower, Object.fromEntries(progress.map((p) => [p.challenge.slug, p.state as "solved" | "gaveup"])));
 
   return {
     username: user.username,
     createdAt: user.createdAt,
     points,
     gaveUp: progress.length - solved.length,
+    floorsOpen,
     streak,
     badges: earnedBadges({
       solved: solved.map((p) => ({ categoryId: p.challenge.categoryId, difficulty: p.challenge.difficulty, hintsRevealed: p.hintsRevealed, dailyBonus: p.dailyBonus })),
@@ -55,6 +60,7 @@ export async function getPlayerProfile(username: string): Promise<PlayerProfile 
       comments,
       bestStreak: streak.best,
       records,
+      floorsOpen,
     }),
     solved: solved.map((p) => ({
       slug: p.challenge.slug,

@@ -305,7 +305,8 @@ commands.list = async ({ flags }) => {
     }
     const daily = c.slug === data.daily ? yellow(" ☀ hoje") : "";
     const kind = c.kind !== "stdio" ? dim(` [${c.kind}]`) : "";
-    console.log(`  ${stateTag(c.state)}  ${c.slug.padEnd(width)}  ${stars(c.difficulty)}  ${c.title}${kind}${daily}`);
+    const locked = c.locked ? dim(" (andar trancado)") : "";
+    console.log(`  ${stateTag(c.state)}  ${c.slug.padEnd(width)}  ${stars(c.difficulty)}  ${c.title}${kind}${daily}${locked}`);
   }
   console.log(dim(`\n${list.length} desafio(s). korin pick <slug> para começar.`));
 };
