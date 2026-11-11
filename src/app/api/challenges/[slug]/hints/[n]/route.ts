@@ -7,7 +7,7 @@ import { recordHint } from "@/lib/progress";
 // Dicas saem uma por vez, para não estarem no HTML da página.
 // Com login, cada dica revelada antes de resolver reduz os pontos (src/lib/scoring.ts).
 // POST (e não GET) porque registra no progresso: um link não consegue gastar dicas de ninguém.
-export async function POST(_req: Request, ctx: { params: Promise<{ slug: string; n: string }> }) {
+export async function POST(req: Request, ctx: { params: Promise<{ slug: string; n: string }> }) {
   const { slug, n } = await ctx.params;
   const c = await getChallenge(slug);
   if (!c) return NextResponse.json({ error: "desafio não encontrado" }, { status: 404 });
@@ -17,5 +17,9 @@ export async function POST(_req: Request, ctx: { params: Promise<{ slug: string;
   }
   const user = await getCurrentUser();
   if (user) await recordHint(user.id, c.id, i);
+  // A CLI (Fase 6) pede ?format=md e mostra o Markdown no terminal.
+  if (new URL(req.url).searchParams.get("format") === "md") {
+    return NextResponse.json({ index: i, total: c.hints.length, markdown: c.hints[i] });
+  }
   return NextResponse.json({ index: i, total: c.hints.length, html: await renderMarkdown(c.hints[i]) });
 }

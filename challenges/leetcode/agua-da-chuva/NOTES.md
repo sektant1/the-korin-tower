@@ -1,0 +1,2 @@
+- O clássico "difícil" que na verdade tem três soluções lineares (prefixos, pilha, dois ponteiros). Boa aula sobre invariantes: por que avançar o lado da menor altura é seguro.
+- O caso de overflow está nos testes ocultos (muitas colunas altas nas pontas e zero no meio).

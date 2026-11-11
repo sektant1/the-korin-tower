@@ -29,6 +29,8 @@ export interface JudgeResult {
   compile: CompileResult;
   tests: TestOutcome[];
   allPassed: boolean;
+  /** Avisos do runner (ex.: caiu para o reserva). */
+  warnings: string[];
 }
 
 export interface JudgeLimits {
@@ -53,7 +55,8 @@ export async function judge(
     memoryLimitMb: limits.memoryLimitMb,
     flags,
   });
-  if (!batch.compile.ok) return { compile: batch.compile, tests: [], allPassed: false };
+  const warnings = batch.warnings ?? [];
+  if (!batch.compile.ok) return { compile: batch.compile, tests: [], allPassed: false, warnings };
 
   const outcomes = tests.map((t, i): TestOutcome => {
     const r = batch.runs[i];
@@ -69,7 +72,7 @@ export async function judge(
       verdict = "RE";
       message = r.signal ? `morto por ${r.signal}` : `exit code ${r.exitCode}`;
     } else {
-      const c = check(limits.checker, t.expected, r.stdout);
+      const c = check(limits.checker, t.expected, r.stdout, { partial: r.partial });
       verdict = c.passed ? "AC" : "WA";
       message = c.message;
     }
@@ -87,5 +90,5 @@ export async function judge(
       stderr: r.stderr,
     };
   });
-  return { compile: batch.compile, tests: outcomes, allPassed: outcomes.every((o) => o.verdict === "AC") };
+  return { compile: batch.compile, tests: outcomes, allPassed: outcomes.every((o) => o.verdict === "AC"), warnings };
 }

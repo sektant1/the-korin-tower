@@ -2,7 +2,7 @@
 
 Repositório de desafios de programação para devs de baixo nível (C, C++, Rust, ray tracing, shaders...), com cara de homepage pessoal de 1998 e site de games da época, mas funcionando como app moderno: editor com Vim, compilação de verdade em sandbox e testes automáticos.
 
-> Status: **Fase 5 completa** (trilhas, guestbook, comentários, medalhas, canvas WASM com raylib/SDL2, desafio do dia, recordes). Veja o [roadmap](#roadmap).
+> Status: **Fase 6 completa** (CLI `korin` no estilo LeetCode, tokens de API, categoria "Estilo LeetCode"). Veja o [roadmap](#roadmap).
 
 ---
 
@@ -35,6 +35,7 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 - **Canvas (Fase 4):** desafios `kind: canvas` são C/C++ com raylib ou SDL2. `/api/build` manda o código para o serviço `wasm-builder` (emcc), que devolve um único JS com o WASM embutido. O servidor só compila; quem executa é o navegador, num `<iframe sandbox="allow-scripts">` sem acesso a cookies nem ao DOM do site.
 - **Comunidade (Fase 3):** trilhas vêm de `challenges/tracks.yml` pelo seed. Guestbook e comentários aceitam texto puro com `` `código` ``, blocos ```` ``` ```` e `||spoiler||`; só quem tem conta escreve. Cada submit aprovado guarda o código (`Submission`), que alimenta "soluções dos outros" (mesma regra da solução de referência) e os recordes. Medalhas não têm tabela: são calculadas do progresso (`src/lib/badges.ts`).
 - **Torneio (Fase 5):** desafio do dia com bônus, sequências de dias, recordes de menor código e mais rápido, perfil público (`/jogador/<nome>`) e `/feed.xml`. Design em [docs/fase-5.md](docs/fase-5.md).
+- **CLI (Fase 6):** `korin pick <slug>` baixa enunciado, template e testes públicos para uma pasta; `korin test`/`korin submit` usam a mesma `/api/run` do site, autenticados por token pessoal (`Authorization: Bearer korin_...`, gerado em `/conta`). A CLI é um arquivo Node servido pelo próprio site em `/cli/korin.mjs`. Design em [docs/fase-6.md](docs/fase-6.md).
 - **Pontos:** 100 × dificuldade; resolver o desafio do dia no próprio dia vale +50%; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
 
 ## Estrutura de pastas
@@ -61,12 +62,15 @@ wasm-builder/                  ← serviço emcc (raylib + SDL2) dos desafios ca
   server.mjs, Dockerfile       ← HTTP mínimo e imagem
 piston/                        ← imagem do Piston com gcc/rust/go/zig/nasm/pascal embutidos
   Dockerfile, install.cjs      ← instala os runtimes durante o build
-docs/fase-5.md                 ← design da fase 5
+cli/                           ← CLI `korin` (um arquivo, sem dependências) + package.json
+docs/fase-5.md, fase-6.md      ← design das fases 5 e 6
 src/
   app/                         ← páginas e rotas de API (App Router)
     api/run/                   ← compilar/executar/testar
     api/build/                 ← compilar desafios canvas para WASM
     api/challenges/[slug]/     ← dicas (uma por vez) e solução
+    api/cli/                   ← lista, desafio (Markdown cru + testes públicos), desafio do dia, whoami
+    cli/                       ← página de instalação e download da CLI
     desafio/[slug]/            ← página do desafio
   components/
     workspace/                 ← editor Vim, terminal de saída, PPM, shader, canvas WASM
@@ -78,7 +82,8 @@ src/
     tracks.ts, social.ts       ← trilhas; guestbook e comentários
     badges.ts, profile.ts      ← medalhas e cartão do jogador
     daily.ts, records.ts       ← desafio do dia; códigos aprovados e recordes
-    runner/                    ← Piston e runner local
+    runner/                    ← Piston, Godbolt e runner local
+    site-url.ts                ← URL pública (APP_URL ou cabeçalhos)
     client/                    ← estado no navegador e parser de .vimrc
 ```
 
@@ -142,11 +147,12 @@ Para atualizar os desafios na VPS: `git pull && docker compose restart app`.
 O app Next.js inteiro (páginas, `/api`, login) roda na Vercel; o Supabase é só o PostgreSQL. A autenticação continua a própria do site (não usa Supabase Auth).
 
 1. **Supabase:** crie o projeto. Em *Connect*, copie a URL do pooler em modo *Transaction* (porta 6543) para `DATABASE_URL` e a do modo *Session* (porta 5432) para `DIRECT_URL`.
-2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`), `RUNNER=piston` e `PISTON_URL`. GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
+2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`) e `RUNNER`. Com `RUNNER=godbolt` (o padrão recomendado para a Vercel) os desafios compilam e rodam na API pública do Compiler Explorer, sem servidor para manter; com `RUNNER=piston` é preciso também `PISTON_URL` (veja os limites abaixo). GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
 3. O script `vercel-build` roda `prisma migrate deploy`, o seed de `/challenges` e o build. Cada push atualiza os desafios.
 4. Primeiro admin, sem tocar no banco: defina `ADMIN_BOOTSTRAP_CODE` (16+ caracteres, ex.: `openssl rand -hex 16`) na Vercel, faça o redeploy e cadastre-se em `/entrar` usando esse valor como código de convite. Só funciona enquanto não houver admin. Depois, gere convites em `/admin`. Alternativa: `npm run invite -- --admin` da sua máquina com o `.env` apontando para o Supabase.
 
 Limites desse arranjo:
+- **Godbolt:** uma compilação por teste (a API não separa compilar de executar), sem medição de memória, sandbox cortando em ~20 s e **stdout limitado a ~32 KB** (o processo é morto ao passar disso). Nos testes com saída maior o judge confere só o prefixo que chegou e avisa; é um veredito mais fraco. Com `RUNNER=piston` esse fallback entra automaticamente quando o Piston está fora do ar (`RUNNER_FALLBACK=none` desliga). As rotas `/api/run` e `/api/playground` declaram `maxDuration = 60` (teto do plano Hobby); um submit com muitos testes grandes pode encostar nisso. Para tráfego de verdade, suba um Piston.
 - **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
 - **O `wasm-builder` também não roda na Vercel.** Suba-o na mesma VM do Piston (`docker compose up -d wasm-builder`), atrás do mesmo proxy com token, e defina `WASM_BUILDER_URL` (e `WASM_BUILDER_TOKEN`). Sem ele, só os desafios `canvas` falham ("construtor indisponível"); o resto do site funciona. A resposta leva o JS com o WASM embutido (em geral menos de 2 MB; o teto de resposta de uma função na Vercel é 4,5 MB).
 - Rate limit e limite de execuções simultâneas são em memória, por instância. Na Vercel cada instância tem o seu, então valem como teto aproximado.
@@ -172,6 +178,22 @@ Configuração da Vercel, uma vez:
 4. As variáveis de runtime (`APP_URL`, `PISTON_URL`, ...) continuam no painel da Vercel.
 
 Migrações rodam **antes** do código novo subir: prefira migrações que só acrescentam (coluna nova com default, tabela nova). Para remover/renomear, faça em dois deploys.
+
+## CLI (`korin`)
+
+Resolva no seu editor, com a mesma conta e as mesmas regras do site. Instruções completas em `/cli` no site; o resumo:
+
+```bash
+curl -fsSL https://<site>/cli/korin.mjs -o ~/.local/bin/korin && chmod +x ~/.local/bin/korin
+korin login --url https://<site>      # cole um token gerado em /conta
+korin list --todo
+korin pick dois-numeros -l rust        # ./dois-numeros/ com README.md, main.rs, tests/ e .korin.json
+cd dois-numeros && vim main.rs
+korin test --local                     # testes públicos com o rustc da sua máquina
+korin submit                           # todos os testes, no servidor; pontua
+```
+
+Outros comandos: `run` (stdin por pipe, `-i arquivo` ou o 1º teste), `push` (salva rascunho na conta), `hint`, `solution`, `giveup`, `daily --pick`, `open`, `config lang=cpp`, `update`. `KORIN_TOKEN`/`KORIN_URL` servem para scripts. O fonte é `cli/korin.mjs`; `cli/package.json` está pronto para um `npm publish` (`npm i -g korin-cli`).
 
 ## Adicionando um desafio
 
@@ -232,6 +254,7 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 - Código de usuário só roda no Piston: sem rede, com limites de tempo, memória, processos e saída. Nunca use `RUNNER=local` num servidor acessível por outras pessoas.
 - Flags de compilador passam por uma lista de flags permitidas (`src/lib/runner/flags.ts`). Isso bloqueia, por exemplo, `-include /etc/passwd`. O Piston usa flags fixas, então elas só valem no runner local.
 - Rate limit por usuário logado, ou por IP sem login (`RUN_RATE_PER_MINUTE`); login e cadastro: 10/min por IP e limite de execuções simultâneas (`RUN_MAX_CONCURRENCY`), em memória.
+- Tokens da CLI (`korin_...`) são guardados como sha256, mostrados uma única vez e revogáveis em `/conta`. Valem o mesmo que a sessão do dono; o navegador não os envia sozinho, então não há CSRF por essa via.
 - Server Functions do admin conferem `isAdmin` uma a uma; quem não é admin recebe 404. Cookies `SameSite=Lax`, e revelar dica é `POST`, então um link externo não gasta dicas de ninguém.
 - Dicas continuam públicas sem login (é um jogo entre convidados: dá para fugir da penalidade abrindo uma aba anônima).
 - O Markdown dos desafios é tratado como confiável (vem do repositório e, na Fase 2, do admin). HTML cru é descartado.
@@ -246,6 +269,7 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 - [x] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, medalhas, soluções dos outros jogadores.
 - [x] **Fase 4:** C/C++ com raylib/SDL2 via Emscripten (WASM) no canvas; D, Pascal e Fortran.
 - [x] **Fase 5:** torneio: desafio do dia com bônus, sequências, recordes (menor código, mais rápido), perfil público e feed RSS. Design em [docs/fase-5.md](docs/fase-5.md).
+- [x] **Fase 6:** CLI `korin` no estilo LeetCode (pick/test/submit do terminal), tokens de API, categoria "Estilo LeetCode" com link para os originais e trilha "Maratona de entrevista". Design em [docs/fase-6.md](docs/fase-6.md).
 
 Limitações conhecidas das Fases 3 a 5:
 - Desafios `shader` e `canvas` não têm "resolvido": não pontuam, não entram no desafio do dia e são passos livres nas trilhas.

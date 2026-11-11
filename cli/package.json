@@ -1,0 +1,10 @@
+{
+  "name": "korin-cli",
+  "version": "0.6.0",
+  "description": "CLI da Korin Tower: baixe desafios, teste e envie do seu terminal.",
+  "type": "module",
+  "bin": { "korin": "korin.mjs" },
+  "files": ["korin.mjs", "README.md"],
+  "engines": { "node": ">=22.7" },
+  "license": "MIT"
+}

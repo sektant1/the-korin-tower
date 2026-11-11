@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth/session";
+import { listCategories, listChallenges } from "@/lib/challenges";
+import { getDaily } from "@/lib/daily";
+import { getProgressSummary } from "@/lib/progress";
+
+// `korin list`: todos os desafios, com o estado do jogador quando há token.
+// Público sem token (a lista já aparece no site sem login).
+export async function GET(req: Request) {
+  const category = new URL(req.url).searchParams.get("category") ?? undefined;
+  const [challenges, categories, daily, user] = await Promise.all([listChallenges(category), listCategories(), getDaily(), getCurrentUser()]);
+  const progress = user ? (await getProgressSummary(user.id)).map : {};
+  return NextResponse.json({
+    daily: daily?.slug ?? null,
+    categories: categories.map((c) => ({ id: c.id, name: c.name, count: c.count })),
+    challenges: challenges.map((c) => ({
+      slug: c.slug,
+      title: c.title,
+      category: c.categoryId,
+      difficulty: c.difficulty,
+      kind: c.kind,
+      languages: c.languages,
+      tags: c.tags,
+      state: progress[c.slug] ?? null,
+    })),
+  });
+}

@@ -1,0 +1,2 @@
+- A pilha mais simples que existe. Bom para falar de leitura linha a linha (`fgets`/`getline`) e de strings longas (10^6 caracteres numa linha).
+- Erros comuns: esquecer de testar a pilha vazia no fim; estourar um buffer fixo pequeno em C.

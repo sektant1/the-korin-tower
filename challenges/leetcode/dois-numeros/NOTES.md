@@ -1,0 +1,3 @@
+- O aquecimento da categoria LeetCode: a ideia é apresentar "troque tempo por memória" com uma tabela hash.
+- Em C, a solução de referência ordena pares (valor, índice) e usa dois ponteiros: O(N log N), sem hash. Vale discutir as duas abordagens.
+- Pegadinha: a soma pode passar de 32 bits (dois valores de 10^9). O alvo cabe em `int` no limite, mas `a + b` precisa de `long long`.

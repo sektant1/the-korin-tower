@@ -2662,3 +2662,22 @@ body:has(.challenge-page) .flying-cloud {
     animation: star-pulse 2.4s ease-in-out infinite;
   }
 }
+
+/* ---- Fase 6: tokens da CLI (/conta) e página /cli */
+.tokens-table {
+  width: 100%;
+  margin: 8px 0 12px;
+}
+.tokens-table form {
+  margin: 0;
+}
+.token-reveal pre {
+  overflow-x: auto;
+  user-select: all;
+}
+.cli-steps li {
+  margin-bottom: 10px;
+}
+.cli-steps pre {
+  margin: 4px 0 0;
+}

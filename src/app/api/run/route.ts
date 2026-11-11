@@ -12,6 +12,9 @@ import { clientKey, rateLimit, Semaphore } from "@/lib/rate-limit";
 import type { RunResponse } from "@/lib/run-api";
 
 export const runtime = "nodejs";
+// Vercel: o padrão de uma função é 10 s no plano Hobby; com o runner Godbolt um
+// submit com vários testes passa disso. 60 s é o teto do Hobby (Pro aceita mais).
+export const maxDuration = 60;
 
 const MAX_SOURCE = 64 * 1024;
 const MAX_STDIN = 256 * 1024;
@@ -116,7 +119,7 @@ export async function POST(req: Request) {
   try {
     const runner = getRunner();
     const result = await semaphore.run(() => judge(runner, challenge, language, source, tests, okFlags));
-    const warnings = flagWarnings(runner, okFlags, rejected);
+    const warnings = [...result.warnings, ...flagWarnings(runner, okFlags, rejected)];
 
     const response: RunResponse =
       mode === "run"

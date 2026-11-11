@@ -1,9 +1,10 @@
 import "server-only";
 import { createHash, randomBytes } from "node:crypto";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { prisma } from "@/lib/db";
+import { userFromBearer } from "./tokens";
 
 // Sessão em banco: o cookie leva um token aleatório; o banco guarda só o sha256 dele.
 export const SESSION_COOKIE = "korin_session";
@@ -40,10 +41,15 @@ export async function endSession() {
   jar.delete(SESSION_COOKIE);
 }
 
-/** Usuário logado nesta requisição (memoizado por requisição), ou null. */
+/**
+ * Usuário logado nesta requisição (memoizado por requisição), ou null.
+ * Aceita o cookie de sessão (navegador) ou `Authorization: Bearer korin_...`
+ * (CLI, Fase 6). O navegador nunca manda Authorization sozinho, então o
+ * token não abre brecha de CSRF.
+ */
 export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  if (!token) return null;
+  if (!token) return userFromBearer((await headers()).get("authorization"));
   const s = await prisma.session.findUnique({
     where: { id: sha256(token) },
     select: { expiresAt: true, user: { select: { id: true, username: true, isAdmin: true } } },

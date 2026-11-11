@@ -9,17 +9,22 @@ import { prisma } from "@/lib/db";
 import { BadgeShelf } from "@/components/Badges";
 import { getPlayerProfile } from "@/lib/profile";
 import { getProgressSummary } from "@/lib/progress";
+import { listApiTokens } from "@/lib/auth/tokens";
+import { siteUrl } from "@/lib/site-url";
+import { dropApiToken } from "./actions";
 import { PasswordForm } from "./PasswordForm";
+import { TokenForm } from "./TokenForm";
 
 export const metadata: Metadata = { title: "Minha conta" };
 
 export default async function AccountPage() {
   const me = await getCurrentUser();
   if (!me) redirect("/entrar?next=/conta");
-  const [user, summary, profile] = await Promise.all([
+  const [user, summary, profile, tokens] = await Promise.all([
     prisma.user.findUniqueOrThrow({ where: { id: me.id }, select: { passwordHash: true, githubId: true, createdAt: true } }),
     getProgressSummary(me.id),
     getPlayerProfile(me.username),
+    listApiTokens(me.id),
   ]);
   const solved = Object.values(summary.map).filter((s) => s === "solved").length;
   const gaveUp = Object.values(summary.map).filter((s) => s === "gaveup").length;
@@ -78,6 +83,46 @@ export default async function AccountPage() {
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
           {!user.passwordHash && <p className="dim small">Você entra pelo GitHub. Crie uma senha para entrar também com usuário e senha.</p>}
           <PasswordForm hasPassword={!!user.passwordHash} />
+        </Window>
+        <Window title="Tokens da CLI (korin)">
+          <p className="small">
+            Resolva os desafios no seu editor, com <code>korin pick</code>, <code>korin test</code> e <code>korin submit</code>. Veja como instalar em{" "}
+            <Link href="/cli">/cli</Link>. Um token vale como a sua senha: quem o tiver envia código em seu nome.
+          </p>
+          {tokens.length > 0 && (
+            <table className="table98 tokens-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Prefixo</th>
+                  <th>Criado</th>
+                  <th>Último uso</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokens.map((t) => (
+                  <tr key={t.id}>
+                    <td>{t.name}</td>
+                    <td>
+                      <code>{t.prefix}…</code>
+                    </td>
+                    <td>{t.createdAt.toLocaleDateString("pt-BR")}</td>
+                    <td>{t.lastUsedAt ? t.lastUsedAt.toLocaleDateString("pt-BR") : "nunca"}</td>
+                    <td>
+                      <form action={dropApiToken}>
+                        <input type="hidden" name="id" value={t.id} />
+                        <button type="submit" className="btn98 small">
+                          Revogar
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <TokenForm loginUrl={await siteUrl()} />
         </Window>
       </div>
     </>

@@ -29,3 +29,20 @@ test("ppm respeita maxBadRatio", () => {
   const c = { type: "ppm", tolerance: 0, maxBadRatio: 0.5 } as const;
   assert.equal(check(c, ppm([0, 0, 0, 0, 0, 0]), ppm([9, 0, 0, 0, 0, 0])).passed, true);
 });
+
+test("exact parcial confere só o prefixo e descarta a última linha cortada", () => {
+  const exp = "1\n2\nFizz\n4\nBuzz\n";
+  assert.equal(check({ type: "exact" }, exp, "1\n2\nFi", { partial: true }).passed, true);
+  assert.equal(check({ type: "exact" }, exp, "1\n2\nFizz\n4\nBu", { partial: true }).passed, true);
+  assert.equal(check({ type: "exact" }, exp, "1\n3\nFi", { partial: true }).passed, false);
+  // "12" é prefixo da string "123", mas não é uma linha inteira igual
+  assert.equal(check({ type: "exact" }, "123\n4\n", "12\nx", { partial: true }).passed, false);
+});
+
+test("ppm parcial compara só os pixels inteiros que chegaram", () => {
+  const c = { type: "ppm", tolerance: 2, maxBadRatio: 0 } as const;
+  const full = "P3\n2 2\n255\n10 10 10 20 20 20 30 30 30 40 40 40\n";
+  assert.equal(check(c, full, "P3\n2 2\n255\n10 10 10 20 20 20 30 3", { partial: true }).passed, true);
+  assert.equal(check(c, full, "P3\n2 2\n255\n10 10 10 99 20 20 30 3", { partial: true }).passed, false);
+  assert.equal(check(c, full, "P3\n2 2\n255\n10 10 10 20 20 20 30 3").passed, false); // sem partial: PPM incompleto
+});

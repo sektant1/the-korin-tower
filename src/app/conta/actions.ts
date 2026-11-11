@@ -24,3 +24,29 @@ export async function changePassword(_prev: PasswordState, form: FormData): Prom
   await startSession(me.id);
   return { ok: true };
 }
+
+// ---- Fase 6: tokens da CLI
+
+import { revalidatePath } from "next/cache";
+import { createApiToken, revokeApiToken } from "@/lib/auth/tokens";
+
+export type TokenState = { error?: string; token?: string; name?: string } | undefined;
+
+/** Cria um token e devolve o segredo em claro, uma única vez. */
+export async function newApiToken(_prev: TokenState, form: FormData): Promise<TokenState> {
+  const me = await getCurrentUser();
+  if (!me) return { error: "sessão expirada; entre de novo" };
+  const name = form.get("name");
+  const r = await createApiToken(me.id, typeof name === "string" ? name : "");
+  if ("error" in r) return { error: r.error };
+  revalidatePath("/conta");
+  return { token: r.token, name: String(name).trim() };
+}
+
+export async function dropApiToken(form: FormData) {
+  const me = await getCurrentUser();
+  const id = form.get("id");
+  if (!me || typeof id !== "string") return;
+  await revokeApiToken(me.id, id);
+  revalidatePath("/conta");
+}

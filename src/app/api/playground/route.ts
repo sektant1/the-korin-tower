@@ -7,6 +7,9 @@ import { flagWarnings, getRunner, sanitizeFlags } from "@/lib/runner";
 import type { RunResponse } from "@/lib/run-api";
 
 export const runtime = "nodejs";
+// Vercel: o padrão de uma função é 10 s no plano Hobby; com o runner Godbolt um
+// submit com vários testes passa disso. 60 s é o teto do Hobby (Pro aceita mais).
+export const maxDuration = 60;
 
 // Compilador livre (/compilador): compila e executa um fonte solto, sem desafio.
 // Mesmo runner, mesmo rate limit e mesmo formato de resposta do mode "run"
@@ -58,7 +61,7 @@ export async function POST(req: Request) {
       mode: "run",
       compile: result.compile,
       run: result.tests[0] ?? null,
-      warnings: flagWarnings(runner, okFlags, rejected),
+      warnings: [...result.warnings, ...flagWarnings(runner, okFlags, rejected)],
     };
     return NextResponse.json(response);
   } catch (e) {

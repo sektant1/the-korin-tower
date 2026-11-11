@@ -1,0 +1,2 @@
+- Primeiro contato com "ordene e varra". Em C é a desculpa perfeita para `qsort` com struct e comparador que não estoura (`(a > b) - (a < b)`, não `a - b`).
+- O teste de intervalos que só encostam é o que mais derruba.

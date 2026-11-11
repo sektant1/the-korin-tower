@@ -5,13 +5,19 @@ export interface PpmImage {
   height: number;
   maxval: number;
   data: Uint8ClampedArray; // RGB, normalizado para 0..255
+  /** Pixels realmente lidos (= width*height, exceto com `partial`). */
+  pixels: number;
 }
 
 export function looksLikePpm(text: string): boolean {
   return /^\s*P3\s/.test(text);
 }
 
-export function parsePpm(text: string): PpmImage {
+/**
+ * @param opts.partial aceita um PPM cortado no meio (runner com limite de saída):
+ *   lê os pixels inteiros que houver e descarta o último valor, que pode estar incompleto.
+ */
+export function parsePpm(text: string, opts: { partial?: boolean } = {}): PpmImage {
   // Remove comentários (# até o fim da linha) e quebra em tokens.
   const tokens = text.replace(/#[^\n]*/g, " ").trim().split(/\s+/);
   if (tokens[0] !== "P3") throw new Error("não é PPM P3 (cabeçalho deve começar com P3)");
@@ -23,15 +29,17 @@ export function parsePpm(text: string): PpmImage {
   }
   if (width * height > 4096 * 4096) throw new Error("imagem grande demais");
   const expected = width * height * 3;
-  const values = tokens.slice(4);
-  if (values.length < expected) {
+  let values = tokens.slice(4);
+  if (opts.partial && values.length < expected) values = values.slice(0, -1); // último pode estar pela metade
+  else if (values.length < expected) {
     throw new Error(`PPM incompleto: ${values.length} de ${expected} valores`);
   }
   const data = new Uint8ClampedArray(expected);
-  for (let i = 0; i < expected; i++) {
+  const n = Math.min(expected, values.length - (values.length % 3));
+  for (let i = 0; i < n; i++) {
     const v = Number(values[i]);
     if (!Number.isFinite(v)) throw new Error(`valor inválido no pixel ${Math.floor(i / 3)}: '${values[i]}'`);
     data[i] = Math.round((v / maxval) * 255);
   }
-  return { width, height, maxval, data };
+  return { width, height, maxval, data, pixels: n / 3 };
 }

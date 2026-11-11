@@ -41,3 +41,7 @@
   name: Algoritmos e Estruturas de Dados
   icon: trophy
   description: O clássico que cai na entrevista.
+- id: leetcode
+  name: Estilo LeetCode
+  icon: scroll
+  description: Os clássicos de entrevista em stdin/stdout, com link para o original. Treine pela CLI.

@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "/**": ["./public/fanart/**/*"], // banner/mascote/fan art no layout
     "/galeria": ["./public/assets/dragon-ball-gifs/**/*"],
     "/challenge-assets/**": ["./challenges/**/assets/**/*"],
+    "/cli/korin.mjs": ["./cli/korin.mjs"], // a CLI é servida pelo site (Fase 6)
   },
 };
 

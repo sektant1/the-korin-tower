@@ -1,4 +1,5 @@
 import path from "node:path";
+import { FallbackRunner } from "./fallback";
 import { GodboltRunner } from "./godbolt";
 import { LocalRunner } from "./local";
 import { PistonRunner } from "./piston";
@@ -26,6 +27,11 @@ export function getRunner(): Runner {
     const url = process.env.PISTON_URL || (process.env.NODE_ENV === "production" ? "" : "http://localhost:2000");
     if (!url) throw new Error("PISTON_URL não configurado; suba um Piston (README → Deploy) e defina a URL dele");
     instance = new PistonRunner(url);
+    // Piston fora do ar (ou a API pública, que virou whitelist) não derruba o site:
+    // cai para o Compiler Explorer e avisa na resposta. RUNNER_FALLBACK=none desliga.
+    if (process.env.RUNNER_FALLBACK !== "none") {
+      instance = new FallbackRunner(instance, new GodboltRunner(process.env.GODBOLT_URL || "https://godbolt.org"));
+    }
   } else {
     throw new Error(`RUNNER desconhecido: ${kind}`);
   }

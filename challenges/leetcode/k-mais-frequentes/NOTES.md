@@ -1,0 +1,2 @@
+- Contagem + ordenação. O critério de desempate existe só para a saída ser única; vale mostrar que o heap de tamanho K também precisa dele.
+- Em C, "ordene e conte blocos" evita escrever uma tabela hash. Em Rust, `HashMap` + `sort_unstable_by_key` com chave `(Reverse(c), v)`.

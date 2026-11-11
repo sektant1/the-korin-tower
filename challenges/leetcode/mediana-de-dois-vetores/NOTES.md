@@ -1,0 +1,3 @@
+- O único "Hard" da categoria. A solução de referência em C++ é a busca binária; em C e Rust, o merge até o meio (para mostrar que as duas passam).
+- Cuidado com a leitura: um vetor pode ser vazio (N = 0), e a linha correspondente fica vazia. Ler com `scanf`/`split_whitespace` resolve, porque a contagem vem antes.
+- Saída `%.1f`: 2.5 e 2.0, nunca "2" nem "2.50".

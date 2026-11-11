@@ -86,6 +86,7 @@ model User {
   submissions  Submission[]
   invitesMade  Invite[]         @relation("InviteCreator")
   inviteUsed   Invite?          @relation("InviteUser")
+  apiTokens    ApiToken[]
 }
 
 model Session {
@@ -194,4 +195,19 @@ model DailyChallenge {
   day         String    @id // "AAAA-MM-DD" no fuso do site
   challengeId String
   challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+}
+
+// ---- Fase 6: tokens da CLI (korin login). O token em si só aparece uma vez,
+// na criação; o banco guarda o sha256 e um prefixo para o usuário reconhecer.
+
+model ApiToken {
+  id         String    @id // sha256 do token (como em Session)
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String // apelido dado pelo usuário (ex.: "notebook")
+  prefix     String // primeiros caracteres do token, para listar sem revelar
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
 }

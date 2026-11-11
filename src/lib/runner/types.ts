@@ -25,12 +25,20 @@ export interface ExecResult {
   memoryKb: number | null;
   timedOut: boolean;
   outputTruncated: boolean;
+  /**
+   * O runner só capturou o começo da saída (limite dele, não do programa: o
+   * Compiler Explorer corta em ~32 KB e mata o processo). O judge confere só
+   * o prefixo em vez de dar OLE.
+   */
+  partial?: boolean;
 }
 
 export interface BatchResult {
   compile: CompileResult;
   /** Vazio se a compilação falhou. */
   runs: ExecResult[];
+  /** Avisos para o usuário (ex.: caiu para o runner reserva). */
+  warnings?: string[];
 }
 
 export interface Runner {

@@ -1,0 +1,2 @@
+- Janela deslizante canônica. O teste `abba` pega quem faz `i = ultima[c] + 1` sem o `max` (a janela volta para trás).
+- A versão com `std::set`/`HashSet` que remove um por um também passa, mas é mais lenta; vale comparar.

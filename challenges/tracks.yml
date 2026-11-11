@@ -40,3 +40,15 @@
     - mandelbrot
     - ray-tracer-esfera
     - raymarching-sdf
+
+- id: maratona-de-entrevista
+  title: Maratona de entrevista
+  description: Os clássicos do LeetCode em stdin/stdout, do Two Sum à mediana em O(log). Feita para a CLI (korin pick).
+  steps:
+    - dois-numeros
+    - parenteses-validos
+    - substring-sem-repeticao
+    - intervalos-fundidos
+    - k-mais-frequentes
+    - agua-da-chuva
+    - mediana-de-dois-vetores

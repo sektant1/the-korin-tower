@@ -12,7 +12,9 @@ import type { BatchRequest, BatchResult, ExecResult, Runner } from "./types";
 // - sem relatório de memória (memoryKb sempre null);
 // - o sandbox deles mata o processo em ~20 s, não no nosso timeLimitMs,
 //   então o TLE é decidido pelo tempo medido (com folga para o spawn);
-// - um TLE no primeiro teste já marca os demais (não gastamos 20 s por teste).
+// - um TLE no primeiro teste já marca os demais (não gastamos 20 s por teste);
+// - stdout é cortado em ~32 KB e o processo morre (SIGTERM, code 143). Nesse
+//   caso devolvemos `partial: true` e o judge confere só o prefixo da saída.
 
 /** Compilers x86-64 do godbolt.org, um por linguagem da torre. */
 export const CE_COMPILERS = {
@@ -58,10 +60,29 @@ function toSignal(code: number | undefined): string | null {
   return ["INT", "QUIT", "ILL", "TRAP", "ABRT", "BUS", "FPE", "KILL", "USR1", "SEGV", "USR2", "PIPE", "ALRM", "TERM", "STKFLT"][code - 128] ?? null;
 }
 
+/** Limite de stdout do sandbox do Compiler Explorer (medido: 32 KB, última linha "[Truncated]"). */
+export const CE_OUTPUT_LIMIT = "32 KB";
+
 function toExec(j: CeResponse, timeLimitMs: number): ExecResult {
-  const stdout = lines(j.stdout);
-  const truncated = j.truncated === true || stdout.length > MAX_OUTPUT_BYTES;
+  let stdout = lines(j.stdout);
   const timeMs = typeof j.execTime === "number" ? j.execTime : null;
+  if (j.truncated === true) {
+    // O CE corta o stdout e mata o programa: nem exit code nem tempo valem.
+    // A última linha é o marcador "[Truncated]" e a anterior pode estar pela metade.
+    stdout = stdout.replace(/\n?\[Truncated\]\s*$/, "");
+    return {
+      stdout,
+      stderr: [lines(j.stderr), `[korin] saída cortada em ${CE_OUTPUT_LIMIT} pelo Compiler Explorer; só o começo foi conferido`].filter(Boolean).join("\n"),
+      exitCode: 0,
+      signal: null,
+      timeMs,
+      memoryKb: null,
+      timedOut: false,
+      outputTruncated: false,
+      partial: true,
+    };
+  }
+  const truncated = stdout.length > MAX_OUTPUT_BYTES;
   return {
     stdout: truncated ? stdout.slice(0, MAX_OUTPUT_BYTES) : stdout,
     stderr: lines(j.stderr),
