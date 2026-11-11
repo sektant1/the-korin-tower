@@ -43,94 +43,118 @@ export function ClickableLog({ text, onJump }: { text: string; onJump(line: numb
 }
 
 const VERDICT: Record<TestOutcome["verdict"], string> = {
-  AC: "PASSOU",
-  WA: "RESPOSTA ERRADA",
-  TLE: "TEMPO ESGOTADO",
-  RE: "ERRO DE EXECUÇÃO",
-  OLE: "SAÍDA GRANDE DEMAIS",
+  AC: "ok",
+  WA: "resposta errada",
+  TLE: "tempo esgotado",
+  RE: "erro de execução",
+  OLE: "saída grande demais",
 };
 
-function Metrics({ t }: { t: Pick<TestOutcome, "timeMs" | "memoryKb" | "exitCode"> }) {
-  return (
-    <span className="metrics">
-      tempo {t.timeMs ?? "?"} ms · mem {t.memoryKb != null ? `${(t.memoryKb / 1024).toFixed(1)} MB` : "n/d"} · exit {t.exitCode ?? "?"}
-    </span>
-  );
+/** "24 ms · 1,2 MB · exit 1": só o que existe e só o que importa. */
+function metrics(t: Pick<TestOutcome, "timeMs" | "memoryKb" | "exitCode">, showExit = false): string {
+  const out: string[] = [];
+  if (t.timeMs != null) out.push(`${t.timeMs} ms`);
+  if (t.memoryKb != null) out.push(`${(t.memoryKb / 1024).toFixed(1)} MB`);
+  if (t.exitCode != null && (showExit || t.exitCode !== 0)) out.push(`exit ${t.exitCode}`);
+  return out.join(" · ");
 }
+
+const MAX_DIFF_ROWS = 30;
 
 function Diff({ expected, actual }: { expected: string; actual: string }) {
   const e = expected.replace(/\r\n?/g, "\n").replace(/\n+$/, "").split("\n");
   const a = actual.replace(/\r\n?/g, "\n").replace(/\n+$/, "").split("\n");
   const n = Math.max(e.length, a.length);
-  const firstBad = Array.from({ length: n }, (_, i) => (e[i] ?? "").trimEnd() !== (a[i] ?? "").trimEnd()).indexOf(true);
-  const from = Math.max(0, firstBad - 3);
-  const rows = Array.from({ length: Math.min(n - from, 40) }, (_, k) => from + k);
+  const differs = (i: number) => (e[i] ?? "").trimEnd() !== (a[i] ?? "").trimEnd();
+  const firstBad = Array.from({ length: n }, (_, i) => differs(i)).indexOf(true);
+  const from = Math.max(0, firstBad - 2);
+  const rows = Array.from({ length: Math.min(n - from, MAX_DIFF_ROWS) }, (_, k) => from + k);
+  const cut = n - from > MAX_DIFF_ROWS;
   return (
-    <table className="diff">
-      <caption>
-        {firstBad >= 0 ? `primeira diferença na linha ${firstBad + 1}` : "saídas iguais"}
-        {n - from > 40 ? ` (mostrando 40 de ${n} linhas)` : ""}
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">esperado</th>
-          <th scope="col">obtido</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((i) => {
-          const same = (e[i] ?? "").trimEnd() === (a[i] ?? "").trimEnd();
-          return (
-            <tr key={i} className={same ? "" : "bad"}>
+    <div className="diff-wrap">
+      <table className="diff">
+        <thead>
+          <tr>
+            <th scope="col">linha</th>
+            <th scope="col">esperado</th>
+            <th scope="col">seu programa</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((i) => (
+            <tr key={i} className={differs(i) ? "bad" : undefined}>
               <td>{i + 1}</td>
-              <td>{e[i] ?? "∅"}</td>
-              <td>{a[i] ?? "∅"}</td>
+              <td>{e[i] ?? <i>nada</i>}</td>
+              <td>{a[i] ?? <i>nada</i>}</td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+      {cut && (
+        <p className="out-dim">
+          mostrando {MAX_DIFF_ROWS} de {n} linhas
+        </p>
+      )}
+    </div>
   );
 }
 
-function TestRow({ t, checker }: { t: TestOutcome; checker: Props["checker"] }) {
+function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker"]; open: boolean }) {
   const ok = t.verdict === "AC";
+  const name = t.hidden ? `${t.name} (oculto)` : t.name;
   const head = (
     <>
-      <span className={ok ? "pass" : "fail"}>
-        {ok ? "[OK] PASSOU" : "[X] FALHOU"}
-      </span>{" "}
-      <b>{t.hidden ? `${t.name} (oculto)` : t.name}</b> {!ok && <span className="fail">[{VERDICT[t.verdict]}]</span>} <Metrics t={t} />
-      {t.message && <div className="out-note">{t.message}</div>}
+      <span className={ok ? "mark pass" : "mark fail"} aria-hidden="true">
+        {ok ? "✓" : "✗"}
+      </span>
+      <span className="test-name">{name}</span>
+      <span className={ok ? "verdict pass" : "verdict fail"}>{VERDICT[t.verdict]}</span>
+      <span className="out-dim test-metrics">{metrics(t)}</span>
     </>
   );
-  if (t.hidden) return <li className="test-row">{head}</li>;
+  // Ocultos e aprovados: só a linha. O detalhe fica para os públicos que falharam.
+  if (t.hidden || ok) {
+    return (
+      <li className="test">
+        <div className="test-sum">{head}</div>
+        {t.message && <p className="out-note test-msg">{t.message}</p>}
+      </li>
+    );
+  }
   return (
-    <li className="test-row">
-      <details open={!ok}>
-        <summary>{head}</summary>
-        <div className="test-detail">
-          <div className="io-label">entrada</div>
-          <pre className="out-pre small">{t.input.length > 2000 ? t.input.slice(0, 2000) + "\n…" : t.input || "(vazia)"}</pre>
+    <li className="test">
+      <details open={open}>
+        <summary className="test-sum">{head}</summary>
+        <div className="test-body">
+          {t.message && <p className="out-note test-msg">{t.message}</p>}
           {looksLikePpm(t.stdout) ? (
             checker === "ppm" ? (
               <div className="ppm-pair">
                 <PpmView text={t.expected} label="esperado" />
-                <PpmView text={t.stdout} label="obtido" />
+                <PpmView text={t.stdout} label="seu programa" />
               </div>
             ) : (
-              <PpmView text={t.stdout} label="obtido" />
+              <PpmView text={t.stdout} label="seu programa" />
             )
           ) : (
-            !ok && t.verdict === "WA" && <Diff expected={t.expected} actual={t.stdout} />
+            t.verdict === "WA" && <Diff expected={t.expected} actual={t.stdout} />
+          )}
+          {t.verdict !== "WA" && t.stdout.trim() && (
+            <>
+              <div className="io-label">stdout</div>
+              <pre className="out-pre">{t.stdout.length > 2000 ? t.stdout.slice(0, 2000) + "\n…" : t.stdout}</pre>
+            </>
           )}
           {t.stderr && (
             <>
               <div className="io-label">stderr</div>
-              <pre className="out-pre small out-err">{t.stderr}</pre>
+              <pre className="out-pre out-err">{t.stderr.length > 2000 ? t.stderr.slice(0, 2000) + "\n…" : t.stderr}</pre>
             </>
           )}
+          <details className="test-input">
+            <summary>entrada deste teste</summary>
+            <pre className="out-pre">{t.input.length > 2000 ? t.input.slice(0, 2000) + "\n…" : t.input || "(vazia)"}</pre>
+          </details>
         </div>
       </details>
     </li>
@@ -142,23 +166,21 @@ export function OutputPanel({ state, checker, onJump, idle }: Props) {
     <div className="crt" aria-live="polite" aria-busy={state.status === "running"}>
       <div className="crt-inner">
         {state.status === "idle" && (
-          <p className="dim">
-            C:\KORIN&gt; {idle ?? <>aguardando... digite <kbd>:run</kbd>, <kbd>:test</kbd> ou <kbd>:submit</kbd></>}
-            <span className="caret">_</span>
+          <p className="out-dim">
+            {idle ?? (
+              <>
+                <kbd>:run</kbd> executa com a entrada acima · <kbd>:test</kbd> roda os testes públicos · <kbd>:submit</kbd> envia
+              </>
+            )}
+            <span className="caret"> _</span>
           </p>
         )}
         {state.status === "running" && (
-          <div>
-            <p>
-              <Gif gif={GIFS.loading} /> {state.label}
-            </p>
-            <div className="loading-bar" aria-hidden="true">
-              <span />
-            </div>
-            <p className="dim blink-slow">CARREGANDO KI... NÃO DESLIGUE O VIDEOGAME</p>
-          </div>
+          <p className="out-dim">
+            <Gif gif={GIFS.loading} /> {state.label}
+          </p>
         )}
-        {state.status === "error" && <p className="out-err">*** ERRO: {state.error}</p>}
+        {state.status === "error" && <div className="out-head bad">erro: {state.error}</div>}
         {state.status === "done" && <Done r={state.response} checker={checker} onJump={onJump} />}
       </div>
     </div>
@@ -166,78 +188,89 @@ export function OutputPanel({ state, checker, onJump, idle }: Props) {
 }
 
 function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"]; onJump: Props["onJump"] }) {
+  const notes = r.warnings.length > 0 && (
+    <ul className="out-notes">
+      {r.warnings.map((w) => (
+        <li key={w}>{w}</li>
+      ))}
+    </ul>
+  );
+
+  if (!r.compile.ok) {
+    return (
+      <>
+        <div className="out-head bad">erro de compilação</div>
+        <ClickableLog text={r.compile.output} onJump={onJump} />
+        <p className="out-dim">clique em arquivo:linha para ir até o erro</p>
+        {notes}
+      </>
+    );
+  }
+
+  const warnings = r.compile.output.trim() ? (
+    <details className="out-warnings">
+      <summary>avisos do compilador</summary>
+      <ClickableLog text={r.compile.output} onJump={onJump} />
+    </details>
+  ) : null;
+
+  if (r.mode === "run") {
+    const run = r.run;
+    return (
+      <>
+        {run && (
+          <div className={`out-head ${run.verdict === "AC" ? "" : "bad"}`}>
+            {run.verdict === "AC" ? "programa terminou" : VERDICT[run.verdict]}
+            <span className="out-head-meta">{metrics(run, true)}</span>
+          </div>
+        )}
+        {warnings}
+        {run && (
+          <>
+            {looksLikePpm(run.stdout) && <PpmView text={run.stdout} label="stdout" />}
+            <pre className="out-pre">{run.stdout.length > 20000 ? run.stdout.slice(0, 20000) + "\n… (cortado)" : run.stdout || "(sem saída)"}</pre>
+            {run.stderr && (
+              <>
+                <div className="io-label">stderr</div>
+                <pre className="out-pre out-err">{run.stderr}</pre>
+              </>
+            )}
+          </>
+        )}
+        {notes}
+      </>
+    );
+  }
+
+  const passed = r.tests.filter((t) => t.verdict === "AC").length;
+  const total = r.tests.length;
+  const firstFail = r.tests.findIndex((t) => t.verdict !== "AC" && !t.hidden);
+  const submitted = r.mode === "submit";
   return (
     <>
-      {r.warnings.map((w) => (
-        <p key={w} className="out-warn">(!) {w}</p>
-      ))}
-      {!r.compile.ok ? (
-        <>
-          <div className="result-gif">
-            <Gif gif={GIFS.hell} height={70} />
-          </div>
-          <p className="fail">[X] ERRO DE COMPILAÇÃO (clique na linha para pular no editor)</p>
-          <ClickableLog text={r.compile.output} onJump={onJump} />
-        </>
+      {r.allPassed ? (
+        <div className="out-head ok">
+          {submitted && <Gif gif={GIFS.sphere} height={20} />}
+          {submitted ? "resolvido" : "testes públicos ok"}
+          <span className="out-head-meta">
+            {passed}/{total} testes{!submitted && " · :submit roda os ocultos"}
+          </span>
+        </div>
       ) : (
-        <>
-          {r.compile.output.trim() && (
-            <details>
-              <summary className="out-warn">avisos do compilador</summary>
-              <ClickableLog text={r.compile.output} onJump={onJump} />
-            </details>
-          )}
-          {r.mode === "run" && r.run && (
-            <>
-              <p>
-                <Metrics t={r.run} />
-                {r.run.verdict === "TLE" && <span className="fail"> TEMPO ESGOTADO</span>}
-              </p>
-              {looksLikePpm(r.run.stdout) && <PpmView text={r.run.stdout} label="stdout" />}
-              <div className="io-label">stdout</div>
-              <pre className="out-pre">{r.run.stdout.length > 20000 ? r.run.stdout.slice(0, 20000) + "\n… (cortado)" : r.run.stdout || "(vazio)"}</pre>
-              {r.run.stderr && (
-                <>
-                  <div className="io-label">stderr</div>
-                  <pre className="out-pre out-err">{r.run.stderr}</pre>
-                </>
-              )}
-            </>
-          )}
-          {r.mode !== "run" && (
-            <>
-              {r.allPassed ? (
-                <>
-                  {r.mode === "submit" && (
-                    <div className="result-gif">
-                      <Gif gif={GIFS.gokuKame} height={70} />
-                    </div>
-                  )}
-                  <p className={`banner-win ${r.mode === "submit" ? "big" : ""}`}>
-                    <Gif gif={GIFS.sphere} height={24} />{" "}
-                    {r.mode === "submit" ? "STAGE CLEAR! TODOS OS TESTES PASSARAM" : "TESTES PUBLICOS OK, agora :submit"}{" "}
-                    <Gif gif={GIFS.sphere} height={24} />
-                  </p>
-                </>
-              ) : (
-                <>
-                  {r.mode === "submit" && (
-                    <div className="result-gif">
-                      <Gif gif={GIFS.buuBlast} height={70} />
-                    </div>
-                  )}
-                  <p className="banner-lose">GAME OVER · {r.tests.filter((t) => t.verdict === "AC").length}/{r.tests.length} · CONTINUE?</p>
-                </>
-              )}
-              <ul className="tests">
-                {r.tests.map((t) => (
-                  <TestRow key={(t.hidden ? "h" : "p") + t.name} t={t} checker={checker} />
-                ))}
-              </ul>
-            </>
-          )}
-        </>
+        <div className="out-head bad">
+          {submitted ? "reprovado" : "ainda não"}
+          <span className="out-head-meta">
+            {passed}/{total} testes
+          </span>
+        </div>
       )}
+      {warnings}
+      <ul className="tests">
+        {r.tests.map((t, i) => (
+          <TestRow key={(t.hidden ? "h" : "p") + t.name} t={t} checker={checker} open={i === firstFail} />
+        ))}
+      </ul>
+      {notes}
     </>
   );
 }

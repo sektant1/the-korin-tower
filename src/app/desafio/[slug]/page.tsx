@@ -23,6 +23,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return { title: c?.title ?? "Desafio" };
 }
 
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const clip = (s: string) => (s.length > 1500 ? s.slice(0, 1500) + "\n…" : s || "(vazia)");
+
 function RecordTable({ title, unit, rows }: { title: string; unit: string; rows: RecordRow[] }) {
   return (
     <table className="table98 records">
@@ -67,7 +70,7 @@ export default async function ChallengePage({ params }: Params) {
     <div className="challenge-page">
       <article className="statement window98" aria-labelledby="ch-title">
         <div className="title-bar">
-          <span>{c.category.name}.txt</span>
+          <span>enunciado.txt</span>
         </div>
         <div className="window-body">
           <nav className="crumbs" aria-label="Você está em">
@@ -85,7 +88,8 @@ export default async function ChallengePage({ params }: Params) {
             {c.kind === "stdio" && (
               <>
                 {" "}
-                · tempo: {c.timeLimitMs} ms · memória: {c.memoryLimitMb} MB · {publicTests.length} teste(s) público(s), {hiddenCount} oculto(s)
+                · {c.timeLimitMs} ms · {c.memoryLimitMb} MB · {plural(publicTests.length, "teste público", "testes públicos")},{" "}
+                {plural(hiddenCount, "oculto", "ocultos")}
               </>
             )}
           </p>
@@ -98,27 +102,24 @@ export default async function ChallengePage({ params }: Params) {
           </p>
           {isDaily && (
             <p className="daily-flag">
-              ★ DESAFIO DO DIA: resolver hoje vale +{DAILY_BONUS * 100}% de pontos{user ? "" : " (para quem tem conta)"}.
+              Desafio do dia: resolvido hoje vale +{DAILY_BONUS * 100}%{user ? "" : " para quem tem conta"}.
             </p>
           )}
           <div className="markdown" dangerouslySetInnerHTML={{ __html: statement }} />
 
           {publicTests.length > 0 && (
-            <details className="public-tests">
-              <summary>Testes públicos ({publicTests.length})</summary>
-              {publicTests.map((t) => (
+            <details className="samples" open>
+              <summary>Exemplos ({publicTests.length})</summary>
+              {publicTests.map((t, i) => (
                 <div key={t.id} className="sample">
-                  <b>{t.name}</b>
-                  <div className="sample-io">
-                    <div>
-                      <div className="io-label">entrada</div>
-                      <pre className="code-block">{t.input.length > 1500 ? t.input.slice(0, 1500) + "\n…" : t.input}</pre>
-                    </div>
-                    <div>
-                      <div className="io-label">saida esperada</div>
-                      <pre className="code-block">{t.expected.length > 1500 ? t.expected.slice(0, 1500) + "\n…" : t.expected}</pre>
-                    </div>
+                  <div className="sample-head">
+                    <b>Exemplo {i + 1}</b>
+                    <span className="dim">{t.name}</span>
                   </div>
+                  <div className="io-label">entrada</div>
+                  <pre className="sample-pre">{clip(t.input)}</pre>
+                  <div className="io-label">saída esperada</div>
+                  <pre className="sample-pre">{clip(t.expected)}</pre>
                 </div>
               ))}
             </details>
@@ -126,7 +127,7 @@ export default async function ChallengePage({ params }: Params) {
 
           {notes && (
             <details className="teacher-notes">
-              <summary>Notas do professor (spoilers!)</summary>
+              <summary>Notas do professor (spoiler)</summary>
               <div className="markdown" dangerouslySetInnerHTML={{ __html: notes }} />
             </details>
           )}
@@ -135,7 +136,7 @@ export default async function ChallengePage({ params }: Params) {
             <details className="teacher-notes">
               <summary>Recordes ({records.shortest.length ? `menor código: ${records.shortest[0].value} bytes` : "ninguém ainda"})</summary>
               {records.shortest.length === 0 ? (
-                <p className="dim">Nenhum código aprovado por aqui. O primeiro :submit com conta já entra no placar.</p>
+                <p className="dim">Ninguém resolveu com conta ainda.</p>
               ) : (
                 <div className="sample-io">
                   <RecordTable title="Menor código" unit="bytes" rows={records.shortest} />
@@ -154,7 +155,7 @@ export default async function ChallengePage({ params }: Params) {
                 action={addComment}
                 hidden={{ slug: c.slug }}
                 label="Seu comentário:"
-                placeholder="Dúvida, dica ou elogio. Esconda spoilers com ||duas barras||."
+                placeholder="Dúvida, dica ou comentário. Spoiler entre ||barras||."
                 max={COMMENT_MAX}
                 submit="Comentar"
               />

@@ -31,7 +31,7 @@ export function PostForm({ action, hidden, label, placeholder, max, submit }: Pr
         <textarea name="text" className="stdin98" rows={4} maxLength={max} placeholder={placeholder} required />
       </label>
       <p className="dim small">
-        Até {max} caracteres. <code>`código`</code>, <code>```bloco```</code> e <code>||spoiler||</code> (fica escondido até clicarem).
+        Até {max} caracteres. <code>`código`</code>, <code>```bloco```</code>, <code>||spoiler||</code>.
       </p>
       {state?.error && (
         <p className="out-warn" role="alert">

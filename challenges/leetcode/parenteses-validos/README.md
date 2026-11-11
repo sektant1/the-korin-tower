@@ -1,5 +1,5 @@
 ---
-title: Parênteses Válidos
+title: 20. Parênteses Válidos
 difficulty: 1
 tags: [pilha, strings, leetcode]
 languages: [c, cpp, rust]

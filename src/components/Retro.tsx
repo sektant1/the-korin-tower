@@ -40,7 +40,7 @@ export function Difficulty({ level }: { level: number }) {
       <span className="sr-only">Dificuldade {level} de 5</span>
       <span aria-hidden="true">
         {Array.from({ length: 5 }, (_, i) => (
-          <span key={i} className={i < level ? "star on" : "star"} style={{ animationDelay: `${i * 0.15}s` }}>
+          <span key={i} className={i < level ? "star on" : "star"}>
             ★
           </span>
         ))}

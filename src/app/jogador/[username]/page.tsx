@@ -47,9 +47,9 @@ export default async function PlayerPage({ params }: Params) {
           <BadgeShelf earned={profile.badges} />
         </Window>
       </div>
-      <Window title="Stages zerados">
+      <Window title="Desafios resolvidos">
         {profile.solved.length === 0 ? (
-          <p className="dim">Ainda no térreo. A escalada começa com o primeiro :submit!</p>
+          <p className="dim">Nenhum desafio resolvido ainda.</p>
         ) : (
           <div className="table-scroll">
             <table className="table98">

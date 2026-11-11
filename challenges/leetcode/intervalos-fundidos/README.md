@@ -1,5 +1,5 @@
 ---
-title: Fundir Intervalos
+title: 56. Fundir Intervalos
 difficulty: 2
 tags: [ordenacao, intervalos, varredura, leetcode]
 languages: [c, cpp, rust]

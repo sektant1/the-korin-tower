@@ -11,7 +11,7 @@ export function SettingsForm() {
       <fieldset className="fieldset98">
         <legend>Editor</legend>
         <label className="check98">
-          <input type="checkbox" checked={s.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Modo Vim (padrão: ligado)
+          <input type="checkbox" checked={s.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Modo Vim
         </label>
         <label>
           Tema do editor{" "}
@@ -46,8 +46,7 @@ export function SettingsForm() {
           aria-describedby="vimrc-help"
         />
         <p id="vimrc-help" className="dim small">
-          Suporta <code>map</code>, <code>nmap</code>, <code>imap</code>, <code>vmap</code>, as variantes <code>noremap</code> e{" "}
-          <code>set theme=ambar</code>. Ex.: <code>imap jj &lt;Esc&gt;</code>
+          Aceita <code>map</code>, <code>nmap</code>, <code>imap</code>, <code>vmap</code>, <code>noremap</code> e <code>set theme=ambar</code>.
         </p>
         {vimrcErrors.map((e) => (
           <p key={e} className="out-warn">
@@ -59,8 +58,7 @@ export function SettingsForm() {
       <fieldset className="fieldset98">
         <legend>Compilador (C / C++)</legend>
         <p className="dim small">
-          Flags extras, ex.: <code>-O0 -g -fsanitize=address</code>. Só flags de uma lista segura são aceitas. O runner Piston (produção)
-          usa flags fixas e ignora estas; o runner local respeita.
+          Flags extras, ex.: <code>-O0 -g -fsanitize=address</code>. Só uma lista segura é aceita.
         </p>
         <label>
           gcc{" "}
@@ -75,12 +73,10 @@ export function SettingsForm() {
       <fieldset className="fieldset98">
         <legend>Visual</legend>
         <label className="check98">
-          <input type="checkbox" checked={s.sanity} onChange={(e) => updateSettings({ sanity: e.target.checked })} /> Modo Sanidade
-          (para animações; também ativado por <i>prefers-reduced-motion</i>)
+          <input type="checkbox" checked={s.sanity} onChange={(e) => updateSettings({ sanity: e.target.checked })} /> Menos animações
         </label>
         <label className="check98">
-          <input type="checkbox" checked={s.starTrail} onChange={(e) => updateSettings({ starTrail: e.target.checked })} /> Rastro de
-          estrelinhas no mouse
+          <input type="checkbox" checked={s.starTrail} onChange={(e) => updateSettings({ starTrail: e.target.checked })} /> Estrelinhas atrás do mouse
         </label>
       </fieldset>
 

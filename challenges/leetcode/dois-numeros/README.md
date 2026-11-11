@@ -1,5 +1,5 @@
 ---
-title: Dois Números (Two Sum)
+title: 1. Dois Números (Two Sum)
 difficulty: 1
 tags: [hash, vetor, leetcode]
 languages: [c, cpp, rust]

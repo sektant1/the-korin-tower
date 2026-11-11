@@ -31,7 +31,7 @@ export default async function AccountPage() {
 
   return (
     <>
-      <FlameTitle>MEMORY CARD</FlameTitle>
+      <FlameTitle>MINHA CONTA</FlameTitle>
       <div className="two-col">
         <Window title={`Jogador: ${me.username}`}>
           <dl className="stats98">
@@ -73,7 +73,7 @@ export default async function AccountPage() {
           </p>
           <form action={logout}>
             <button type="submit" className="btn98">
-              Sair (logout)
+              Sair
             </button>
           </form>
         </Window>
@@ -81,13 +81,12 @@ export default async function AccountPage() {
           <BadgeShelf earned={profile?.badges ?? []} />
         </Window>
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
-          {!user.passwordHash && <p className="dim small">Você entra pelo GitHub. Crie uma senha para entrar também com usuário e senha.</p>}
+          {!user.passwordHash && <p className="dim small">Você entra pelo GitHub. Com uma senha, entra também por usuário e senha.</p>}
           <PasswordForm hasPassword={!!user.passwordHash} />
         </Window>
         <Window title="Tokens da CLI (korin)">
           <p className="small">
-            Resolva os desafios no seu editor, com <code>korin pick</code>, <code>korin test</code> e <code>korin submit</code>. Veja como instalar em{" "}
-            <Link href="/cli">/cli</Link>. Um token vale como a sua senha: quem o tiver envia código em seu nome.
+            Para a <Link href="/cli">CLI</Link>. Um token vale como a sua senha: quem o tiver envia código em seu nome.
           </p>
           {tokens.length > 0 && (
             <table className="table98 tokens-table">

@@ -14,10 +14,10 @@ export default async function TracksPage() {
     <>
       <FlameTitle>DETONADOS</FlameTitle>
       <p className="center">
-        <Gif gif={GIFS.gokuDuo} height={90} /> <Gif gif={GIFS.friezaDisc} height={70} />
+        <Gif gif={GIFS.gokuDuo} height={90} />
       </p>
-      <p>Trilhas são sequências de desafios, como um detonado de revista: siga passo a passo até zerar.</p>
-      {tracks.length === 0 && <p className="dim">Nenhuma trilha ainda. Elas ficam em challenges/tracks.yml.</p>}
+      <p className="center dim">Sequências de desafios em ordem, como um detonado de revista.</p>
+      {tracks.length === 0 && <p className="dim">Nenhuma trilha ainda.</p>}
       {tracks.map((t) => (
         <Window key={t.id} title={`${t.title}.txt`}>
           <h2 className="track-title">
@@ -27,7 +27,7 @@ export default async function TracksPage() {
           <TrackProgress slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)} />
           <p>
             <Link href={`/trilhas/${t.id}`} className="btn98 play">
-              ABRIR DETONADO <span className="arrow" aria-hidden="true">►</span>
+              ABRIR <span className="arrow" aria-hidden="true">►</span>
             </Link>
           </p>
         </Window>

@@ -20,26 +20,26 @@ export default async function GuestbookPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <FlameTitle>LIVRO DE VISITAS</FlameTitle>
-      <Window title="Assine meu guestbook!">
+      <Window title="Assine o guestbook">
         <p className="center">
           <Gif gif={GIFS.guestbookButton} alt="Guestbook" /> <Gif gif={GIFS.navCommunity} alt="Community" />
         </p>
         {me ? (
           <PostForm
             action={signGuestbook}
-            label="Deixe seu recado, seu ICQ e seu desafio favorito:"
-            placeholder="Oi! Passei por aqui e adorei a torre..."
+            label="Seu recado:"
+            placeholder="Passei por aqui..."
             max={GUESTBOOK_MAX}
             submit="Assinar o livro"
           />
         ) : (
           <p>
-            Para assinar, <Link href="/entrar?next=/guestbook">entre na sua conta</Link>. Ler é livre!
+            <Link href="/entrar?next=/guestbook">Entre</Link> para assinar.
           </p>
         )}
       </Window>
       <Window title={`Recados (${total})`}>
-        <PostList posts={entries} onDelete={deleteGuestbookEntry} empty="Ninguém assinou ainda. Seja o primeiro!" />
+        <PostList posts={entries} onDelete={deleteGuestbookEntry} empty="Ninguém assinou ainda." />
         {pages > 1 && (
           <nav className="pager" aria-label="Páginas do guestbook">
             {page > 0 && <Link href={`/guestbook?p=${page}`}>◄ Mais novos</Link>}

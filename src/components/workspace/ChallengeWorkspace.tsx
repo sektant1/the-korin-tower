@@ -15,9 +15,8 @@ import {
 import { LANGUAGES, isCanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
 import { renderShaderPpm } from "@/lib/client/shader";
 import type { RunResponse } from "@/lib/run-api";
-import { GIFS } from "@/lib/gifs";
+import { HINT_PENALTY } from "@/lib/scoring";
 import { useAccount, useProgressMap } from "../Account";
-import { Gif } from "../Gif";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { ShaderCanvas } from "./ShaderCanvas";
@@ -49,8 +48,8 @@ interface Props {
 type Mode = "run" | "test" | "submit";
 const MODE_LABEL: Record<Mode, string> = {
   run: "compilando e executando...",
-  test: "rodando testes públicos...",
-  submit: "rodando TODOS os testes (públicos + ocultos)...",
+  test: "rodando os testes públicos...",
+  submit: "rodando todos os testes, públicos e ocultos...",
 };
 
 export function ChallengeWorkspace(p: Props) {
@@ -109,7 +108,7 @@ export function ChallengeWorkspace(p: Props) {
       const file = LANGUAGES[lang].file;
       if (!logged) {
         const ok = saveDraft(p.slug, lang, code);
-        if (explicit) flash(ok ? `"${file}" salvo (rascunho local)` : "E212: não foi possível salvar (storage bloqueado)");
+        if (explicit) flash(ok ? `"${file}" salvo (rascunho local)` : "E212: não deu para salvar neste navegador");
         return;
       }
       if (accountDrafts.current[lang] === code && !explicit) return;
@@ -136,7 +135,7 @@ export function ChallengeWorkspace(p: Props) {
     saveTimer.current = setTimeout(() => save(false), 800);
   }, [save]);
 
-  // Trata a resposta de /api/run igual para stdio e shader (STAGE CLEAR etc.).
+  // Trata a resposta de /api/run igual para stdio e shader (resolvido, pontos etc.).
   const handleRunResponse = useCallback(
     async (res: Response) => {
       const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
@@ -149,10 +148,10 @@ export function ChallengeWorkspace(p: Props) {
       if (r.mode === "submit" && r.allPassed) {
         if (r.awarded === undefined) {
           setProgress(p.slug, "solved");
-          flash("★ STAGE CLEAR ★ entre na sua conta para pontuar e ver a solução");
+          flash("resolvido! entre na sua conta para pontuar e ver a solução");
         } else {
           router.refresh(); // traz o progresso novo do banco (badges, placar)
-          flash(r.awarded > 0 ? `★ STAGE CLEAR ★ +${r.awarded} pontos! solução liberada` : "★ STAGE CLEAR ★ (sem pontos novos) solução liberada");
+          flash(r.awarded > 0 ? `resolvido! +${r.awarded} pontos. solução liberada` : "resolvido de novo. solução liberada");
         }
       }
     },
@@ -210,7 +209,7 @@ export function ChallengeWorkspace(p: Props) {
       if (busy) return;
       save(false);
       if (p.kind === "canvas") {
-        if (mode !== "run") return flash("desafio de canvas: sem testes automáticos, use :run");
+        if (mode !== "run") return flash("desafio de canvas não tem testes; use :run");
         if (!isCanvasLanguage(lang)) return;
         setOutput({ status: "running", label: "compilando para WebAssembly (emcc)..." });
         try {
@@ -253,7 +252,7 @@ export function ChallengeWorkspace(p: Props) {
 
   const nextHint = useCallback(async () => {
     if (hints.length >= p.hintsTotal) {
-      flash(p.hintsTotal ? "acabaram os cheat codes!" : "este desafio não tem dicas");
+      flash(p.hintsTotal ? "não há mais dicas" : "este desafio não tem dicas");
       return;
     }
     const r = await fetch(`/api/challenges/${p.slug}/hints/${hints.length}`, { method: "POST" });
@@ -350,7 +349,7 @@ export function ChallengeWorkspace(p: Props) {
 
   const tabs = [
     { id: "out", label: p.kind === "stdio" ? "Saída" : "Canvas" },
-    { id: "hints", label: `Cheat codes ${hints.length}/${p.hintsTotal}` },
+    { id: "hints", label: `Dicas ${hints.length}/${p.hintsTotal}` },
     { id: "sol", label: "Solução" },
   ] as const;
 
@@ -438,13 +437,13 @@ export function ChallengeWorkspace(p: Props) {
             {p.kind === "stdio" ? (
               <>
                 <label className="stdin-label" htmlFor="stdin">
-                  stdin para <b>Executar</b> <span className="dim">(Ctrl+Enter executa · Esc volta ao editor)</span>
+                  Entrada (stdin) <span className="stdin-hint">Ctrl+Enter executa · Esc volta ao editor</span>
                 </label>
                 <textarea
                   id="stdin"
                   ref={stdinRef}
-                  className="stdin98"
-                  rows={3}
+                  className="stdin98 stdin-box"
+                  rows={5}
                   value={stdin}
                   onChange={(e) => setStdin(e.target.value)}
                   onKeyDown={(e) => {
@@ -471,7 +470,7 @@ export function ChallengeWorkspace(p: Props) {
                 {shaderErrors.length > 0 && (
                   <div className="crt">
                     <div className="crt-inner">
-                      <p className="fail">[X] ERRO NO SHADER</p>
+                      <div className="out-head bad">erro no shader</div>
                       <ul className="tests">
                         {shaderErrors.map((e, i) => (
                           <li key={i}>
@@ -493,13 +492,8 @@ export function ChallengeWorkspace(p: Props) {
 
           {tab === "hints" && (
             <div className="window-body">
-              <div className="tab-gif">
-                <Gif gif={GIFS.powerUp} height={64} />
-              </div>
               {hints.length === 0 && (
-                <p className="dim">
-                  Nenhuma dica revelada. Use <kbd>:hint</kbd> só se travar!
-                </p>
+                <p className="dim">Nenhuma dica revelada. Cada dica aberta antes de resolver tira {HINT_PENALTY * 100}% dos pontos deste desafio.</p>
               )}
               <ol className="hints">
                 {hints.map((h, i) => (
@@ -508,7 +502,7 @@ export function ChallengeWorkspace(p: Props) {
               </ol>
               {hints.length < p.hintsTotal && (
                 <button type="button" className="btn98 small" onClick={() => nextHint()}>
-                  Revelar próxima ({hints.length + 1}/{p.hintsTotal})
+                  Revelar dica {hints.length + 1} de {p.hintsTotal}
                 </button>
               )}
             </div>
@@ -516,21 +510,21 @@ export function ChallengeWorkspace(p: Props) {
 
           {tab === "sol" && (
             <div className="window-body">
-              {!p.hasSolution && <p className="dim">Este desafio ainda não tem solução de referência.</p>}
+              {!p.hasSolution && <p className="dim">Este desafio não tem solução de referência.</p>}
               {p.hasSolution && !logged && (
                 <p>
-                  [TRANCADA] A solução de referência é liberada pelo servidor para quem tem conta.{" "}
+                  A solução de referência abre para quem tem conta.{" "}
                   <a href={`/entrar?next=/desafio/${p.slug}`} className="btn98 small">
                     Entrar
                   </a>
-                  {status === "solved" && <span className="dim"> Você já resolveu neste navegador; entre e envie de novo para pontuar.</span>}
+                  {status === "solved" && <span className="dim"> Você resolveu sem login. Entre e envie de novo para pontuar.</span>}
                 </p>
               )}
               {p.hasSolution && logged && !status && (
                 <p>
                   {p.kind === "stdio"
-                    ? "[TRANCADA] Liberada quando você passar em todos os testes (:submit) ou desistir. Desistir zera os pontos deste desafio."
-                    : "[TRANCADA] Este desafio roda no navegador, sem testes nem pontos. Tente primeiro; a referência abre quando você desistir."}{" "}
+                    ? "A solução abre quando você passar em todos os testes, ou se desistir. Desistir zera os pontos deste desafio."
+                    : "Este desafio roda no navegador, sem testes nem pontos. A solução abre se você desistir."}{" "}
                   <button type="button" className="btn98 small" onClick={() => setConfirm("giveup")}>
                     Desistir
                   </button>
@@ -538,10 +532,7 @@ export function ChallengeWorkspace(p: Props) {
               )}
               {logged && status && solution && (
                 <>
-                  <div className="tab-gif">
-                    <Gif gif={status === "solved" ? GIFS.gokuSsj : GIFS.buuBlast} height={status === "solved" ? 110 : 60} />
-                  </div>
-                  <p>{status === "solved" ? "★ Você resolveu! Compare com a referência:" : "Você desistiu, sem vergonha. Estude e tente de novo:"}</p>
+                  <p>{status === "solved" ? "Resolvido. Compare com a referência:" : "Você desistiu. A referência:"}</p>
                   {Object.entries(solution).map(([l, code]) => (
                     <details key={l} open={l === lang}>
                       <summary>{LANGUAGES[l as LanguageId].label}</summary>
@@ -555,7 +546,7 @@ export function ChallengeWorkspace(p: Props) {
               {logged && status && others && others.length > 0 && (
                 <section className="others" aria-labelledby="others-title">
                   <h3 id="others-title" className="section-title">
-                    Soluções dos outros jogadores ({others.length})
+                    Soluções de outros jogadores ({others.length})
                   </h3>
                   {others.map((o) => (
                     <details key={`${o.username}:${o.language}`}>
@@ -572,7 +563,7 @@ export function ChallengeWorkspace(p: Props) {
               )}
               <p>
                 <button type="button" className="btn98 small" onClick={() => setConfirm("reset")}>
-                  Comer feijão senzu (restaurar template)
+                  Restaurar o template
                 </button>
               </p>
             </div>
@@ -587,7 +578,7 @@ export function ChallengeWorkspace(p: Props) {
               Confirmar
             </h2>
             <div className="window-body">
-              <p>{confirm === "giveup" ? "Desistir e ver a solução de referência? Este desafio deixa de valer pontos." : "Comer o feijão senzu? Seu rascunho é apagado e o código volta ao template (HP cheio!)."}</p>
+              <p>{confirm === "giveup" ? "Desistir e ver a solução? Este desafio deixa de valer pontos." : "Apagar o rascunho e voltar ao template?"}</p>
               <div className="dialog-actions">
                 <button type="button" className="btn98 primary" onClick={doConfirm} autoFocus>
                   OK

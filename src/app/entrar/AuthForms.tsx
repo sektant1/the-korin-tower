@@ -43,7 +43,7 @@ export function RegisterForm({ next, invite }: { next: string; invite: string })
         aria-describedby="reg-user-help"
       />
       <p id="reg-user-help" className="dim small">
-        3 a 20 caracteres: letras, números, _ e -. Aparece no Hall of Fame.
+        3 a 20 caracteres: letras, números, _ e -.
       </p>
       <label htmlFor="reg-pass">Senha</label>
       <input id="reg-pass" name="password" type="password" className="input98" autoComplete="new-password" required minLength={8} />

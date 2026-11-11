@@ -2,14 +2,14 @@
 
 /** Mural de novidades da home (mais recente primeiro). */
 export const NEWS: { date: string; text: string }[] = [
-  { date: "11/11/2026", text: "Compilador livre em /compilador: treine em qualquer linguagem da torre, com stdin, sem desafio." },
-  { date: "11/11/2026", text: "Torneio aberto: desafio do dia com bônus, sequências, recordes de menor código e mais rápido, perfil público e feed RSS." },
-  { date: "11/11/2026", text: "Game Dev no canvas! C/C++ com raylib e SDL2 compilados para WebAssembly. E chegaram D, Pascal e Fortran." },
-  { date: "11/11/2026", text: "Detonados (trilhas), guestbook, comentários com spoiler, medalhas e as soluções dos outros jogadores." },
-  { date: "10/11/2026", text: "11 desafios novos: hash table, malloc first-fit, BigInt, LRU, Dijkstra e 3 shaders (Mandelbrot, ray marching...)." },
-  { date: "10/11/2026", text: "Contas por convite! Entre para salvar progresso e rascunhos, liberar soluções e pontuar no Hall of Fame." },
-  { date: "10/11/2026", text: "A torre está no ar: editor Vim e compilador de verdade." },
-  { date: "10/11/2026", text: "Junte as 7 Esferas do Dragão resolvendo desafios. Dizem que um dragão aparece..." },
+  { date: "11/11/2026", text: "CLI korin: resolva no seu editor e envie pelo terminal. Nova categoria LeetCode, com o número de cada problema." },
+  { date: "11/11/2026", text: "Compilador livre em /compilador, sem desafio." },
+  { date: "11/11/2026", text: "Desafio do dia com bônus, recordes de menor código e mais rápido, perfil público e feed RSS." },
+  { date: "11/11/2026", text: "Game Dev: C/C++ com raylib e SDL2 rodando no navegador. Chegaram D, Pascal e Fortran." },
+  { date: "11/11/2026", text: "Detonados, guestbook, comentários, medalhas e soluções dos outros jogadores." },
+  { date: "10/11/2026", text: "11 desafios novos: tabela hash, malloc first-fit, BigInt, LRU, Dijkstra e 3 shaders." },
+  { date: "10/11/2026", text: "Contas por convite. Progresso, rascunhos e Hall of Fame." },
+  { date: "10/11/2026", text: "A torre está no ar." },
 ];
 
 /** "Você sabia?": um por visita, sorteado no servidor. */

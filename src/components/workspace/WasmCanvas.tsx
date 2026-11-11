@@ -65,13 +65,13 @@ export function WasmCanvas({ js, version }: Props) {
       ) : (
         <div className="shader-canvas wasm-idle">
           <p>
-            INSERT COIN
+            NADA COMPILADO
             <br />
             <small>:run compila e roda aqui</small>
           </p>
         </div>
       )}
-      {srcDoc && <p className="dim small wasm-tip">Clique no canvas para ele receber o teclado. Executar de novo reinicia o programa.</p>}
+      {srcDoc && <p className="dim small wasm-tip">Clique no canvas para usar o teclado. Executar de novo reinicia o programa.</p>}
       {lines.length > 0 && (
         <div className="crt" aria-live="polite">
           <div className="crt-inner">

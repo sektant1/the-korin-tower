@@ -12,7 +12,7 @@ export default async function GalleryPage() {
     <>
       <FlameTitle>GALERIA</FlameTitle>
 
-      <Window title="Fan art e imagens">
+      <Window title="Fan art">
         {all.length ? (
           <ul className="gallery">
             {all.map((src) => (
@@ -24,16 +24,7 @@ export default async function GalleryPage() {
             ))}
           </ul>
         ) : (
-          <>
-            <p>
-              Nenhuma imagem ainda. Coloque arquivos <code>.gif</code>, <code>.png</code>, <code>.jpg</code>, <code>.webp</code> ou{" "}
-              <code>.svg</code> em <code>public/fanart/</code> e recarregue a página.
-            </p>
-            <p className="dim small">
-              <code>banner.*</code> vai para o cabeçalho e <code>mascote.*</code> para o topo da home.
-            </p>
-            <UnderConstruction what="Galeria esperando suas imagens" />
-          </>
+          <UnderConstruction what="Nenhuma fan art ainda" />
         )}
       </Window>
 

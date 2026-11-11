@@ -13,7 +13,7 @@ export function TrackProgress({ slugs }: { slugs: string[] }) {
         <span style={{ width: `${pct}%` }} />
       </div>
       <span className="track-count">
-        {done}/{slugs.length} {done === slugs.length && slugs.length > 0 ? "★ ZERADO!" : "STAGES"}
+        {done}/{slugs.length} {done === slugs.length && slugs.length > 0 ? "ZERADO" : "passos"}
       </span>
     </div>
   );
@@ -23,7 +23,7 @@ export function TrackProgress({ slugs }: { slugs: string[] }) {
 export function TrackNext({ steps }: { steps: { slug: string; title: string }[] }) {
   const progress = useProgressMap();
   const next = steps.find((s) => progress[s.slug] !== "solved");
-  if (!next) return <p className="pass">★ Trilha zerada! Você detonou.</p>;
+  if (!next) return <p className="pass">Trilha zerada.</p>;
   return (
     <p>
       <Link href={`/desafio/${next.slug}`} className="btn98 play">

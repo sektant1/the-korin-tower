@@ -18,10 +18,10 @@ export default async function LoginPage({ searchParams }: Props) {
 
   return (
     <>
-      <FlameTitle>INSERT COIN</FlameTitle>
+      <FlameTitle>ENTRAR</FlameTitle>
       <p className="center">
-        Entre para salvar progresso e rascunhos na sua conta, liberar soluções e aparecer no <Link href="/hall-da-fama">Hall of Fame</Link>.
-        Sem conta você ainda pode jogar tudo; o progresso fica só neste navegador.
+        Com conta: progresso e rascunhos salvos, soluções liberadas e nome no <Link href="/hall-da-fama">Hall of Fame</Link>. Sem conta dá
+        para jogar tudo, mas o progresso fica só neste navegador.
       </p>
       {erro && (
         <p className="out-warn center" role="alert">
@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: Props) {
         </p>
       )}
       <div className="two-col">
-        <Window title="Continuar jogo (login)">
+        <Window title="Login">
           <LoginForm next={target} />
           {github && (
             <p className="auth-alt">
@@ -39,13 +39,13 @@ export default async function LoginPage({ searchParams }: Props) {
             </p>
           )}
         </Window>
-        <Window title="Novo jogador (cadastro)">
-          <p className="dim small">A torre é só para convidados. Peça um código de convite a quem administra o site.</p>
+        <Window title="Cadastro">
+          <p className="dim small">Cadastro só com convite. Peça o código a quem administra o site.</p>
           <RegisterForm next={target} invite={convite ?? ""} />
           {github && (
             <form action="/api/auth/github" method="get" className="auth-alt">
               <label htmlFor="gh-invite" className="dim small">
-                Ou cadastre com GitHub (também precisa do convite):
+                Ou cadastre com GitHub, também com convite:
               </label>
               <span className="auth-inline">
                 <input id="gh-invite" name="invite" className="input98" defaultValue={convite ?? ""} placeholder="KORIN-XXXX-XXXX" required />

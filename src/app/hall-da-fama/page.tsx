@@ -53,12 +53,12 @@ export default async function HallOfFamePage() {
           </tbody>
         </table>
         <p className="hs-foot">
-          {entries.length === 0 ? "SEJA O PRIMEIRO A ENTRAR AQUI!" : me ? "CONTINUE SUBINDO A TORRE!" : "INSERT COIN TO CONTINUE"}
+          {entries.length === 0 ? "NINGUÉM AINDA" : me ? "CONTINUE SUBINDO" : "ENTRE PARA APARECER AQUI"}
         </p>
       </div>
       <p className="center dim small">
-        Cada desafio vale 100 × dificuldade. Cada dica revelada antes de resolver tira {HINT_PENALTY * 100}% (até sobrar 20%). Quem desiste não
-        pontua naquele desafio. O desafio do dia, resolvido no dia, vale +{DAILY_BONUS * 100}%.{" "}
+        Cada desafio vale 100 × dificuldade. Dica revelada tira {HINT_PENALTY * 100}%. Desistir zera. Desafio do dia resolvido no dia vale +
+        {DAILY_BONUS * 100}%.{" "}
         {!me && (
           <>
             <Link href="/entrar?next=/hall-da-fama">Entre</Link> para aparecer aqui.

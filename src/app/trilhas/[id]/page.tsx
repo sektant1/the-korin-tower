@@ -37,7 +37,7 @@ export default async function TrackPage({ params }: Params) {
               {s.scored ? (
                 <ProgressBadge slug={s.slug} />
               ) : (
-                <span className="tag" title="Roda no navegador, sem testes: não conta para zerar a trilha">
+                <span className="tag" title="Roda no navegador, sem testes; não conta para zerar a trilha">
                   livre
                 </span>
               )}

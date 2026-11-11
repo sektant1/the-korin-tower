@@ -1,5 +1,5 @@
 ---
-title: Mediana de Dois Vetores Ordenados
+title: 4. Mediana de Dois Vetores Ordenados
 difficulty: 4
 tags: [busca-binaria, dois-ponteiros, leetcode]
 languages: [c, cpp, rust]

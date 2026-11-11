@@ -19,7 +19,7 @@ export function SanityToggle() {
   return (
     <label className="check98 sanity-toggle">
       <input type="checkbox" checked={s.sanity} onChange={(e) => updateSettings({ sanity: e.target.checked })} />
-      Modo Sanidade
+      Menos animações
     </label>
   );
 }
@@ -101,16 +101,13 @@ export function PlayerOne({ total }: { total: number }) {
   const pct = total ? Math.round((solved / total) * 100) : 0;
   return (
     <div className="player-one">
-      <div className="p1-head">
-        <span className="blink-slow">1UP</span> <span className="p1-score">{score.toString().padStart(6, "0")}</span>
-      </div>
-      <div className="xp-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progresso">
+      <PowerLevel score={score} />
+      <div className="xp-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Desafios resolvidos">
         <span style={{ width: `${pct}%` }} />
       </div>
       <div className="p1-foot">
-        {solved}/{total} STAGES
+        {solved}/{total} desafios
       </div>
-      <PowerLevel score={score} />
     </div>
   );
 }
@@ -120,7 +117,7 @@ export function ProgressBadge({ slug }: { slug: string }) {
   const p = useProgressMap()[slug];
   if (!p) return null;
   return p === "solved" ? (
-    <span className="badge-clear" title="Resolvido">CLEAR!</span>
+    <span className="badge-clear" title="Resolvido">CLEAR</span>
   ) : (
     <span className="badge-gaveup" title="Desistiu">DESISTIU</span>
   );

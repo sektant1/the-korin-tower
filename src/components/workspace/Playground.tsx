@@ -179,7 +179,7 @@ export function Playground() {
         save(false);
         router.push("/desafios");
       },
-      hint: () => flash("sem cheat codes no compilador!"),
+      hint: () => flash("o compilador não tem dicas"),
       stdin: () => setTimeout(() => stdinRef.current?.focus()),
       output: () => outRef.current?.scrollIntoView({ block: "nearest" }),
       setTheme: (t: EditorTheme) => updateSettings({ editorTheme: t }),
@@ -227,8 +227,8 @@ export function Playground() {
           <button type="button" className="btn98 primary" onClick={() => execute()} disabled={busy} title=":run">
             ▶ Executar
           </button>
-          <button type="button" className="btn98" onClick={reset} disabled={busy} title="descartar rascunho e voltar ao template">
-            Comer feijão senzu
+          <button type="button" className="btn98" onClick={reset} disabled={busy} title="descartar o rascunho e voltar ao template">
+            Restaurar template
           </button>
           <label className="check98">
             <input type="checkbox" checked={settings.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Vim
@@ -260,13 +260,13 @@ export function Playground() {
 
       <div className="ws-io">
         <label className="stdin-label" htmlFor="pg-stdin">
-          stdin para <b>Executar</b> <span className="dim">(Ctrl+Enter executa · Esc volta ao editor)</span>
+          Entrada (stdin) <span className="stdin-hint">Ctrl+Enter executa · Esc volta ao editor</span>
         </label>
         <textarea
           id="pg-stdin"
           ref={stdinRef}
-          className="stdin98"
-          rows={3}
+          className="stdin98 stdin-box"
+          rows={5}
           value={stdin}
           onChange={(e) => setStdin(e.target.value)}
           onKeyDown={(e) => {
@@ -281,7 +281,7 @@ export function Playground() {
           spellCheck={false}
         />
         <div className="tab-out pg-out" ref={outRef}>
-          <OutputPanel state={output} checker="exact" onJump={jump} idle="aguardando... digite :run para compilar e executar" />
+          <OutputPanel state={output} checker="exact" onJump={jump} idle=":run compila e executa com a entrada acima" />
         </div>
       </div>
     </div>

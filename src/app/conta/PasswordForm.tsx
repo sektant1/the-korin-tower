@@ -23,7 +23,7 @@ export function PasswordForm({ hasPassword }: { hasPassword: boolean }) {
       )}
       {state?.ok && (
         <p className="pass" role="status">
-          [OK] Senha salva. Outras sessões foram encerradas.
+          Senha salva. As outras sessões foram encerradas.
         </p>
       )}
       <button type="submit" className="btn98" disabled={pending}>

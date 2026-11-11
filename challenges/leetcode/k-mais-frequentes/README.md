@@ -1,5 +1,5 @@
 ---
-title: Os K Mais Frequentes
+title: 347. Os K Mais Frequentes
 difficulty: 2
 tags: [hash, heap, ordenacao, contagem, leetcode]
 languages: [c, cpp, rust]

@@ -15,9 +15,8 @@ export default async function ChallengesPage() {
   return (
     <>
       <FlameTitle>TODOS OS DESAFIOS</FlameTitle>
-      <p>
-        {challenges.length} desafio(s) em {withItems.length} fase(s).{" "}
-        <Link href="/aleatorio">&gt;&gt; Me dá um aleatório! &lt;&lt;</Link>
+      <p className="center">
+        {challenges.length} desafios em {withItems.length} andares. <Link href="/aleatorio">Um aleatório</Link>.
       </p>
       {withItems.map((cat) => (
         <section key={cat.id} aria-labelledby={`cat-${cat.id}`}>

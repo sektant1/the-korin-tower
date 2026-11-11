@@ -9,7 +9,7 @@ export default function ConfigPage() {
     <>
       <FlameTitle>OPÇÕES</FlameTitle>
       <Window title="Painel de Controle">
-        <p className="dim small">Salvo neste navegador e, se você entrou na sua conta, sincronizado com ela.</p>
+        <p className="dim small">Vale neste navegador. Com login, acompanha a conta.</p>
         <SettingsForm />
       </Window>
     </>

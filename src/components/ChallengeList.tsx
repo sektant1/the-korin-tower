@@ -10,14 +10,14 @@ const langs = (c: ChallengeSummary) => c.languages.map((l) => LANGUAGES[l].label
 
 export function ChallengeList({ items, categoryNames }: { items: ChallengeSummary[]; categoryNames?: Record<string, string> }) {
   if (!items.length) {
-    return <p className="dim">Nenhum desafio aqui ainda. Volte em breve (ou escreva um em /challenges)!</p>;
+    return <p className="dim">Nenhum desafio aqui ainda.</p>;
   }
   return (
     <ul className="cart-grid">
       {items.map((c, i) => (
         <li key={c.slug} className="cartridge">
           <div className="cart-label">
-            <span className="cart-stage">STAGE {String(i + 1).padStart(2, "0")}</span>
+            <span className="cart-stage">Nº {String(i + 1).padStart(2, "0")}</span>
             {Date.now() - c.createdAt.getTime() < NEW_MS && <span className="new-badge">NEW!</span>}
             <ProgressBadge slug={c.slug} />
           </div>

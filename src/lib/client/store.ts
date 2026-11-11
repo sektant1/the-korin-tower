@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS: Settings = {
   editorTheme: "vim",
   vimrc: '" mapeamentos simples, um por linha\n" imap jj <Esc>\n',
   sanity: false,
-  starTrail: true,
+  starTrail: false,
   fontSize: 15,
   flags: { c: "", cpp: "" },
 };

@@ -11,10 +11,7 @@ export default function CompiladorPage() {
     <div className="playground-page">
       <div>
         <FlameTitle>COMPILADOR</FlameTitle>
-        <p className="dim small">
-          Sala de treino: escreva em qualquer linguagem da torre e execute com o stdin ao lado. Sem testes, sem pontos — e se o programa
-          imprimir um PPM <b>P3</b>, a imagem aparece na saída. Rascunhos ficam neste navegador.
-        </p>
+        <p className="dim small center">Qualquer linguagem da torre, sem testes nem pontos. Se a saída for um PPM P3, vira imagem.</p>
       </div>
       <Playground />
     </div>

@@ -2,7 +2,7 @@
 
 Repositório de desafios de programação para devs de baixo nível (C, C++, Rust, ray tracing, shaders...), com cara de homepage pessoal de 1998 e site de games da época, mas funcionando como app moderno: editor com Vim, compilação de verdade em sandbox e testes automáticos.
 
-> Status: **Fase 6 completa** (CLI `korin` no estilo LeetCode, tokens de API, categoria "Estilo LeetCode"). Veja o [roadmap](#roadmap).
+> Status: **Fase 6 completa** (CLI `korin` no estilo LeetCode, tokens de API, categoria "LeetCode"). Veja o [roadmap](#roadmap).
 
 ---
 
@@ -269,7 +269,7 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 - [x] **Fase 3:** trilhas (`challenges/tracks.yml`), guestbook, comentários com spoiler, medalhas, soluções dos outros jogadores.
 - [x] **Fase 4:** C/C++ com raylib/SDL2 via Emscripten (WASM) no canvas; D, Pascal e Fortran.
 - [x] **Fase 5:** torneio: desafio do dia com bônus, sequências, recordes (menor código, mais rápido), perfil público e feed RSS. Design em [docs/fase-5.md](docs/fase-5.md).
-- [x] **Fase 6:** CLI `korin` no estilo LeetCode (pick/test/submit do terminal), tokens de API, categoria "Estilo LeetCode" com link para os originais e trilha "Maratona de entrevista". Design em [docs/fase-6.md](docs/fase-6.md).
+- [x] **Fase 6:** CLI `korin` no estilo LeetCode (pick/test/submit do terminal), tokens de API, categoria "LeetCode" com link para os originais e trilha "Maratona de entrevista". Design em [docs/fase-6.md](docs/fase-6.md).
 
 Limitações conhecidas das Fases 3 a 5:
 - Desafios `shader` e `canvas` não têm "resolvido": não pontuam, não entram no desafio do dia e são passos livres nas trilhas.
