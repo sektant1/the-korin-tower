@@ -17,18 +17,6 @@ function compileCommands(lang: LanguageId, flags: string[]): string[][] {
       return [["g++", "-std=c++20", "-O2", "-Wall", ...flags, "-o", EXE, "main.cpp"]];
     case "rust":
       return [["rustc", "--edition", "2021", "-O", "-o", EXE, "main.rs"]];
-    case "go":
-      return [["go", "build", "-o", EXE, "main.go"]];
-    case "zig":
-      return [["zig", "build-exe", "main.zig", "-O", "ReleaseSafe", `-femit-bin=${EXE}`]];
-    case "nasm":
-      return [["nasm", "-felf64", "main.asm", "-o", "main.o"], ["ld", "main.o", "-o", EXE]];
-    case "d":
-      return [["gdc", "-O2", "-o", EXE, "main.d"]];
-    case "pascal":
-      return [["fpc", "-O2", "-v0", `-o${EXE}`, "main.pas"]];
-    case "fortran":
-      return [["gfortran", "-O2", "-o", EXE, "main.f90"]];
     case "glsl":
       throw new Error("GLSL roda no navegador");
   }
