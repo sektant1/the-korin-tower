@@ -1,9 +1,10 @@
 import "server-only";
+import { isScored } from "@/lib/tower";
 import { prisma } from "@/lib/db";
 import type { ChallengeKind } from "@/lib/languages";
 
 // Trilhas ("detonados"): vêm de challenges/tracks.yml pelo seed.
-// Só passos com testes (stdio) contam para zerar: shader e canvas não têm "resolvido".
+// Todo passo conta para zerar (stdio pelos testes; shader e canvas pelos frames).
 export interface TrackStep {
   slug: string;
   title: string;
@@ -34,7 +35,7 @@ async function withSteps(rows: { id: string; title: string; description: string;
     // Um desafio apagado depois do seed some da trilha em vez de quebrar a página.
     steps: (r.steps as string[]).flatMap((slug) => {
       const c = bySlug.get(slug);
-      return c ? [{ slug, title: c.title, difficulty: c.difficulty, categoryName: c.category.name, scored: (c.kind as ChallengeKind) === "stdio" }] : [];
+      return c ? [{ slug, title: c.title, difficulty: c.difficulty, categoryName: c.category.name, scored: isScored({ kind: c.kind as ChallengeKind }) }] : [];
     }),
   }));
 }

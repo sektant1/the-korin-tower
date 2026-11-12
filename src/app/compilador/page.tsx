@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { FlameTitle } from "@/components/Retro";
+import { FlameTitle, PageBanner } from "@/components/Retro";
 import { Playground } from "@/components/workspace/Playground";
+import { PAGE_SCENES } from "@/lib/scenes";
 
 export const metadata: Metadata = { title: "Compilador" };
 
@@ -11,7 +12,11 @@ export default function CompiladorPage() {
     <div className="playground-page">
       <div>
         <FlameTitle>COMPILADOR</FlameTitle>
-        <p className="dim small center">Qualquer linguagem da torre, sem testes nem pontos. Se a saída for um PPM P3, vira imagem.</p>
+        <PageBanner
+          image={PAGE_SCENES.compilador}
+          compact
+          lead="Qualquer linguagem da torre, sem testes nem pontos. Se a saída for um PPM P3, vira imagem."
+        />
       </div>
       <Playground />
     </div>

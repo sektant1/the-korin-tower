@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FlameTitle, Window } from "@/components/Retro";
+import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { githubConfig } from "@/lib/auth/github";
 import { getCurrentUser, safeNext } from "@/lib/auth/session";
 import { LoginForm, RegisterForm } from "./AuthForms";
+import { PAGE_SCENES } from "@/lib/scenes";
+import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Entrar" };
 
@@ -19,10 +21,17 @@ export default async function LoginPage({ searchParams }: Props) {
   return (
     <>
       <FlameTitle>ENTRAR</FlameTitle>
-      <p className="center">
-        Com conta: progresso e rascunhos salvos, soluções liberadas e nome no <Link href="/hall-da-fama">Hall of Fame</Link>. Sem conta dá
-        para jogar tudo, mas o progresso fica só neste navegador.
-      </p>
+      <PageBanner
+        image={PAGE_SCENES.entrar}
+        lead="Com conta, seu progresso vai com você."
+        sub={
+          <>
+            Progresso e rascunhos salvos, soluções liberadas e nome no <Link href="/hall-da-fama">Hall of Fame</Link>. Sem conta dá para jogar
+            tudo, mas o progresso fica só neste navegador.
+          </>
+        }
+        gif={GIFS.powerUp}
+      />
       {erro && (
         <p className="out-warn center" role="alert">
           (!) {erro}

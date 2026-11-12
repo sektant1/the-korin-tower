@@ -26,8 +26,10 @@ test("andar 1 aberto, resto trancado; detonado e desafio do dia abrem exceções
 });
 
 test("resolver o mínimo do andar abre o de cima; andares abrem em sequência", () => {
-  // Na fixture todo andar tem menos que NEED_PER_FLOOR: o mínimo vira "todos os que têm testes".
-  const p = { a1: "solved", b1: "solved" } as const;
+  // Na fixture todo andar tem menos que NEED_PER_FLOOR: o mínimo vira "todos".
+  // O shader s1 também conta: shader e canvas são julgados pelos frames e pontuam.
+  assert.equal(currentFloor(data, { a1: "solved", b1: "solved" }), 1);
+  const p = { a1: "solved", b1: "solved", s1: "solved" } as const;
   assert.equal(currentFloor(data, p), 2);
   assert.ok(isOpen(data, p, "c2"));
   // Resolver a3 pelo detonado não abre o andar 4 enquanto o 2 não estiver feito.
@@ -38,7 +40,7 @@ test("resolver o mínimo do andar abre o de cima; andares abrem em sequência", 
 });
 
 test("andar com menos desafios que o mínimo abre com todos", () => {
-  const p = { a1: "solved", b1: "solved", a2: "solved", b2: "solved", c2: "solved", a3: "solved", b3: "solved" } as const;
+  const p = { a1: "solved", b1: "solved", s1: "solved", a2: "solved", b2: "solved", c2: "solved", a3: "solved", b3: "solved" } as const;
   assert.equal(currentFloor(data, p), 4);
   const f = floors(data, p);
   assert.equal(f[3].missingForNext, 1); // andar 4 tem só 1 com testes: precisa dele para o topo

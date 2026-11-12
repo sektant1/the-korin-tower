@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FlameTitle, Window } from "@/components/Retro";
+import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { requireAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { createInviteAction, deleteUser, revokeInvite, setAdmin } from "./actions";
+import { PAGE_SCENES } from "@/lib/scenes";
+import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 
@@ -29,6 +31,7 @@ export default async function AdminPage({ searchParams }: Props) {
   return (
     <>
       <FlameTitle>PAINEL DO MESTRE KARIN</FlameTitle>
+      <PageBanner image={PAGE_SCENES.admin} lead="Convites e desafios." gif={GIFS.vegeta} gifHeight={100} />
       {salvo && (
         <p className="pass center" role="status">
           [OK] Desafio <Link href={`/desafio/${salvo}`}>{salvo}</Link> salvo.

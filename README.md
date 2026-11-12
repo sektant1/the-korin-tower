@@ -9,34 +9,35 @@ Repositório de desafios de programação para devs de baixo nível (C, C++, Rus
 ## Arquitetura
 
 ```
- Navegador                          Servidor (Next.js, Node)                   Sandbox
-┌──────────────────────┐  HTTP   ┌──────────────────────────────────┐  HTTP  ┌──────────────┐
-│ páginas (RSC)        │ ──────▶ │ App Router (páginas + /api)      │ ─────▶ │ Piston       │
-│ CodeMirror 6 + Vim   │         │  ├ /api/run  → judge → Runner ───┼──────▶ │ (isolate,    │
-│ terminal de saída    │ ◀────── │  │   rate limit + semáforo       │        │  sem rede)   │
-│ PPM → <canvas>       │         │  ├ Prisma → PostgreSQL           │        └──────────────┘
-│ GLSL → WebGL2        │         │  ├ markdown → HTML (KaTeX, hljs) │  HTTP  ┌──────────────┐
-│ WASM → <iframe>      │         │  └ /api/build ───────────────────┼──────▶ │ wasm-builder │
-└──────────────────────┘         └──────────────▲───────────────────┘        │ (emcc)       │
-                                                │                            └──────────────┘
-                                                │ npm run seed
-                                   /challenges (Markdown + YAML + testes, no git)
+ Navegador (faz o trabalho pesado)                     Servidor (Next.js, Node: só dados)
+┌─────────────────────────────────────────────┐ HTTP ┌──────────────────────────────────────┐
+│ CodeMirror 6 + Vim, terminal de saída       │ ───▶ │ páginas (RSC), Prisma → PostgreSQL   │
+│ C/C++: clang + wasm-ld (Emception, Worker)  │      │ GET /api/challenges/<slug>/tests     │
+│   └ .wasm WASI → Web Worker por lote        │      │   (ocultos só com hash; cache na CDN)│
+│ judge: públicos + ocultos, aqui mesmo       │      │ POST /api/run: registra o resolvido  │
+│ raylib/SDL2/SDL3 → <canvas> (JSPI)          │      │   Rust (e a CLI) → Godbolt/Piston    │
+│ GLSL → WebGL2; canvas/shader → frames PPM   │      │ markdown → HTML (KaTeX, hljs)        │
+└──────────────┬──────────────────────────────┘      └──────────────▲───────────────────────┘
+               │ toolchain: manifest.json + bundles (jsDelivr),     │ npm run seed
+               │ cache no navegador                  /challenges (Markdown + YAML + testes)
 ```
 
 - **Fonte de verdade dos desafios:** arquivos em `/challenges`, versionados no git. `npm run seed` importa para o banco (idempotente).
-- **Execução:** `src/lib/runner` tem uma interface `Runner` com dois backends:
-  - `piston`: sandbox via Docker (produção). Sem rede, com limites de tempo, memória, processos e tamanho de saída.
-  - `local`: chama `gcc`/`g++`/`rustc` da sua máquina **sem sandbox**. Só para desenvolver sem Docker; é bloqueado com `NODE_ENV=production`.
-- **Correção:** `src/lib/judge` roda os casos e compara a saída (`exact`, que ignora espaços no fim e CRLF, ou `ppm`, pixel a pixel com tolerância).
-- **Testes ocultos** nunca saem do servidor: a resposta traz só nome, veredito e tempo.
-- **GLSL** roda inteiro no navegador (WebGL2, uniforms `iTime`/`iResolution`/`iMouse`).
+- **C e C++ compilam e rodam no navegador**, sem servidor de compilação. O [Emception](https://www.npmjs.com/package/@gameguild/emception-browser) roda clang e wasm-ld num Web Worker e baixa a toolchain de um `manifest.json` versionado (jsDelivr; `NEXT_PUBLIC_EMCEPTION_MANIFEST_URL` aponta para uma cópia sua), com cache no navegador. A página precisa de cross-origin isolation (COOP/COEP em `next.config.ts`) por causa do `SharedArrayBuffer`.
+  - Desafios stdio viram um `.wasm` WASI puro (`-O2`, pilha de 8 MB, teto de memória do desafio), executado por `src/lib/wasm/wasi-core.mjs` num Web Worker reaproveitado pelo lote de testes (morto e recriado só em TLE). C++ tem exceções (wasm EH) e um `<bits/stdc++.h>`.
+  - `:run`, `:test` e `:submit` são julgados no navegador por `src/lib/judge` (o mesmo código do servidor). No `:submit`, os testes ocultos vêm de `GET /api/challenges/<slug>/tests` só com a entrada e o SHA-256 da saída esperada (no checker `ppm`, a imagem esperada vai junto). O servidor só registra o resolvido.
+  - O toolchain sobe na primeira tecla em C/C++ e é descartado depois de 5 min parado. A mesma tecla já deixa pronto o runtime do link (download e extração de um bundle, ~2 s), fora do caminho do clique.
+  - Custo: como o veredito é do navegador, quem quiser trapacear consegue forjar um envio. Com `NEXT_PUBLIC_SUBMIT_VERIFY=server` o servidor volta a conferir: o navegador manda o `.wasm` e um `worker_thread` do Node roda os ocultos, que aí não saem do servidor.
+- **Rust** (e a CLI `korin`, que manda o código-fonte) ainda compila no servidor: `src/lib/runner` com `godbolt` (API pública do Compiler Explorer), `piston` (sandbox via Docker) ou `local` (gcc/rustc da sua máquina, **sem sandbox**, bloqueado em produção). Navegador sem `SharedArrayBuffer` também cai aqui.
+- **Correção:** `src/lib/judge` compara a saída (`exact`, que ignora espaços no fim e CRLF, ou `ppm`, pixel a pixel com tolerância).
+- **GLSL** roda inteiro no navegador (WebGL2, uniforms `iTime`/`iResolution`/`iMouse`). `:submit` renderiza dois frames e confere que algo foi desenhado.
 - **Contas (Fase 2):** usuário/senha (scrypt) ou GitHub OAuth, cadastro só com convite. Sessão em banco: o cookie `httpOnly` leva um token aleatório e o banco guarda só o sha256. Sem login dá para jogar tudo, com progresso no `localStorage`, mas sem pontos nem solução.
 - **Progresso no servidor:** só `/api/run` (submit aprovado) marca "resolvido". A solução de referência só sai de `/api/challenges/<slug>/solution` para quem resolveu ou desistiu. Rascunhos, dicas reveladas e preferências do editor ficam na conta.
-- **Canvas (Fase 4):** desafios `kind: canvas` são C/C++ com raylib ou SDL2. `/api/build` manda o código para o serviço `wasm-builder` (emcc), que devolve um único JS com o WASM embutido. O servidor só compila; quem executa é o navegador, num `<iframe sandbox="allow-scripts">` sem acesso a cookies nem ao DOM do site.
+- **Canvas (Fase 4):** desafios `kind: canvas` são C/C++ com raylib, SDL2 ou SDL3, compilados no navegador pelo Emception e desenhados num `<canvas>`. O laço clássico `while (!WindowShouldClose())` (ou `SDL_Delay` num `while`) funciona via JSPI (WebAssembly JS Promise Integration, Chrome/Edge 137+): `emscripten_sleep` suspende o wasm e devolve o controle à página a cada quadro. Sem JSPI, use `emscripten_set_main_loop`. `:submit` roda o programa por 3 s e fotografa o canvas (1 s e 3 s).
 - **Comunidade (Fase 3):** trilhas vêm de `challenges/tracks.yml` pelo seed. Guestbook e comentários aceitam texto puro com `` `código` ``, blocos ```` ``` ```` e `||spoiler||`; só quem tem conta escreve. Cada submit aprovado guarda o código (`Submission`), que alimenta "soluções dos outros" (mesma regra da solução de referência) e os recordes. Medalhas não têm tabela: são calculadas do progresso (`src/lib/badges.ts`).
 - **Torneio (Fase 5):** desafio do dia com bônus, sequências de dias, recordes de menor código e mais rápido, perfil público (`/jogador/<nome>`) e `/feed.xml`. Design em [docs/fase-5.md](docs/fase-5.md).
 - **CLI (Fase 6):** `korin pick <slug>` baixa enunciado, template e testes públicos para uma pasta; `korin test`/`korin submit` usam a mesma `/api/run` do site, autenticados por token pessoal (`Authorization: Bearer korin_...`, gerado em `/conta`). A CLI é um arquivo Node servido pelo próprio site em `/cli/korin.mjs`. Design em [docs/fase-6.md](docs/fase-6.md).
-- **Pontos:** 100 × dificuldade; resolver o desafio do dia no próprio dia vale +50%; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shaders não têm testes, então não pontuam.
+- **Pontos:** 100 × dificuldade; resolver o desafio do dia no próprio dia vale +50%; cada dica revelada antes de resolver tira 20% (mínimo 20%); desistir zera aquele desafio (`src/lib/scoring.ts`). Shader e canvas pontuam pelos frames (precisam desenhar algo além de uma cor só) e contam para os andares e detonados.
 
 ## A Torre (progressão)
 
@@ -158,14 +159,13 @@ Para atualizar os desafios na VPS: `git pull && docker compose restart app`.
 O app Next.js inteiro (páginas, `/api`, login) roda na Vercel; o Supabase é só o PostgreSQL. A autenticação continua a própria do site (não usa Supabase Auth).
 
 1. **Supabase:** crie o projeto. Em *Connect*, copie a URL do pooler em modo *Transaction* (porta 6543) para `DATABASE_URL` e a do modo *Session* (porta 5432) para `DIRECT_URL`.
-2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`) e `RUNNER`. Com `RUNNER=godbolt` (o padrão recomendado para a Vercel) os desafios compilam e rodam na API pública do Compiler Explorer, sem servidor para manter; com `RUNNER=piston` é preciso também `PISTON_URL` (veja os limites abaixo). GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
+2. **Vercel:** importe o repositório e defina as variáveis `DATABASE_URL`, `DIRECT_URL`, `APP_URL` (ex.: `https://korin.vercel.app`) e `RUNNER`. C, C++, GLSL e canvas não usam o runner (tudo roda no navegador; o plano grátis basta). O runner só atende Rust e a CLI: com `RUNNER=godbolt` (recomendado para a Vercel) eles rodam na API pública do Compiler Explorer, sem servidor para manter; com `RUNNER=piston` é preciso também `PISTON_URL` (veja os limites abaixo). GitHub é opcional (`GITHUB_CLIENT_ID`/`SECRET`).
 3. O script `vercel-build` roda `prisma migrate deploy`, o seed de `/challenges` e o build. Cada push atualiza os desafios.
 4. Primeiro admin, sem tocar no banco: defina `ADMIN_BOOTSTRAP_CODE` (16+ caracteres, ex.: `openssl rand -hex 16`) na Vercel, faça o redeploy e cadastre-se em `/entrar` usando esse valor como código de convite. Só funciona enquanto não houver admin. Depois, gere convites em `/admin`. Alternativa: `npm run invite -- --admin` da sua máquina com o `.env` apontando para o Supabase.
 
 Limites desse arranjo:
 - **Godbolt:** uma compilação por teste (a API não separa compilar de executar), sem medição de memória, sandbox cortando em ~20 s e **stdout limitado a ~32 KB** (o processo é morto ao passar disso). Nos testes com saída maior o judge confere só o prefixo que chegou e avisa; é um veredito mais fraco. Com `RUNNER=piston` esse fallback entra automaticamente quando o Piston está fora do ar (`RUNNER_FALLBACK=none` desliga). As rotas `/api/run` e `/api/playground` declaram `maxDuration = 60` (teto do plano Hobby); um submit com muitos testes grandes pode encostar nisso. Para tráfego de verdade, suba um Piston.
 - **O Piston não roda na Vercel nem no Supabase** (precisa de container `privileged`). Sem um `PISTON_URL` acessível, executar e enviar código falha com "runner indisponível". Suba o Piston numa VM (o serviço `piston` do compose) atrás de um proxy HTTPS que exija `Authorization: Bearer <PISTON_TOKEN>` (o app envia esse cabeçalho se `PISTON_TOKEN` estiver definido). Ele executa código arbitrário: não o deixe aberto.
-- **O `wasm-builder` também não roda na Vercel.** Suba-o na mesma VM do Piston (`docker compose up -d wasm-builder`), atrás do mesmo proxy com token, e defina `WASM_BUILDER_URL` (e `WASM_BUILDER_TOKEN`). Sem ele, só os desafios `canvas` falham ("construtor indisponível"); o resto do site funciona. A resposta leva o JS com o WASM embutido (em geral menos de 2 MB; o teto de resposta de uma função na Vercel é 4,5 MB).
 - Rate limit e limite de execuções simultâneas são em memória, por instância. Na Vercel cada instância tem o seu, então valem como teto aproximado.
 
 ## CI/CD (GitHub Actions)
@@ -219,7 +219,7 @@ Outros comandos: `run` (stdin por pipe, `-i arquivo` ou o 1º teste), `push` (sa
    timeLimitMs: 2000          # padrão 2000
    memoryLimitMb: 128         # padrão 256
    checker: exact             # ou: { type: ppm, tolerance: 2, maxBadRatio: 0.01 }
-   kind: stdio                # "shader" (GLSL no navegador) ou "canvas" (C/C++ com raylib/SDL2 em WASM); ambos sem testes
+   kind: stdio                # "shader" (GLSL no navegador) ou "canvas" (C/C++ com raylib/SDL2 em WASM); ambos julgados pelos frames
    order: 1                   # ordem dentro da categoria
    hints:
      - "Primeira dica (Markdown)"
@@ -235,7 +235,7 @@ Outros comandos: `run` (stdin por pipe, `-i arquivo` ou o 1º teste), `push` (sa
 
 Categoria nova: adicione em `challenges/categories.yml` e crie a pasta.
 
-Desafio `canvas`: `languages` só aceita `c` e `cpp`, e não há pasta `tests/`. A biblioteca é escolhida pelo `#include` do código (`raylib.h` ou `SDL2/SDL.h`). O laço `while (!WindowShouldClose())` de sempre funciona, porque o site compila com `-sASYNCIFY`; com SDL2, mantenha um `SDL_Delay` no laço para devolver o controle ao navegador.
+Desafio `canvas`: `languages` só aceita `c` e `cpp`, e não há pasta `tests/`. A biblioteca é escolhida pelo `#include` do código (`raylib.h` ou `SDL2/SDL.h`). O laço `while (!WindowShouldClose())` de sempre funciona via JSPI (veja Arquitetura); com SDL2, mantenha um `SDL_Delay` no laço para devolver o controle ao navegador.
 
 Trilha nova: acrescente um item em `challenges/tracks.yml` (`id`, `title`, `description`, `steps`) e rode `npm run seed`. Só desafios `stdio` contam para zerar a trilha, e toda trilha precisa de pelo menos um.
 
@@ -262,7 +262,7 @@ Textos do portal (mural de novidades e "Você sabia?") ficam em `src/lib/site-co
 
 ## Segurança
 
-- Código de usuário só roda no Piston: sem rede, com limites de tempo, memória, processos e saída. Nunca use `RUNNER=local` num servidor acessível por outras pessoas.
+- C/C++ de usuário roda no navegador de quem escreveu, como WebAssembly WASI num Web Worker: sem rede, sem arquivos, só stdin/stdout em memória. No modo `NEXT_PUBLIC_SUBMIT_VERIFY=server` o servidor só aceita `.wasm` com imports WASI (mais uma lista fechada de funções de relógio/fuso), memória própria com teto dentro do limite do desafio, e mata a thread no estouro de tempo. Rust e a CLI rodam no Godbolt/Piston: sem rede, com limites de tempo, memória, processos e saída. Nunca use `RUNNER=local` num servidor acessível por outras pessoas.
 - Flags de compilador passam por uma lista de flags permitidas (`src/lib/runner/flags.ts`). Isso bloqueia, por exemplo, `-include /etc/passwd`. O Piston usa flags fixas, então elas só valem no runner local.
 - Rate limit por usuário logado, ou por IP sem login (`RUN_RATE_PER_MINUTE`); login e cadastro: 10/min por IP e limite de execuções simultâneas (`RUN_MAX_CONCURRENCY`), em memória.
 - Tokens da CLI (`korin_...`) são guardados como sha256, mostrados uma única vez e revogáveis em `/conta`. Valem o mesmo que a sessão do dono; o navegador não os envia sozinho, então não há CSRF por essa via.

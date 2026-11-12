@@ -1,0 +1,6 @@
+# Séries da Biblioteca, na ordem em que aparecem no índice (/biblioteca).
+# Um post entra numa série com `series: <id>` no frontmatter; `part: N` define a ordem.
+# Série sem nenhum post publicado não aparece.
+- id: bastidores
+  title: Bastidores da Biblioteca
+  description: Como escrever e publicar posts na Biblioteca.

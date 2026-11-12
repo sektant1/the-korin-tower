@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
-import { ALL_BUTTONS, Blink, Button88, ButtonWall, FlameTitle, RainbowHr, Window } from "@/components/Retro";
+import { ALL_BUTTONS, Blink, Button88, ButtonWall, FlameTitle, PageBanner, RainbowHr, Window } from "@/components/Retro";
 import { siteUrl } from "@/lib/site-url";
+import { PAGE_SCENES } from "@/lib/scenes";
 
 export const metadata: Metadata = { title: "Sobre" };
 
@@ -12,6 +13,7 @@ export default async function AboutPage() {
   return (
     <>
       <FlameTitle>SOBRE</FlameTitle>
+      <PageBanner image={PAGE_SCENES.sobre} lead="Quem fez a torre, por quê, e como linkar para cá." gif={GIFS.piccolo} />
       <div className="two-col">
         <Window title="me.bmp">
           <div className="photo-frame">

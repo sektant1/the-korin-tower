@@ -1,6 +1,7 @@
 import type { Checker, LanguageId } from "@/lib/languages";
 import type { CompileResult, Runner } from "@/lib/runner";
 import { check } from "./checker";
+import { outputSha256 } from "./hash";
 
 export type Verdict = "AC" | "WA" | "TLE" | "RE" | "OLE";
 
@@ -9,6 +10,11 @@ export interface JudgeTest {
   input: string;
   expected: string;
   hidden: boolean;
+  /**
+   * Teste oculto julgado no navegador: em vez de `expected` (vazio), vem o
+   * SHA-256 da saída esperada normalizada. Só vale para o checker exact.
+   */
+  expectedSha256?: string;
 }
 
 export interface TestOutcome {
@@ -90,5 +96,15 @@ export async function judge(
       stderr: r.stderr,
     };
   });
+  // Testes com hash: a execução foi limpa (AC/WA vieram da comparação com ""), então refaz a comparação pelo hash.
+  await Promise.all(
+    tests.map(async (t, i) => {
+      const o = outcomes[i];
+      if (!t.expectedSha256 || (o.verdict !== "AC" && o.verdict !== "WA")) return;
+      const ok = (await outputSha256(o.stdout)) === t.expectedSha256;
+      o.verdict = ok ? "AC" : "WA";
+      o.message = ok ? undefined : "saída diferente da esperada";
+    }),
+  );
   return { compile: batch.compile, tests: outcomes, allPassed: outcomes.every((o) => o.verdict === "AC"), warnings };
 }

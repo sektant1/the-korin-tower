@@ -139,7 +139,7 @@ function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker
           ) : (
             t.verdict === "WA" && <Diff expected={t.expected} actual={t.stdout} />
           )}
-          {t.verdict !== "WA" && t.stdout.trim() && (
+          {t.verdict !== "WA" && t.stdout.trim() && !looksLikePpm(t.stdout) && (
             <>
               <div className="io-label">stdout</div>
               <pre className="out-pre">{t.stdout.length > 2000 ? t.stdout.slice(0, 2000) + "\n…" : t.stdout}</pre>

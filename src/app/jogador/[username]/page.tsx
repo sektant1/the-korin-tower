@@ -3,11 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeShelf } from "@/components/Badges";
 import { Gif } from "@/components/Gif";
-import { Difficulty, FlameTitle, Window, arcade } from "@/components/Retro";
+import { Difficulty, FlameTitle, PageBanner, Window, arcade } from "@/components/Retro";
 import { normalizeUsername } from "@/lib/auth/password";
 import { GIFS } from "@/lib/gifs";
 import { getPlayerProfile } from "@/lib/profile";
 import { FLOORS } from "@/lib/tower";
+import { PAGE_SCENES } from "@/lib/scenes";
 
 type Params = { params: Promise<{ username: string }> };
 
@@ -23,6 +24,17 @@ export default async function PlayerPage({ params }: Params) {
   return (
     <>
       <FlameTitle>{arcade(profile.username.toUpperCase())}</FlameTitle>
+      <PageBanner
+        image={PAGE_SCENES.jogador}
+        kicker="FICHA DO LUTADOR"
+        lead={profile.username}
+        stats={[
+          { n: profile.points, label: "pontos" },
+          { n: profile.solved.length, label: profile.solved.length === 1 ? "resolvido" : "resolvidos" },
+          { n: profile.badges.length, label: profile.badges.length === 1 ? "medalha" : "medalhas" },
+        ]}
+        gif={GIFS.gokuWon}
+      />
       <div className="two-col">
         <Window title="Ficha do lutador">
           <p className="center">

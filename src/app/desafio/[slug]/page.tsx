@@ -10,6 +10,8 @@ import { floorOf } from "@/lib/tower";
 import { ChallengeWorkspace } from "@/components/workspace/ChallengeWorkspace";
 import { SplitColumns } from "@/components/workspace/SplitColumns";
 import { getCurrentUser } from "@/lib/auth/session";
+import { docsForChallenge } from "@/lib/biblioteca";
+import { DOC_KINDS } from "@/lib/biblioteca/kinds";
 import { getChallenge } from "@/lib/challenges";
 import { getDaily } from "@/lib/daily";
 import { LANGUAGES } from "@/lib/languages";
@@ -58,7 +60,7 @@ export default async function ChallengePage({ params, searchParams }: Params) {
   if (!c) notFound();
 
   const user = await getCurrentUser();
-  const [statement, notes, saved, comments, records, daily, track] = await Promise.all([
+  const [statement, notes, saved, comments, records, daily, track, reading] = await Promise.all([
     renderMarkdown(c.statement, c.slug),
     c.notes ? renderMarkdown(c.notes, c.slug) : null,
     user ? getChallengeProgress(user.id, c.id) : null,
@@ -66,6 +68,7 @@ export default async function ChallengePage({ params, searchParams }: Params) {
     c.kind === "stdio" ? getRecords(c.id) : null,
     getDaily(),
     trilha ? getTrack(trilha) : null,
+    docsForChallenge(c.slug),
   ]);
   const inTrack = track?.steps.some((st) => st.slug === c.slug) ? track : null;
   const isDaily = daily?.challengeId === c.id;
@@ -133,6 +136,19 @@ export default async function ChallengePage({ params, searchParams }: Params) {
             </details>
           )}
 
+          {reading.length > 0 && (
+            <details className="teacher-notes">
+              <summary>Leitura recomendada ({reading.length})</summary>
+              <ul className="star-list">
+                {reading.map((d) => (
+                  <li key={d.slug}>
+                    <Link href={`/biblioteca/${d.slug}`}>{d.title}</Link> <span className="dim small">({DOC_KINDS[d.kind].label}, {d.readingMin} min)</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+
           {notes && (
             <details className="teacher-notes">
               <summary>Notas do professor (spoiler)</summary>
@@ -190,6 +206,8 @@ export default async function ChallengePage({ params, searchParams }: Params) {
         hintsTotal={c.hints.length}
         hasSolution={Object.keys(c.solutions).length > 0}
         defaultStdin={publicTests[0]?.input ?? ""}
+        limits={{ checker: c.checker, timeLimitMs: c.timeLimitMs, memoryLimitMb: c.memoryLimitMb }}
+        publicTests={publicTests.map((t) => ({ name: t.name, input: t.input, expected: t.expected, hidden: false }))}
         saved={saved && { drafts: saved.drafts, hintsRevealed: saved.hintsRevealed }}
       />
       </ChallengeGate>

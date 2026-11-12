@@ -90,7 +90,8 @@ export function floorScene(n: number): { backgroundImage: string; backgroundPosi
 }
 
 export const floorOf = (c: Pick<TowerChallenge, "difficulty">) => Math.min(FLOORS, Math.max(1, c.difficulty));
-export const isScored = (c: Pick<TowerChallenge, "kind">) => c.kind === "stdio";
+// stdio pelos testes; shader e canvas pelos frames que o navegador captura. Todos pontuam.
+export const isScored = (c: Pick<TowerChallenge, "kind">) => c.kind === "stdio" || c.kind === "shader" || c.kind === "canvas";
 const solved = (p: ProgressMap, slug: string) => p[slug] === "solved";
 
 /** Quantos resolvidos o andar precisa para abrir o de cima. */

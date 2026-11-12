@@ -1,4 +1,4 @@
 - Primeiro contato com game loop: entrada, atualização, desenho. Vale desenhar o ciclo no quadro antes de abrir o editor.
 - O ponto central é `dt`: sem ele a bola anda mais rápido em monitor de 144 Hz. Peça para trocarem `SetTargetFPS(60)` por `30` e verem que a velocidade na tela não muda.
 - Erro clássico: só inverter a velocidade. Com um `dt` grande a bola atravessa a parede e fica presa vibrando; por isso a solução recoloca a posição.
-- No navegador o laço `while (!WindowShouldClose())` só funciona porque o site compila com `-sASYNCIFY`: cada volta devolve o controle ao navegador.
+- No navegador o laço `while (!WindowShouldClose())` funciona porque o site usa JSPI (WebAssembly JS Promise Integration, Chrome/Edge 137+): o `emscripten_sleep` dentro do `WindowShouldClose()` suspende o wasm e cada volta devolve o controle ao navegador. Em navegador sem JSPI, use `emscripten_set_main_loop`.

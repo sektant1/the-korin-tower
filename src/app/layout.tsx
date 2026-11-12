@@ -39,6 +39,7 @@ const MENU = [
   { href: "/", label: "Home" },
   { href: "/desafios", label: "A Torre" },
   { href: "/trilhas", label: "Detonados" },
+  { href: "/biblioteca", label: "Biblioteca" },
   { href: "/compilador", label: "Compilador" },
   { href: "/cli", label: "CLI" },
   { href: "/hall-da-fama", label: "Hall of Fame" },

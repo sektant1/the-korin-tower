@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FlameTitle, Window } from "@/components/Retro";
+import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { getCurrentUser } from "@/lib/auth/session";
 import { siteUrl } from "@/lib/site-url";
+import { PAGE_SCENES } from "@/lib/scenes";
+import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "CLI (korin)" };
 
@@ -30,7 +32,12 @@ export default async function CliPage() {
   return (
     <>
       <FlameTitle>KORIN CLI</FlameTitle>
-      <p className="center dim">Resolva no seu editor e envie pelo terminal. Um arquivo, sem dependências, Node 22.7 ou mais novo.</p>
+      <PageBanner
+        image={PAGE_SCENES.cli}
+        lead="Resolva no seu editor e envie pelo terminal."
+        sub="Um arquivo, sem dependências, Node 22.7 ou mais novo."
+        gif={GIFS.trunks}
+      />
       <div className="two-col">
         <Window title="instalar.txt">
           <p className="small">Linux e macOS:</p>

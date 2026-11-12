@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { getChallenge } from "@/lib/challenges";
-import { isLanguageId } from "@/lib/languages";
-import { parsePpm, type PpmImage } from "@/lib/ppm";
+import { getChallenge, type FullChallenge } from "@/lib/challenges";
+import { isLanguageId, type LanguageId } from "@/lib/languages";
+import { FRAME_TEST_NAME, framesOutcome } from "@/lib/judge/frames";
 import { judge, type TestOutcome } from "@/lib/judge/judge";
-import { getRunner, flagWarnings, sanitizeFlags } from "@/lib/runner";
+import { getRunner, flagWarnings, sanitizeFlags, type Runner } from "@/lib/runner";
+import { WasmModuleRunner } from "@/lib/runner/wasm";
+import { wasmProblem } from "@/lib/wasm/wasi-core.mjs";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getDaily } from "@/lib/daily";
 import { getProgressSummary, recordSolve } from "@/lib/progress";
@@ -12,6 +14,7 @@ import { getTowerData } from "@/lib/tower-server";
 import { recordSubmission } from "@/lib/records";
 import { clientKey, rateLimit, Semaphore } from "@/lib/rate-limit";
 import type { RunResponse } from "@/lib/run-api";
+import { submitVerify } from "@/lib/submit-mode";
 
 export const runtime = "nodejs";
 // Vercel: o padrão de uma função é 10 s no plano Hobby; com o runner Godbolt um
@@ -20,6 +23,8 @@ export const maxDuration = 60;
 
 const MAX_SOURCE = 64 * 1024;
 const MAX_STDIN = 256 * 1024;
+/** .wasm compilado no navegador (base64). Um C++ com iostream fica em ~1 MB; folga de sobra. */
+const MAX_WASM_BYTES = 12 * 1024 * 1024;
 const semaphore = new Semaphore(Number(process.env.RUN_MAX_CONCURRENCY ?? 4));
 
 function bad(status: number, error: string, headers?: Record<string, string>) {
@@ -32,50 +37,25 @@ function redact(t: TestOutcome): TestOutcome {
   return { ...t, input: "", expected: "", stdout: "", stderr: "", message: t.verdict === "AC" ? undefined : t.message };
 }
 
-/** Quantas cores distintas a imagem tem (para no limite dado). */
-function distinctColors(img: PpmImage, stopAt = 2): number {
-  const seen = new Set<number>();
-  for (let i = 0; i < img.data.length && seen.size <= stopAt; i += 3) {
-    seen.add((img.data[i] << 16) | (img.data[i + 1] << 8) | img.data[i + 2]);
-  }
-  return seen.size;
-}
-
 /**
- * Desafios de shader: rodam no navegador, então o :test/:submit manda os frames
- * renderizados (PPM P3, iTime fixo). O servidor confere que o shader desenha
- * algo — não aceitamos uma tela de cor única — e registra a solução como nos
- * desafios stdio.
+ * Desafios que desenham (shader e canvas): o navegador já compilou, rodou e deu
+ * o veredito; aqui só reconferimos os dois frames (PPM P3 pequeno) com o mesmo
+ * código e registramos a solução. Nenhum código roda no servidor.
  */
-async function shaderRun(challenge: NonNullable<Awaited<ReturnType<typeof getChallenge>>>, mode: string, frames: unknown, source: string) {
-  const parsed = (Array.isArray(frames) ? frames : []).slice(0, 2).map((f) => (typeof f === "string" ? f : null));
-  if (!parsed.length || parsed.some((f) => f === null || f.length > 512 * 1024)) return bad(400, "frames ausentes ou grandes demais");
-  let images: PpmImage[];
+async function framesRun(challenge: FullChallenge, mode: "test" | "submit", language: LanguageId, frames: unknown, source: string) {
+  let test: TestOutcome;
   try {
-    images = parsed.map((f) => parsePpm(f as string));
+    test = framesOutcome(frames, FRAME_TEST_NAME[challenge.kind === "canvas" ? "canvas" : "shader"]);
   } catch (e) {
     return bad(400, `frame inválido: ${(e as Error).message}`);
   }
-  const pass = images.some((img) => distinctColors(img) >= 2);
-  const test: TestOutcome = {
-    name: "frame 128x128 em t=0 e t=3",
-    hidden: false,
-    verdict: pass ? "AC" : "WA",
-    message: pass ? undefined : "compila, mas desenha uma tela de cor única — o efeito pedido não aparece",
-    timeMs: null,
-    memoryKb: null,
-    exitCode: 0,
-    input: "",
-    expected: "",
-    stdout: parsed[0] as string,
-    stderr: "",
-  };
-  const response: RunResponse = { mode: mode as "test" | "submit", compile: { ok: true, output: "" }, tests: [test], allPassed: pass, warnings: [] };
+  const pass = test.verdict === "AC";
+  const response: RunResponse = { mode, compile: { ok: true, output: "" }, tests: [test], allPassed: pass, warnings: [] };
   const user = await getCurrentUser();
   if (mode === "submit" && pass && user) {
     const daily = await getDaily();
     response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
-    await recordSubmission(user.id, challenge.id, "glsl", source, [null]);
+    await recordSubmission(user.id, challenge.id, language, source, [null]);
   }
   return NextResponse.json(response);
 }
@@ -96,7 +76,6 @@ export async function POST(req: Request) {
 
   const challenge = await getChallenge(slug);
   if (!challenge) return bad(404, "desafio não encontrado");
-  if (challenge.kind === "canvas") return bad(400, "este desafio roda no navegador (WASM)");
   if (!challenge.languages.includes(language)) return bad(400, `${language} não é permitida neste desafio`);
 
   const user = await getCurrentUser();
@@ -113,19 +92,58 @@ export async function POST(req: Request) {
 
   const { flags: okFlags, rejected } = sanitizeFlags(flags);
 
-  // Shader: o cliente renderiza os frames e manda o PPM; nada de runner aqui.
-  if (challenge.kind === "shader") {
+  // Shader e canvas: o navegador roda e manda os frames; nada de runner aqui.
+  if (challenge.kind === "shader" || challenge.kind === "canvas") {
     if (mode === "run") return bad(400, "rode :run direto no navegador");
-    return shaderRun(challenge, mode, body.frames, source);
+    return framesRun(challenge, mode, language, body.frames, source);
   }
 
+  // Veredito do navegador (modo "client"): ele compilou e rodou todos os testes,
+  // inclusive os ocultos; o servidor não executa nada, só registra a solução.
+  if (body.verdict !== undefined) {
+    if (submitVerify() === "server") return bad(400, "este servidor confere os testes ocultos: mande o .wasm");
+    if (mode !== "submit") return bad(400, "veredito só vale no submit");
+    if (language !== "c" && language !== "cpp") return bad(400, "veredito do navegador só vale para C e C++");
+    const v = body.verdict as { allPassed?: unknown; timesMs?: unknown };
+    const times = Array.isArray(v?.timesMs) ? v.timesMs.slice(0, 200).map((t) => (typeof t === "number" && Number.isFinite(t) && t >= 0 ? Math.round(t) : null)) : [];
+    if (v?.allPassed !== true || times.length !== challenge.tests.length) return bad(400, "veredito inválido");
+    const response: RunResponse = { mode: "submit", compile: { ok: true, output: "" }, tests: [], allPassed: true, warnings: [] };
+    if (user) {
+      const daily = await getDaily();
+      response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
+      await recordSubmission(user.id, challenge.id, language, source, times);
+    }
+    return NextResponse.json(response);
+  }
+
+  // C/C++ compilado no navegador: o servidor não compila nada, só executa o .wasm.
+  // Sem `wasm` (CLI, navegador sem SharedArrayBuffer) cai no runner de sempre.
+  let runner: Runner;
+  if (body.wasm !== undefined) {
+    if (language !== "c" && language !== "cpp") return bad(400, "wasm só vale para C e C++");
+    if (typeof body.wasm !== "string" || body.wasm.length > (MAX_WASM_BYTES * 4) / 3 + 4) return bad(413, "wasm inválido ou grande demais");
+    const wasm = new Uint8Array(Buffer.from(body.wasm, "base64"));
+    const problem = wasmProblem(wasm, challenge.memoryLimitMb);
+    if (problem) return bad(400, `binário recusado: ${problem}`);
+    runner = new WasmModuleRunner(wasm);
+  } else {
+    try {
+      runner = getRunner();
+    } catch (e) {
+      return bad(502, `runner indisponível: ${(e as Error).message}`);
+    }
+  }
+
+  // `publicPassed`: o navegador já rodou os públicos no mesmo .wasm, então o
+  // servidor executa só os ocultos (os únicos que o cliente não pode ver).
+  // Sem ocultos, roda tudo: algum teste o servidor precisa ver antes de pontuar.
+  const hiddenOnly = runner instanceof WasmModuleRunner && mode === "submit" && body.publicPassed === true && challenge.tests.some((t) => t.hidden);
   const tests =
     mode === "run"
       ? [{ name: "stdin", input: stdin ?? "", expected: "", hidden: false }]
-      : challenge.tests.filter((t) => mode === "submit" || !t.hidden);
+      : challenge.tests.filter((t) => (hiddenOnly ? t.hidden : mode === "submit" || !t.hidden));
 
   try {
-    const runner = getRunner();
     const result = await semaphore.run(() => judge(runner, challenge, language, source, tests, okFlags));
     const warnings = [...result.warnings, ...flagWarnings(runner, okFlags, rejected)];
 

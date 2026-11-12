@@ -14,6 +14,10 @@ import {
 } from "@/lib/client/store";
 import { LANGUAGES, type LanguageId } from "@/lib/languages";
 import type { RunResponse } from "@/lib/run-api";
+import { browserWasmProblem, prewarmEmception } from "@/lib/client/emception";
+import { BrowserWasmRunner, PHASE_LABEL } from "@/lib/client/wasm-run";
+import { judge } from "@/lib/judge/judge";
+import { sanitizeFlags } from "@/lib/runner/flags";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
@@ -92,7 +96,9 @@ export function Playground() {
     }
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(false), 800);
-  }, [save]);
+    // Quem edita C/C++ vai compilar: sobe a toolchain já (no-op se já subiu).
+    if (lang === "c" || lang === "cpp") prewarmEmception(lang);
+  }, [save, lang]);
 
   const setEditorText = useCallback((code: string) => {
     clearTimeout(saveTimer.current);
@@ -105,13 +111,27 @@ export function Playground() {
     if (busy) return;
     save(false);
     setOutput({ status: "running", label: "compilando e executando..." });
+    const source = editor.current?.getValue() ?? "";
+    // C/C++: clang no navegador e execução num Web Worker, sem servidor. Rust vai para o runner.
+    if ((lang === "c" || lang === "cpp") && !browserWasmProblem()) {
+      const { flags, rejected } = sanitizeFlags(settings.flags[lang]);
+      try {
+        const runner = new BrowserWasmRunner((phase) => setOutput({ status: "running", label: PHASE_LABEL[phase] }));
+        const r = await judge(runner, { checker: { type: "exact" }, timeLimitMs: 5000, memoryLimitMb: 256 }, lang, source, [{ name: "stdin", input: stdin, expected: "", hidden: false }], flags);
+        const warnings = [...r.warnings, ...(rejected.length ? [`flags ignoradas (não permitidas): ${rejected.join(" ")}`] : [])];
+        setOutput({ status: "done", response: { mode: "run", compile: r.compile, run: r.tests[0] ?? null, warnings } });
+      } catch (e) {
+        setOutput({ status: "error", error: `compilador do navegador: ${(e as Error).message}` });
+      }
+      return;
+    }
     try {
       const res = await fetch("/api/playground", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           language: lang,
-          source: editor.current?.getValue() ?? "",
+          source,
           stdin,
           flags: lang === "c" || lang === "cpp" ? settings.flags[lang] : undefined,
         }),

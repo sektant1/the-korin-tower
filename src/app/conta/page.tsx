@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/entrar/actions";
-import { FlameTitle, Window } from "@/components/Retro";
+import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { githubConfig } from "@/lib/auth/github";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
@@ -15,6 +15,8 @@ import { siteUrl } from "@/lib/site-url";
 import { dropApiToken } from "./actions";
 import { PasswordForm } from "./PasswordForm";
 import { TokenForm } from "./TokenForm";
+import { PAGE_SCENES } from "@/lib/scenes";
+import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Minha conta" };
 
@@ -33,6 +35,22 @@ export default async function AccountPage() {
   return (
     <>
       <FlameTitle>MINHA CONTA</FlameTitle>
+      <PageBanner
+        image={PAGE_SCENES.conta}
+        focus="center 40%"
+        kicker="JOGADOR"
+        lead={me.username}
+        stats={[
+          { n: summary.points, label: "pontos" },
+          { n: solved, label: solved === 1 ? "resolvido" : "resolvidos" },
+          { n: profile?.floorsOpen ?? 1, label: `de ${FLOORS} andares` },
+        ]}
+        gif={GIFS.gokuSsj}
+      >
+        <p className="page-banner-extra">
+          <Link href={`/jogador/${me.username}`}>Ver perfil público ►</Link>
+        </p>
+      </PageBanner>
       <div className="two-col">
         <Window title={`Jogador: ${me.username}`}>
           <dl className="stats98">

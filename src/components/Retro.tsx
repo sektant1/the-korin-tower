@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Children, type ReactNode } from "react";
 import { Gif } from "./Gif";
-import { GIFS } from "@/lib/gifs";
+import { GIFS, type Gif as GifInfo } from "@/lib/gifs";
 
 export function Marquee({ children, label }: { children: ReactNode; label: string }) {
   // <marquee> real não respeita prefers-reduced-motion; este respeita (ver CSS).
@@ -186,5 +186,57 @@ export function ButtonWall({ kinds, className }: { kinds: Button88Kind[]; classN
         <Button88 key={k} kind={k} />
       ))}
     </div>
+  );
+}
+
+/**
+ * Banner de topo das páginas: um cenário de fundo, uma frase, contadores opcionais
+ * e um sprite no canto. `compact` para páginas de editor (sobra tela para o código).
+ */
+export function PageBanner({
+  image,
+  focus = "center",
+  kicker,
+  lead,
+  sub,
+  stats,
+  gif,
+  gifHeight = 110,
+  compact,
+  children,
+}: {
+  image: string;
+  focus?: string;
+  kicker?: ReactNode;
+  lead?: ReactNode;
+  sub?: ReactNode;
+  stats?: { n: ReactNode; label: string }[];
+  gif?: GifInfo;
+  gifHeight?: number;
+  compact?: boolean;
+  children?: ReactNode;
+}) {
+  return (
+    <header
+      className={`floor-strip page-banner ${compact ? "compact" : ""}`}
+      style={{ backgroundImage: `url(${image})`, backgroundPosition: focus }}
+    >
+      <div className="page-banner-text">
+        {kicker && <p className="page-banner-kicker">{kicker}</p>}
+        {lead && <p className="page-banner-lead">{lead}</p>}
+        {sub && <p className="page-banner-sub">{sub}</p>}
+        {stats && stats.length > 0 && (
+          <ul className="page-banner-stats">
+            {stats.map((s) => (
+              <li key={s.label}>
+                <b>{s.n}</b> {s.label}
+              </li>
+            ))}
+          </ul>
+        )}
+        {children}
+      </div>
+      {gif && !compact && <Gif gif={gif} height={gifHeight} className="page-banner-guard" />}
+    </header>
   );
 }

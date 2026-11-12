@@ -3,11 +3,12 @@ import Link from "next/link";
 import { Gif } from "@/components/Gif";
 import { PostForm } from "@/components/PostForm";
 import { PostList } from "@/components/PostList";
-import { FlameTitle, Window } from "@/components/Retro";
+import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { getCurrentUser } from "@/lib/auth/session";
 import { GIFS } from "@/lib/gifs";
 import { GUESTBOOK_MAX, GUESTBOOK_PAGE, listGuestbook } from "@/lib/social";
 import { deleteGuestbookEntry, signGuestbook } from "./actions";
+import { PAGE_SCENES } from "@/lib/scenes";
 
 export const metadata: Metadata = { title: "Guestbook" };
 
@@ -20,6 +21,12 @@ export default async function GuestbookPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <FlameTitle>LIVRO DE VISITAS</FlameTitle>
+      <PageBanner
+        image={PAGE_SCENES.guestbook}
+        lead="Passou por aqui? Deixe um recado."
+        stats={[{ n: total, label: total === 1 ? "recado" : "recados" }]}
+        gif={GIFS.gokuStand}
+      />
       <Window title="Assine o guestbook">
         <p className="center">
           <Gif gif={GIFS.guestbookButton} alt="Guestbook" /> <Gif gif={GIFS.navCommunity} alt="Community" />

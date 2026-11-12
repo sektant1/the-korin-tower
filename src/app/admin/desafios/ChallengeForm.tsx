@@ -86,8 +86,8 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
           Tipo{" "}
           <select className="select98" value={v.kind} onChange={(e) => setKind(e.target.value as ChallengeInput["kind"])}>
             <option value="stdio">stdio (compila no servidor, testes de entrada/saída)</option>
-            <option value="shader">shader (GLSL no navegador, sem testes)</option>
-            <option value="canvas">canvas (C/C++ com raylib ou SDL2 em WASM, sem testes)</option>
+            <option value="shader">shader (GLSL no navegador, julgado pelos frames)</option>
+            <option value="canvas">canvas (C/C++ com raylib ou SDL2 em WASM, julgado pelos frames)</option>
           </select>
         </label>
         {v.kind !== "shader" && (

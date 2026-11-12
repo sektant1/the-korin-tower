@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProgressBadge } from "@/components/ClientEffects";
-import { Difficulty, FlameTitle, Window } from "@/components/Retro";
+import { Difficulty, FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { TrackNext, TrackProgress } from "@/components/TrackProgress";
 import { getTrack } from "@/lib/tracks";
+import { PAGE_SCENES } from "@/lib/scenes";
+import { GIFS } from "@/lib/gifs";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -19,12 +21,18 @@ export default async function TrackPage({ params }: Params) {
   return (
     <>
       <FlameTitle>DETONADO</FlameTitle>
+      <PageBanner
+        image={PAGE_SCENES.detonado}
+        kicker="DETONADO"
+        lead={track.title}
+        sub={track.description}
+        stats={[{ n: track.steps.length, label: track.steps.length === 1 ? "passo" : "passos" }]}
+        gif={GIFS.gokuElectric}
+      />
       <Window title={`${track.title}.txt`}>
         <nav className="crumbs" aria-label="Você está em">
           <Link href="/trilhas">Detonados</Link> » {track.title}
         </nav>
-        <h2 className="track-title">{track.title}</h2>
-        <p>{track.description}</p>
         <TrackProgress slugs={track.steps.filter((s) => s.scored).map((s) => s.slug)} />
         <TrackNext trackId={track.id} steps={track.steps.filter((s) => s.scored)} />
         <ol className="track-steps">

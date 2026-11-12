@@ -13,7 +13,7 @@ hints:
 
 Todo jogo começa assim: um **game loop**, um objeto que se move e uma colisão.
 
-Este desafio roda **no seu navegador**. Seu C é compilado para WebAssembly com a [raylib](https://www.raylib.com/) e desenhado num canvas, ao lado do editor. Use `:run` (ou **Executar**) para compilar e ver o resultado. Não há testes automáticos nem pontos: o juiz é o seu olho.
+Este desafio roda **no seu navegador**. Seu C é compilado para WebAssembly com a [raylib](https://www.raylib.com/) e desenhado num canvas, ao lado do editor. Use `:run` (ou **Executar**) para compilar e ver o resultado. Tudo acontece no navegador, sem servidor. Não há teste pixel a pixel: `:submit` roda o programa por 3 segundos, fotografa o canvas e confere que algo foi desenhado; o resto do juízo é o seu olho.
 
 ## Tarefa
 

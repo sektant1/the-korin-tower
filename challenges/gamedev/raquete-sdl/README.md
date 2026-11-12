@@ -14,7 +14,7 @@ hints:
 
 Segundo passo de todo jogo: **ler o jogador**. Aqui você usa a SDL2 pura, sem motor nenhum por cima.
 
-Este desafio roda **no seu navegador**: o C vira WebAssembly e a SDL2 desenha num canvas. Use `:run` para compilar. **Clique no canvas** para ele receber o teclado. Sem testes automáticos e sem pontos.
+Este desafio roda **no seu navegador**: o C vira WebAssembly e a SDL2 desenha num canvas. Use `:run` para compilar. **Clique no canvas** para ele receber o teclado. `:submit` roda o programa por 3 segundos, fotografa o canvas e confere que algo foi desenhado.
 
 ## Tarefa
 

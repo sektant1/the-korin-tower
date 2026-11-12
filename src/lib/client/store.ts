@@ -162,3 +162,20 @@ export function saveHintsRevealed(slug: string, n: number) {
     /* ignore */
   }
 }
+
+// ---- Biblioteca: posts lidos neste navegador (slug → dia em que terminou de ler)
+const READ_KEY = "korin:lidos";
+const NO_READS: Record<string, string> = {};
+
+export function useReadDocs(): Record<string, string> {
+  return useSyncExternalStore(subscribe, () => read(READ_KEY, NO_READS), () => NO_READS);
+}
+
+export function setDocRead(slug: string, isRead: boolean) {
+  const cur = read(READ_KEY, NO_READS);
+  if (Boolean(cur[slug]) === isRead) return;
+  const next = { ...cur };
+  if (isRead) next[slug] = new Date().toISOString().slice(0, 10);
+  else delete next[slug];
+  write(READ_KEY, next);
+}
