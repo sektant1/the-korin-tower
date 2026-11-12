@@ -647,6 +647,67 @@ function withEnvStubs(runtimeGlue: Uint8Array, needed: Set<string>, onStderr?: (
   };
 }
 
+/**
+ * O runtime do Emscripten (GLFW da raylib, SDL) põe ouvintes de teclado na
+ * página inteira (window/document) e dá preventDefault em Backspace, Tab,
+ * setas...: com um jogo rodando, o editor ao lado perdia essas teclas e vários
+ * atalhos do Vim. E ninguém tirava esses ouvintes ao parar o programa, então o
+ * problema seguia para outras páginas até recarregar.
+ *
+ * Enquanto o programa roda, os ouvintes que ele registra em window/document
+ * são embrulhados e anotados: teclado só chega ao jogo com o canvas em foco
+ * ("clique no canvas"), e parar o programa remove tudo o que ele registrou.
+ */
+const KEY_EVENTS = new Set(["keydown", "keyup", "keypress"]);
+let releaseListeners: (() => void) | null = null;
+
+function sandboxListeners(canvas: HTMLCanvasElement): () => void {
+  releaseListeners?.(); // um programa por vez: o anterior já devia ter parado
+  type Listener = EventListenerOrEventListenerObject;
+  const added: { target: EventTarget; type: string; wrapped: Listener; options?: boolean | AddEventListenerOptions }[] = [];
+  const wrappedOf = new WeakMap<object, Listener>();
+  const targets: EventTarget[] = [window, document];
+  const originals = targets.map((t) => ({ target: t, add: t.addEventListener, remove: t.removeEventListener }));
+
+  for (const { target, add, remove } of originals) {
+    const own = target as EventTarget & { addEventListener: typeof add; removeEventListener: typeof remove };
+    own.addEventListener = function (type: string, listener: Listener | null, options?: boolean | AddEventListenerOptions) {
+      if (!listener) return;
+      let wrapped: Listener = listener;
+      if (KEY_EVENTS.has(type)) {
+        const call = typeof listener === "function" ? listener : (e: Event) => listener.handleEvent(e);
+        wrapped = function (this: unknown, e: Event) {
+          if (document.activeElement !== canvas) return; // tecla do editor, do stdin...: não é do jogo
+          return call.call(this, e);
+        };
+        wrappedOf.set(listener, wrapped);
+      }
+      added.push({ target, type, wrapped, options });
+      return add.call(target, type, wrapped, options);
+    };
+    own.removeEventListener = function (type: string, listener: Listener | null, options?: boolean | EventListenerOptions) {
+      if (!listener) return;
+      const wrapped = wrappedOf.get(listener) ?? listener;
+      const at = added.findIndex((a) => a.target === target && a.type === type && a.wrapped === wrapped);
+      if (at !== -1) added.splice(at, 1);
+      return remove.call(target, type, wrapped, options);
+    };
+  }
+
+  const release = () => {
+    for (const { target, add, remove } of originals) {
+      const own = target as EventTarget & { addEventListener: typeof add; removeEventListener: typeof remove };
+      // Volta ao método do protótipo (removendo o embrulho próprio do objeto).
+      if (own.addEventListener !== add) delete (own as { addEventListener?: unknown }).addEventListener;
+      if (own.removeEventListener !== remove) delete (own as { removeEventListener?: unknown }).removeEventListener;
+    }
+    for (const a of added.splice(0)) a.target.removeEventListener(a.type, a.wrapped, a.options);
+    if (releaseListeners === release) releaseListeners = null;
+  };
+  releaseListeners = release;
+  return release;
+}
+
 /** Executa o artefato compilado no canvas da página (fora do iframe, mas isolado no WASM). */
 export async function startCanvas(
   artifact: CanvasArtifact,
@@ -657,12 +718,20 @@ export async function startCanvas(
   const module = await WebAssembly.compile(artifact.wasm.slice());
   const needed = new Set(WebAssembly.Module.imports(module).filter((i) => i.module === "env" && i.kind === "function").map((i) => i.name));
   const env = withEnvStubs(artifact.runtimeGlue, needed, opts.onStderr);
-  const session = await startCanvasArtifact(artifact, { canvas, onStdout: opts.onStdout, onStderr: opts.onStderr }, env.deps);
+  const release = sandboxListeners(canvas);
+  let session: CanvasSession;
+  try {
+    session = await startCanvasArtifact(artifact, { canvas, onStdout: opts.onStdout, onStderr: opts.onStderr }, env.deps);
+  } catch (e) {
+    release();
+    throw e;
+  }
   return {
     ...session,
     stop() {
       env.stop(); // desenrola um main suspenso no emscripten_sleep
       session.stop();
+      release(); // devolve o teclado (e tudo o mais que o programa escutava) à página
     },
   };
 }
