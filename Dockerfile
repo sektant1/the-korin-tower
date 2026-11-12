@@ -3,6 +3,8 @@ WORKDIR /app
 # prisma.config.ts exige a variável mesmo só para gerar o client (o valor real vem do compose).
 ENV DATABASE_URL=postgresql://korin:korin@db:5432/korin
 COPY package.json package-lock.json ./
+# o postinstall remenda o compilador do navegador (scripts/patch-emception.mjs)
+COPY scripts/patch-emception.mjs scripts/
 RUN npm ci
 COPY . .
 RUN npx prisma generate && npx next build

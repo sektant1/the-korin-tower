@@ -31,7 +31,7 @@ const CWD = "/home/user";
 const OBJECT_PATH = "/tmp/korin-canvas.o";
 const WASM_PATH = "/home/user/korin-canvas.wasm";
 const STDIO_OBJECT = "/tmp/korin-stdio.o";
-const STDIO_WASM = "/home/user/korin-stdio.wasm";
+const STDIO_WASM = `${CWD}/korin-stdio.wasm`;
 /** Biblioteca padrão do Emscripten compilada para wasm32 (libc, libc++, dlmalloc...). */
 const SYSLIB = "/usr/lib/emscripten/cache-lib/wasm32-emscripten";
 /** Pilha do programa do jogador: 8 MB, como o padrão do Linux (o wasm-ld dá só 64 KB). */
@@ -248,10 +248,13 @@ export function cc1Flags(base: string[], flags: string[]): { argv: string[]; war
 
 /**
  * Algumas bibliotecas (o runtime WASI puro, a SDL2) moram no bundle
- * `cache-misc`, que o Emception não pré-aquece para o wasm-ld: linkar com elas
- * direto deixa o lld esperando um arquivo que nunca chega (trava em silêncio).
- * Lemos o .a pela VFS (que baixa sob demanda) e o copiamos para o workspace,
- * uma vez por toolchain; o link usa a cópia.
+ * `cache-misc`, que o Emception não pré-aquece para o wasm-ld. Com `-lnome` o
+ * lld espera um arquivo que nunca chega (trava em silêncio); com o caminho
+ * completo do .a na linha de comando, o Emception o pré-aquece antes do link.
+ * Aqui lemos o .a uma vez (baixa e extrai o bundle, ~2 s) para que esse
+ * pré-aquecimento saia do cache em memória (scripts/patch-emception.mjs).
+ * Não copiamos para o workspace: lá a leitura passa pelo IndexedDB e chegou a
+ * levar 8 s por link.
  */
 const staged = new WeakMap<BrowserEmceptionAPI, Map<string, Promise<string>>>();
 
@@ -260,12 +263,11 @@ function stageArchive(emception: BrowserEmceptionAPI, name: string): Promise<str
   if (!byName) staged.set(emception, (byName = new Map()));
   let ready = byName.get(name);
   if (!ready) {
-    const copy = `${CWD}/.korin/${name}`;
+    const path = `${SYSLIB}/${name}`;
     ready = (async () => {
-      const lib = await emception.workspace.readFile(`${SYSLIB}/${name}`);
+      const lib = await emception.workspace.readFile(path);
       if (!lib?.length) throw new Error(`${name} não veio da toolchain`);
-      await emception.workspace.writeFile(copy, lib);
-      return copy;
+      return path;
     })();
     ready.catch(() => byName.delete(name));
     byName.set(name, ready);
@@ -300,7 +302,7 @@ function ensureShims(emception: BrowserEmceptionAPI): Promise<void> {
 
 /** Runtime WASI puro; o C++ usa a variante com catch (exceções nativas do wasm). */
 const runtimeLib = (language: StdioLanguage) => (language === "cpp" ? "libstandalonewasm-memgrow-pure.a" : "libstandalonewasm-nocatch-memgrow-pure.a");
-const runtimeCopy = (language: StdioLanguage) => `${CWD}/.korin/${runtimeLib(language)}`;
+const runtimePath = (language: StdioLanguage) => `${SYSLIB}/${runtimeLib(language)}`;
 /**
  * Exceções C++ nativas do WebAssembly (o que o -fwasm-exceptions do driver passaria ao cc1),
  * no formato "legacy" (try/catch): roda em todo navegador atual e no Node 22, e casa com
@@ -334,7 +336,7 @@ export function stdioLinkArgv(language: StdioLanguage, objectPath: string, wasmP
     "-ldlmalloc",
     "-lcompiler_rt",
     // memgrow: malloc cresce a memória até o --max-memory; pure: só imports WASI, nada de JS do Emscripten.
-    runtimeCopy(language),
+    runtimePath(language),
   ];
 }
 
@@ -353,7 +355,8 @@ async function compileStdioNow(opts: StdioCompileOptions): Promise<StdioCompileR
 
   const src = opts.language === "cpp" ? `${CWD}/main.cpp` : `${CWD}/main.c`;
   await emception.workspace.writeFile(src, opts.source);
-  await Promise.all([STDIO_OBJECT, STDIO_WASM].map((p) => emception.workspace.deleteFile(p).catch(() => {})));
+  // Sem apagar o .o/.wasm da vez anterior: o clang e o wasm-ld sobrescrevem, e só
+  // lemos a saída depois de conferir o exit code (cada apagar é mais uma ida ao IndexedDB).
 
   opts.onPhase?.("compiling");
   let base = preset.compileArgv({ sourcePath: src, objectPath: STDIO_OBJECT }).map((a) => (/^-O/.test(a) ? STDIO_OPT : a));
@@ -447,8 +450,6 @@ async function buildSDL2(
   const src = sourcePath(language);
   const paths = { sourcePath: src, objectPath: OBJECT_PATH, wasmPath: WASM_PATH };
   await emception.workspace.writeFile(src, source);
-  await emception.workspace.deleteFile(OBJECT_PATH).catch(() => {});
-  await emception.workspace.deleteFile(WASM_PATH).catch(() => {});
 
   const runOptions = {
     cwd: CWD,
@@ -502,7 +503,6 @@ async function compileCanvasNow(opts: CanvasCompileOptions): Promise<CanvasCompi
   const emception = await getEmception();
   const src = sourcePath(opts.language);
   await emception.workspace.writeFile(src, opts.source);
-  await emception.workspace.deleteFile(WASM_PATH).catch(() => {});
 
   opts.onPhase?.("compiling");
   const toolchain = toolchainFor(opts.language, opts.source);

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "postinstall": "node scripts/patch-emception.mjs",
     "build": "prisma generate && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
