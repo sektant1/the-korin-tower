@@ -990,6 +990,14 @@ a.b88:hover,
   overflow-x: auto;
   overflow-y: hidden;
 }
+/* Fórmula inline: um pouco maior que o texto (o padrão do KaTeX, 1.21em, destoa). */
+.markdown .katex {
+  font-size: 1.1em;
+}
+/* "(", fórmula e ")." andam juntos na quebra de linha (src/lib/rehype-math-nowrap.ts) */
+.math-nowrap {
+  white-space: nowrap;
+}
 
 /* highlight.js, paleta de terminal */
 .hljs-keyword,

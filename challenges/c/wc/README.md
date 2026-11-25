@@ -1,5 +1,5 @@
 ---
-title: "wc"
+title: "wc: Word Counting"
 difficulty: 1
 tags: [iniciante, stdio, unix, strings]
 languages: [c, cpp]

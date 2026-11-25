@@ -4,6 +4,7 @@
 // HTML cru continua descartado (remark-rehype sem allowDangerousHtml).
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
+import rehypeMathNowrap from "@/lib/rehype-math-nowrap";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -194,6 +195,7 @@ const processor = unified()
   .use(remarkCallouts)
   .use(remarkRehype)
   .use(rehypeKatex)
+  .use(rehypeMathNowrap)
   .use(rehypeHighlight, { detect: false, ignoreMissing: true })
   .use(rehypeDoc)
   .use(rehypeStringify);
