@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FlameTitle, PageBanner, Window } from "@/components/Retro";
+import { PageBanner, Window } from "@/components/Retro";
 import { getCurrentUser } from "@/lib/auth/session";
 import { siteUrl } from "@/lib/site-url";
 import { PAGE_SCENES } from "@/lib/scenes";
-import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "CLI (korin)" };
 
@@ -12,7 +11,7 @@ const COMMANDS: [string, string][] = [
   ["korin next [--pick]", "o próximo desafio da torre; --pick já baixa"],
   ["korin status", "seu andar, pontos, esferas e o que falta para subir"],
   ["korin list [-a andar] [-c cat] [--todo]", "os desafios, andar por andar"],
-  ["korin tracks", "os detonados e seu progresso"],
+  ["korin tracks", "as trilhas e seu progresso"],
   ["korin daily [--pick]", "desafio do dia"],
   ["korin pick slug [-l ling] [-d pasta]", "baixa enunciado, template e testes públicos"],
   ["korin run [-i entrada]", "executa com a entrada do pipe, de um arquivo ou do 1º teste"],
@@ -31,12 +30,11 @@ export default async function CliPage() {
   const dl = `${url}/cli/korin.mjs`;
   return (
     <>
-      <FlameTitle>KORIN CLI</FlameTitle>
       <PageBanner
+        title="KORIN CLI"
         image={PAGE_SCENES.cli}
         lead="Resolva no seu editor e envie pelo terminal."
         sub="Um arquivo, sem dependências, Node 22.7 ou mais novo."
-        gif={GIFS.trunks}
       />
       <div className="two-col">
         <Window title="instalar.txt">

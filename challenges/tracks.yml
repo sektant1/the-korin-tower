@@ -1,4 +1,4 @@
-# Trilhas ("Detonados"): sequências de desafios, na ordem em que aparecem em /trilhas.
+# Trilhas: sequências de desafios, na ordem em que aparecem em /trilhas.
 # steps: slugs dos desafios (nome da pasta em challenges/<categoria>/<slug>).
 # `npm run seed` importa; trilha removida daqui some do site.
 - id: primeiros-passos-em-c

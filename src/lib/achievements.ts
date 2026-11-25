@@ -52,7 +52,7 @@ export interface Achievement {
    * só é gravada por unlockEventAchievement (ex.: o código Konami).
    */
   earned?(s: AchievementStats): boolean;
-  /** some da lista se a feature dela estiver desligada (ex.: detonados) */
+  /** some da lista se a feature dela estiver desligada (ex.: trilhas) */
   requires?: "tracks";
 }
 
@@ -88,7 +88,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "ki-1000", group: "desafios", name: "Ki 1000", icon: "KI", description: "Chegou a 1000 pontos.", earned: (s) => s.points >= 1000 },
   { id: "ki-9000", group: "desafios", name: "É Mais de 8000!", icon: "9K", description: "Passou de 8000 pontos.", earned: (s) => s.points > 8000 },
   { id: "recordista", group: "desafios", name: "Recordista", icon: "#1", description: "Tem o menor código ou o menor tempo em algum desafio.", earned: (s) => s.records >= 1 },
-  { id: "detonado", group: "desafios", name: "Detonado", icon: "OK", description: "Zerou um detonado inteiro.", requires: "tracks", earned: (s) => s.tracksDone >= 1 },
+  { id: "detonado", group: "desafios", name: "Trilha completa", icon: "OK", description: "Concluiu uma trilha inteira.", requires: "tracks", earned: (s) => s.tracksDone >= 1 },
 
   // Dedicação
   {

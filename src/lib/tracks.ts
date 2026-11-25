@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { TRACKS_ENABLED } from "@/lib/features";
 import type { ChallengeKind } from "@/lib/languages";
 
-// Trilhas ("detonados"): vêm de challenges/tracks.yml pelo seed.
+// Trilhas: vêm de challenges/tracks.yml pelo seed.
 // Todo passo conta para zerar (stdio pelos testes; shader e canvas pelos frames).
 export interface TrackStep {
   slug: string;

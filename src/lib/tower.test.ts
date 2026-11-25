@@ -14,14 +14,14 @@ const data: TowerData = {
   daily: "b3",
 };
 
-test("andar 1 aberto, resto trancado; detonado e desafio do dia abrem exceções", () => {
+test("andar 1 aberto, resto trancado; trilha e desafio do dia abrem exceções", () => {
   assert.equal(currentFloor(data, {}), 1);
   assert.ok(isOpen(data, {}, "a1"));
   assert.ok(isOpen(data, {}, "s1"));
   assert.ok(!isOpen(data, {}, "a2"));
   assert.ok(isOpen(data, {}, "b3"), "desafio do dia");
-  assert.ok(!isOpen(data, {}, "a3"), "a3 é o 2º passo do detonado; a1 ainda não foi feito");
-  assert.ok(isOpen(data, { a1: "solved" }, "a3"), "próximo passo do detonado abre");
+  assert.ok(!isOpen(data, {}, "a3"), "a3 é o 2º passo da trilha; a1 ainda não foi feito");
+  assert.ok(isOpen(data, { a1: "solved" }, "a3"), "próximo passo da trilha abre");
   assert.ok(!isOpen(data, { a1: "solved", a3: "solved" }, "a4"), "andar 4 segue trancado: o 2 não foi feito");
 });
 
@@ -32,7 +32,7 @@ test("resolver o mínimo do andar abre o de cima; andares abrem em sequência", 
   const p = { a1: "solved", b1: "solved", s1: "solved" } as const;
   assert.equal(currentFloor(data, p), 2);
   assert.ok(isOpen(data, p, "c2"));
-  // Resolver a3 pelo detonado não abre o andar 4 enquanto o 2 não estiver feito.
+  // Resolver a3 pela trilha não abre o andar 4 enquanto o 2 não estiver feito.
   const p2 = { ...p, a3: "solved" } as const;
   assert.equal(currentFloor(data, p2), 2);
   assert.deepEqual(lockInfo(data, p2, "a4"), { floor: 4, from: 2, missing: 3 });
@@ -47,19 +47,19 @@ test("andar com menos desafios que o mínimo abre com todos", () => {
   assert.equal(currentFloor(data, { ...p, a4: "solved" }), 5);
 });
 
-test("próximo passo: continua o detonado começado, senão o andar atual", () => {
+test("próximo passo: continua a trilha começada, senão o andar atual", () => {
   assert.deepEqual(nextStep(data, {}), { slug: "a1", trackId: null, reason: "floor" });
   assert.deepEqual(nextStep(data, { a1: "solved" }), { slug: "a3", trackId: "t", reason: "track" });
   assert.deepEqual(nextStep(data, { a1: "solved", a3: "solved" }), { slug: "b1", trackId: null, reason: "floor" });
   assert.deepEqual(nextStep(data, { a1: "solved" }, { trackId: "t", after: "a1" }), { slug: "a3", trackId: "t", reason: "track" });
 });
 
-test("esferas: uma por detonado zerado", () => {
+test("esferas: uma por trilha concluída", () => {
   assert.equal(tracksDone(data, {}), 0);
   assert.equal(tracksDone(data, { a1: "solved", a3: "solved" }), 1);
 });
 
-test("detonados desligados (sem trilhas): jogador novo só tem o andar 1", () => {
+test("trilhas desligadas: jogador novo só tem o andar 1", () => {
   const off: TowerData = { ...data, tracks: [], daily: null };
   for (const c of off.challenges) {
     assert.equal(isOpen(off, {}, c.slug), c.difficulty === 1, c.slug);

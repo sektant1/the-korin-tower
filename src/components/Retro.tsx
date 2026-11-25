@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { Children, type ReactNode } from "react";
 import { Gif } from "./Gif";
-import { GIFS, type Gif as GifInfo } from "@/lib/gifs";
+import { GIFS } from "@/lib/gifs";
+import { DragonBallDivider } from "./ShenlongGame";
 
 export function Marquee({ children, label }: { children: ReactNode; label: string }) {
   // <marquee> real não respeita prefers-reduced-motion; este respeita (ver CSS).
@@ -33,8 +34,9 @@ export function UnderConstruction({ what }: { what?: string }) {
   );
 }
 
-export function RainbowHr() {
-  return <hr className="rainbow" />;
+/** Divisor de seção: as sete Esferas do Dragão entre duas linhas pontilhadas. */
+export function BallDivider() {
+  return <DragonBallDivider />;
 }
 
 export function Difficulty({ level }: { level: number }) {
@@ -58,10 +60,10 @@ export function arcade(text: string): string {
   return text.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-export function FlameTitle({ children, as: Tag = "h1" }: { children: ReactNode; as?: "h1" | "h2" }) {
+export function FlameTitle({ children, as: Tag = "h1", className }: { children: ReactNode; as?: "h1" | "h2"; className?: string }) {
   // Children.map preserva/atribui keys (um .map comum geraria aviso de key).
   const kids = Children.map(children, (n) => (typeof n === "string" ? arcade(n) : n));
-  return <Tag className="flame">{kids}</Tag>;
+  return <Tag className={className ? `flame ${className}` : "flame"}>{kids}</Tag>;
 }
 
 export function Window({ title, children, className }: { title: ReactNode; children: ReactNode; className?: string }) {
@@ -193,26 +195,44 @@ export function ButtonWall({ kinds, className }: { kinds: Button88Kind[]; classN
  * Banner de topo das páginas: um cenário de fundo, uma frase, contadores opcionais
  * e um sprite no canto. `compact` para páginas de editor (sobra tela para o código).
  */
+/** Número no estilo contador de visitas: um dígito por célula, com zeros à esquerda. */
+function Counter({ n }: { n: ReactNode }) {
+  if (typeof n !== "number") return <b className="pb-odo pb-text">{n}</b>;
+  const digits = String(n).padStart(3, "0");
+  return (
+    <b className="pb-odo">
+      <span className="sr-only">{n}</span>
+      {[...digits].map((d, i) => (
+        <span key={i} className="pb-digit" aria-hidden="true">
+          {d}
+        </span>
+      ))}
+    </b>
+  );
+}
+
+/**
+ * Cabeçalho das páginas: cartela de episódio sobre o cenário (kicker, título, chamada e links
+ * extras em children) e, no canto inferior direito, os contadores com os números da página.
+ */
 export function PageBanner({
+  title,
   image,
   focus = "center",
   kicker,
   lead,
   sub,
   stats,
-  gif,
-  gifHeight = 110,
   compact,
   children,
 }: {
+  title: ReactNode;
   image: string;
   focus?: string;
   kicker?: ReactNode;
   lead?: ReactNode;
   sub?: ReactNode;
   stats?: { n: ReactNode; label: string }[];
-  gif?: GifInfo;
-  gifHeight?: number;
   compact?: boolean;
   children?: ReactNode;
 }) {
@@ -225,20 +245,20 @@ export function PageBanner({
     >
       <div className="page-banner-text">
         {kicker && <p className="page-banner-kicker">{kicker}</p>}
+        <FlameTitle className="page-banner-title">{title}</FlameTitle>
         {lead && <p className="page-banner-lead">{lead}</p>}
         {sub && <p className="page-banner-sub">{sub}</p>}
-        {stats && stats.length > 0 && (
-          <ul className="page-banner-stats">
-            {stats.map((s) => (
-              <li key={s.label}>
-                <b>{s.n}</b> {s.label}
-              </li>
-            ))}
-          </ul>
-        )}
         {children}
       </div>
-      {gif && !compact && <Gif gif={gif} height={gifHeight} className="page-banner-guard" />}
+      {stats && stats.length > 0 && (
+        <ul className="page-banner-stats">
+          {stats.map((s) => (
+            <li key={s.label}>
+              <Counter n={s.n} /> <span className="pb-label">{s.label}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </header>
   );
 }

@@ -48,15 +48,16 @@ export function SeriesProgress({ slugs }: { slugs: string[] }) {
 }
 
 /** Botão para a primeira parte ainda não lida. */
-export function SeriesNext({ docs }: { docs: { slug: string; title: string }[] }) {
+export function SeriesNext({ docs, compact }: { docs: { slug: string; title: string }[]; compact?: boolean }) {
   const reads = useReadDocs();
   const next = docs.find((d) => !reads[d.slug]);
   if (!docs.length) return null;
   if (!next) return <p className="pass">Série completa.</p>;
+  const verb = docs[0].slug === next.slug ? "COMEÇAR" : "CONTINUAR";
   return (
-    <p>
-      <Link href={`/biblioteca/${next.slug}`} className="btn98 play">
-        {docs[0].slug === next.slug ? "COMEÇAR" : "CONTINUAR"}: {next.title} <span className="arrow" aria-hidden="true">►</span>
+    <p className="series-next">
+      <Link href={`/biblioteca/${next.slug}`} className="btn98 play" aria-label={`${verb === "COMEÇAR" ? "Começar" : "Continuar"} a série: ${next.title}`}>
+        {compact ? verb : `${verb}: ${next.title}`} <span className="arrow" aria-hidden="true">►</span>
       </Link>
     </p>
   );
@@ -234,19 +235,23 @@ export function LibraryBrowser({
 
 export function DocRow({ doc: d, seriesTitle, onTag, partLabel }: { doc: DocMeta; seriesTitle?: string | null; onTag?: (t: string) => void; partLabel?: string }) {
   return (
-    <li className={`doc-row ${d.draft ? "is-draft" : ""}`}>
-      <div className="doc-row-head">
-        {partLabel ? <span className="floor-n">{partLabel}</span> : <KindBadge kind={d.kind} />}
-        <Link href={`/biblioteca/${d.slug}`} className="doc-row-title">
-          {d.title}
-        </Link>
-        {d.draft && <span className="draft-badge">RASCUNHO</span>}
-        <ReadBadge slug={d.slug} />
-      </div>
-      {d.description && <p className="doc-row-desc">{d.description}</p>}
-      <p className="doc-row-meta">
+    <li className={`doc-row kind-${d.kind} ${d.draft ? "is-draft" : ""}`}>
+      <p className="doc-row-kicker">
+        <span className="doc-row-kind" title={DOC_KINDS[d.kind].hint}>
+          {partLabel ?? DOC_KINDS[d.kind].label}
+        </span>
         <span>{formatDay(d.updated ?? d.date)}</span>
         <span>{d.readingMin} min</span>
+        <span className="doc-row-flags">
+          {d.draft && <span className="draft-badge">RASCUNHO</span>}
+          <ReadBadge slug={d.slug} />
+        </span>
+      </p>
+      <h3 className="doc-row-title">
+        <Link href={`/biblioteca/${d.slug}`}>{d.title}</Link>
+      </h3>
+      {d.description && <p className="doc-row-desc">{d.description}</p>}
+      <p className="doc-row-meta">
         {seriesTitle && d.series && (
           <Link href={`/biblioteca/serie/${d.series}`} className="doc-row-series">
             série: {seriesTitle}

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import {
-  FlameTitle,
+  ALL_BUTTONS,
+  ButtonWall,
   PageBanner,
   UnderConstruction,
   Window,
 } from "@/components/Retro";
 import { captionOf, getFanart, listGifArchive } from "@/lib/fanart";
 import { PAGE_SCENES } from "@/lib/scenes";
-import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Galeria" };
 
@@ -22,16 +22,15 @@ export default async function GalleryPage() {
 
   return (
     <>
-      <FlameTitle>GALERIA</FlameTitle>
       <PageBanner
+        title="GALERIA"
         image={PAGE_SCENES.galeria}
-        lead="Art gallery da torre e arquivos GIFs do site."
+        lead="Fanarts, botões 88x31 e os GIFs usados no site."
         stats={[
-          { n: all.length, label: "arts" },
+          { n: all.length, label: "fanarts" },
           { n: archive.length, label: "GIFs" },
+          { n: ALL_BUTTONS.length, label: "botões" },
         ]}
-        gif={GIFS.android18}
-        gifHeight={90}
       />
 
       <Window title="Art Gallery">
@@ -48,6 +47,14 @@ export default async function GalleryPage() {
         ) : (
           <UnderConstruction what="Nenhuma art ainda" />
         )}
+      </Window>
+
+      <Window title={`Botões 88x31 (${ALL_BUTTONS.length})`}>
+        <p className="dim small">
+          Todos os botões do site, inclusive os que não aparecem nas laterais. Créditos em{" "}
+          <a href="/buttons/CREDITS.txt">CREDITS.txt</a>.
+        </p>
+        <ButtonWall kinds={ALL_BUTTONS} className="buttons-88-all" />
       </Window>
 
       <Window title={`Arquivo de GIFs (${archive.length})`}>

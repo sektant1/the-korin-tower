@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FlameTitle, PageBanner } from "@/components/Retro";
+import { PageBanner } from "@/components/Retro";
 import { Playground } from "@/components/workspace/Playground";
 import { PAGE_SCENES } from "@/lib/scenes";
 
@@ -11,11 +11,11 @@ export default function CompiladorPage() {
   return (
     <div className="playground-page">
       <div>
-        <FlameTitle>Sandbox</FlameTitle>
         <PageBanner
+          title="COMPILADOR"
           image={PAGE_SCENES.compilador}
           compact
-          lead="Sandbox para praticar"
+          lead="Escreva e rode código, sem desafio e sem pontos."
         />
       </div>
       <Playground />

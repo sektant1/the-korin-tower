@@ -3,11 +3,10 @@ import { TRACKS_ENABLED } from "@/lib/features";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  clearDraft,
-  loadDraft,
   loadHintsRevealed,
-  saveDraft,
+  loadLastLanguage,
   saveHintsRevealed,
+  saveLastLanguage,
   setProgress,
   updateSettings,
   useSettings,
@@ -23,6 +22,7 @@ import { HINT_PENALTY } from "@/lib/scoring";
 import { useAccount, useProgressMap } from "../Account";
 import { NextStepBar } from "../Tower";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
+import { DraftBook } from "./drafts";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
 
@@ -49,7 +49,7 @@ interface Props {
   defaultStdin: string;
   /** testes públicos (já aparecem no enunciado): o :test de Python roda com eles no navegador */
   publicTests: IoTestCase[];
-  /** detonado pelo qual o jogador chegou (?trilha=), para o "próximo" seguir a ordem dele */
+  /** trilha pela qual o jogador chegou (?trilha=), para o "próximo" seguir a ordem dele */
   trackId: string | null;
   /** Com login: o que está salvo na conta. Sem login: null (usa o localStorage). */
   saved: { drafts: Partial<Record<LanguageId, string>>; hintsRevealed: number } | null;
@@ -73,8 +73,15 @@ export function ChallengeWorkspace(p: Props) {
   const account = useAccount();
   const logged = p.saved !== null && account !== null;
   const progress = useProgressMap();
-  // Rascunhos da conta em memória (atualizados a cada save), para trocar de linguagem sem ir ao servidor.
-  const accountDrafts = useRef<Partial<Record<LanguageId, string>>>({ ...p.saved?.drafts });
+  // Texto de cada linguagem desta página + persistência (conta ou localStorage).
+  const [drafts] = useState(
+    () =>
+      new DraftBook({
+        slug: p.slug,
+        templates: p.templates,
+        account: logged ? { drafts: { ...p.saved?.drafts }, endpoint: `/api/challenges/${p.slug}/draft` } : null,
+      }),
+  );
   const editor = useRef<CodeEditorHandle>(null);
   const [lang, setLang] = useState<LanguageId>(p.languages[0]);
   const [initialCode] = useState(() => p.templates[p.languages[0]] ?? "");
@@ -100,14 +107,15 @@ export function ChallengeWorkspace(p: Props) {
     setTimeout(() => setMessage((m) => (m === msg ? "" : m)), 4000);
   }, []);
 
-  // Restaura rascunho e dicas já reveladas: da conta, ou do localStorage (só existe no cliente).
-  // Logado sem rascunho na conta, aproveita o que ficou neste navegador de antes do login.
+  // Restaura a última linguagem, o rascunho dela e as dicas já reveladas (o localStorage só
+  // existe no cliente, então isto roda depois da montagem).
   useEffect(() => {
-    const draft = accountDrafts.current[p.languages[0]] ?? loadDraft(p.slug, p.languages[0]);
-    if (draft != null && draft !== initialCode) {
-      setEditorText(draft);
-      flash(logged ? "rascunho da conta restaurado" : "rascunho restaurado");
-    }
+    const last = loadLastLanguage(p.slug) as LanguageId | null;
+    const start = last && p.languages.includes(last) ? last : p.languages[0];
+    const { code, restored } = drafts.open(start);
+    if (start !== lang) setLang(start);
+    if (code !== initialCode) setEditorText(code);
+    if (restored) flash(logged ? "rascunho da conta restaurado" : "rascunho restaurado");
     const n = Math.min(p.saved ? p.saved.hintsRevealed : loadHintsRevealed(p.slug), p.hintsTotal);
     if (n > 0) {
       Promise.all(Array.from({ length: n }, (_, i) => fetch(`/api/challenges/${p.slug}/hints/${i}`, { method: "POST" }).then((r) => r.json())))
@@ -121,28 +129,12 @@ export function ChallengeWorkspace(p: Props) {
     (explicit: boolean) => {
       const code = editor.current?.getValue() ?? "";
       const file = LANGUAGES[lang].file;
-      if (!logged) {
-        const ok = saveDraft(p.slug, lang, code);
-        if (explicit) flash(ok ? `"${file}" salvo (rascunho local)` : "E212: não deu para salvar neste navegador");
-        return;
-      }
-      if (accountDrafts.current[lang] === code && !explicit) return;
-      accountDrafts.current[lang] = code;
-      // keepalive: o save do :q sobrevive à troca de página (o navegador limita o corpo a 64 KB).
-      fetch(`/api/challenges/${p.slug}/draft`, {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language: lang, code }),
-        keepalive: code.length < 60_000,
-      })
-        .then(async (r) => {
-          if (r.ok) {
-            if (explicit) flash(`"${file}" salvo na conta`);
-          } else flash(`E212: não salvou na conta (${(await r.json().catch(() => ({}))).error ?? r.status})`);
-        })
-        .catch(() => flash("E212: sem conexão; rascunho não salvo"));
+      void drafts.save(lang, code).then((r) => {
+        if (!r.ok) flash(`E212: ${r.error}`);
+        else if (explicit) flash(r.where === "account" ? `"${file}" salvo na conta` : `"${file}" salvo (rascunho local)`);
+      });
     },
-    [p.slug, lang, flash, logged],
+    [drafts, lang, flash],
   );
 
   const onChange = useCallback(() => {
@@ -315,8 +307,8 @@ export function ChallengeWorkspace(p: Props) {
     clearTimeout(saveTimer.current);
     save(false); // o que está no editor ainda é da linguagem atual
     setLang(next);
-    const draft = logged ? accountDrafts.current[next] : loadDraft(p.slug, next);
-    setEditorText(draft ?? p.templates[next] ?? "");
+    saveLastLanguage(p.slug, next);
+    setEditorText(drafts.open(next).code);
   };
 
   const doConfirm = async () => {
@@ -328,12 +320,10 @@ export function ChallengeWorkspace(p: Props) {
       await loadSolution();
       setTab("sol");
     } else if (confirm === "reset") {
-      if (logged) {
-        delete accountDrafts.current[lang];
-        void fetch(`/api/challenges/${p.slug}/draft?language=${lang}`, { method: "DELETE" });
-      } else clearDraft(p.slug, lang);
-      setEditorText(p.templates[lang] ?? "");
+      clearTimeout(saveTimer.current);
+      setEditorText(drafts.template(lang));
       flash("template restaurado");
+      void drafts.reset(lang).then((r) => r.ok || flash(`E212: ${r.error}`));
     }
   };
 

@@ -6,9 +6,8 @@ import {
   Blink,
   Button88,
   ButtonWall,
-  FlameTitle,
   PageBanner,
-  RainbowHr,
+  BallDivider,
   Window,
 } from "@/components/Retro";
 import { siteUrl } from "@/lib/site-url";
@@ -21,11 +20,10 @@ export default async function AboutPage() {
   const snippet = `<a href="${url}"><img src="${url}/korin-88x31.svg" width="88" height="31" alt="The Korin Tower"></a>`;
   return (
     <>
-      <FlameTitle>SOBRE</FlameTitle>
       <PageBanner
+        title="SOBRE"
         image={PAGE_SCENES.sobre}
-        lead="Sobre o mestre Karin."
-        gif={GIFS.piccolo}
+        lead="Quem mantém a torre e como colocar um link para ela no seu site."
       />
       <div className="two-col">
         <Window title="me.bmp">
@@ -53,7 +51,7 @@ export default async function AboutPage() {
           </ul>
         </Window>
       </div>
-      <RainbowHr />
+      <BallDivider />
       <div className="two-col">
         <Window title="botao.txt">
           <div id="botao" className="link-back">

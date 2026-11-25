@@ -66,7 +66,7 @@ test("conquistas de evento não saem das estatísticas", () => {
   assert.ok(!isEventAchievement("nao-existe"));
 });
 
-test("detonado some com os detonados desligados", () => {
+test("conquista de trilha some com as trilhas desligadas", () => {
   assert.ok(activeAchievements({ tracks: true }).some((a) => a.id === "detonado"));
   assert.ok(!activeAchievements({ tracks: false }).some((a) => a.id === "detonado"));
 });

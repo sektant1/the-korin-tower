@@ -198,7 +198,7 @@ export interface LoadedTrack {
 }
 
 /**
- * Trilhas ("detonados"): challenges/tracks.yml, uma lista de { id, title, description, steps }.
+ * Trilhas: challenges/tracks.yml, uma lista de { id, title, description, steps }.
  * @param kinds slug -> tipo de cada desafio existente
  */
 export async function loadTracks(root: string, kinds: Map<string, ChallengeKind>): Promise<{ tracks: LoadedTrack[]; errors: string[] }> {

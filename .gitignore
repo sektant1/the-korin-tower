@@ -22,3 +22,6 @@ public/website-banner-ofc.jpg
 public/8280809093_6712d79afc_c.jpg
 public/fonts/saiyan_sans.zip
 public/fonts/dbz.png
+
+# capturas e logs das ferramentas de teste no navegador
+.playwright-mcp/

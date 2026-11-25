@@ -7,9 +7,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  clearDraft,
-  loadDraft,
-  saveDraft,
+  loadLastLanguage,
+  saveLastLanguage,
   updateSettings,
   useSettings,
   type EditorTheme,
@@ -19,6 +18,7 @@ import { forDisplay } from "@/lib/run-api";
 import { engineLabel, getBrowserRunner, preloadLanguages, useEngineStage, useEngineStatus } from "@/lib/runner/browser";
 import { sanitizeFlags } from "@/lib/runner/flags";
 import { EngineBadge } from "./ChallengeWorkspace";
+import { DraftBook } from "./drafts";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
@@ -58,6 +58,7 @@ export function Playground() {
   const editor = useRef<CodeEditorHandle>(null);
   const [lang, setLang] = useState<LanguageId>("c");
   const [initialCode] = useState(() => TEMPLATES.c ?? "");
+  const [drafts] = useState(() => new DraftBook({ slug: DRAFT, templates: TEMPLATES, account: null }));
   const [stdin, setStdin] = useState("");
   const [output, setOutput] = useState<OutputState>({ status: "idle" });
   const [message, setMessage] = useState("");
@@ -77,21 +78,24 @@ export function Playground() {
   // Restaura o rascunho desta linguagem, se houver (depois da montagem, para não
   // brigarmos com o HTML renderizado no servidor).
   useEffect(() => {
-    const draft = loadDraft(DRAFT, lang);
-    if (draft != null && draft !== initialCode) {
-      setEditorText(draft);
-      flash("rascunho restaurado");
-    }
+    const last = loadLastLanguage(DRAFT) as LanguageId | null;
+    const start = last && LANGUAGE_IDS.includes(last) ? last : lang;
+    const { code, restored } = drafts.open(start);
+    if (start !== lang) setLang(start);
+    if (code !== initialCode) setEditorText(code);
+    if (restored) flash("rascunho restaurado");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const save = useCallback(
     (explicit: boolean) => {
       const code = editor.current?.getValue() ?? "";
-      const ok = saveDraft(DRAFT, lang, code);
-      if (explicit) flash(ok ? `"${LANGUAGES[lang].file}" salvo (neste navegador)` : "E212: não foi possível salvar (storage bloqueado)");
+      void drafts.save(lang, code).then((r) => {
+        if (!r.ok) flash("E212: não foi possível salvar (storage bloqueado)");
+        else if (explicit) flash(`"${LANGUAGES[lang].file}" salvo (neste navegador)`);
+      });
     },
-    [flash, lang],
+    [drafts, flash, lang],
   );
 
   const onChange = useCallback(() => {
@@ -162,13 +166,14 @@ export function Playground() {
     clearTimeout(saveTimer.current);
     save(false);
     setLang(next);
-    const draft = loadDraft(DRAFT, next);
-    setEditorText(draft ?? TEMPLATES[next] ?? "");
+    saveLastLanguage(DRAFT, next);
+    setEditorText(drafts.open(next).code);
   };
 
   const reset = () => {
-    clearDraft(DRAFT, lang);
-    setEditorText(TEMPLATES[lang] ?? "");
+    clearTimeout(saveTimer.current);
+    void drafts.reset(lang);
+    setEditorText(drafts.template(lang));
     flash("template restaurado");
   };
 

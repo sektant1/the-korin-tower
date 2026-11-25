@@ -37,17 +37,17 @@ Repositório de desafios de programação (C, C++, Rust e Python: algoritmos, es
 Regras em `src/lib/tower.ts` (puras, com testes), usadas pelo servidor (`/api/run`, perfil, CLI) e pelo navegador (`src/components/Tower.tsx`):
 
 - Cada **andar é uma dificuldade** (1 a 5), com um lugar de Dragon Ball por andar (`FLOOR_NAMES`, imagens em `public/andares`). O andar 1 está sempre aberto; o andar N+1 abre quando o jogador resolve 5 desafios com testes do andar N (ou todos, se há menos que 5). A torre tem 8 andares no mapa: os sem desafios ficam "em obras" e não abrem.
-- **Detonados** (`challenges/tracks.yml`) são escadas: o próximo passo de um detonado abre mesmo com o andar trancado. O desafio do dia também abre sempre.
-- **Esferas do Dragão**: uma por detonado zerado. Medalhas "Meio da Torre" e "Topo da Torre" ao abrir os andares 3 e 5.
+- **Trilhas** (`challenges/tracks.yml`) são escadas: o próximo passo de uma trilha abre mesmo com o andar trancado. O desafio do dia também abre sempre.
+- **Esferas do Dragão**: uma por trilha concluída. Medalhas "Meio da Torre" e "Topo da Torre" ao abrir os andares 3 e 5.
 - Convidado: a tranca é só no navegador (o progresso mora no `localStorage`). Com conta, `/api/run` recusa desafio trancado.
-- A home mostra um único "continuar": detonado em andamento, senão o primeiro desafio aberto do andar atual.
+- A home mostra um único "continuar": trilha em andamento, senão o primeiro desafio aberto do andar atual.
 
 ## Estrutura de pastas
 
 ```
 challenges/                    ← desafios (edite aqui)
   categories.yml               ← categorias e ordem do menu
-  tracks.yml                   ← trilhas ("Detonados"): listas ordenadas de slugs
+  tracks.yml                   ← trilhas: listas ordenadas de slugs
   <categoria>/<slug>/
     README.md                  ← frontmatter YAML + enunciado em Markdown
     NOTES.md                   ← notas do professor (opcional)

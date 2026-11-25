@@ -120,28 +120,49 @@ export function setProgress(slug: string, state: ProgressState) {
 }
 
 // ---- rascunhos e dicas (sem reatividade global: lidos uma vez por página)
-const draftKey = (slug: string, lang: string) => `korin:draft:${slug}:${lang}`;
+// "local": rascunho de quem não tem login (ou de antes do login).
+// "pending": cópia do que ainda não chegou na conta (save em voo ou que falhou).
+export type DraftSlot = "local" | "pending";
+const draftKey = (slug: string, lang: string, slot: DraftSlot) =>
+  slot === "pending" ? `korin:draft-pending:${slug}:${lang}` : `korin:draft:${slug}:${lang}`;
 
-export function loadDraft(slug: string, lang: string): string | null {
+export function loadDraft(slug: string, lang: string, slot: DraftSlot = "local"): string | null {
   try {
-    return localStorage.getItem(draftKey(slug, lang));
+    return localStorage.getItem(draftKey(slug, lang, slot));
   } catch {
     return null;
   }
 }
 
-export function saveDraft(slug: string, lang: string, code: string): boolean {
+export function saveDraft(slug: string, lang: string, code: string, slot: DraftSlot = "local"): boolean {
   try {
-    localStorage.setItem(draftKey(slug, lang), code);
+    localStorage.setItem(draftKey(slug, lang, slot), code);
     return true;
   } catch {
     return false;
   }
 }
 
-export function clearDraft(slug: string, lang: string) {
+export function clearDraft(slug: string, lang: string, slot: DraftSlot = "local") {
   try {
-    localStorage.removeItem(draftKey(slug, lang));
+    localStorage.removeItem(draftKey(slug, lang, slot));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Última linguagem aberta em cada desafio (e no compilador). */
+export function loadLastLanguage(slug: string): string | null {
+  try {
+    return localStorage.getItem(`korin:lang:${slug}`);
+  } catch {
+    return null;
+  }
+}
+
+export function saveLastLanguage(slug: string, lang: string) {
+  try {
+    localStorage.setItem(`korin:lang:${slug}`, lang);
   } catch {
     /* ignore */
   }

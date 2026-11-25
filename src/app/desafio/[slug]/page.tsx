@@ -259,6 +259,8 @@ export default async function ChallengePage({ params, searchParams }: Params) {
       right={
         <ChallengeGate slug={c.slug}>
           <ChallengeWorkspace
+            // remonta ao trocar de desafio: estado do editor e rascunhos são por desafio
+            key={c.slug}
             slug={c.slug}
             trackId={inTrack?.id ?? null}
             languages={c.languages}

@@ -4,11 +4,11 @@
 //     estão em obras: um andar sem desafios não abre nem conta como alcançado.
 //   - O andar 1 está sempre aberto. O andar N+1 abre quando você resolve NEED_PER_FLOOR desafios
 //     com testes do andar N (ou todos, se o andar tem menos que isso).
-//   - Detonados são escadas: o próximo passo de um detonado em andamento abre mesmo
+//   - Trilhas são escadas: o próximo passo de uma trilha em andamento abre mesmo
 //     que o andar dele ainda esteja trancado. O desafio do dia também abre sempre.
 //   - Só desafios com testes (stdio) têm "resolvido" e contam para subir. Shader e
 //     canvas são passos livres: seguem o andar, mas não contam.
-//   - Esferas do Dragão: uma por detonado zerado.
+//   - Esferas do Dragão: uma por trilha concluída.
 //
 // O progresso vem da conta (logado) ou do localStorage (convidado): o formato é o mesmo.
 
@@ -119,7 +119,7 @@ export function currentFloor(data: TowerData, progress: ProgressMap): number {
   return floors(data, progress).filter((f) => f.open).length;
 }
 
-/** O desafio é o próximo passo de algum detonado (todos os passos com testes antes dele resolvidos)? */
+/** O desafio é o próximo passo de alguma trilha (todos os passos com testes antes dele resolvidos)? */
 export function isTrackNext(data: TowerData, progress: ProgressMap, slug: string): boolean {
   const bySlug = new Map(data.challenges.map((c) => [c.slug, c]));
   return data.tracks.some((t) => {
@@ -160,7 +160,7 @@ export function lockInfo(data: TowerData, progress: ProgressMap, slug: string): 
   return { floor, from: from.n, missing: from.missingForNext };
 }
 
-/** Passos de um detonado: o próximo é o primeiro com testes ainda não resolvido. */
+/** Passos de uma trilha: o próximo é o primeiro com testes ainda não resolvido. */
 export function trackNextStep(data: TowerData, progress: ProgressMap, trackId: string, after?: string): string | null {
   const t = data.tracks.find((x) => x.id === trackId);
   if (!t) return null;
@@ -186,13 +186,13 @@ export function tracksDone(data: TowerData, progress: ProgressMap): number {
 
 export interface NextStep {
   slug: string;
-  /** detonado pelo qual chegamos a ele, se foi por um */
+  /** trilha pela qual chegamos a ele, se foi por um */
   trackId: string | null;
   reason: "track" | "floor" | "below";
 }
 
 /**
- * O que fazer agora. Prioridade: continuar um detonado já começado; depois o primeiro
+ * O que fazer agora. Prioridade: continuar uma trilha já começada; depois o primeiro
  * desafio com testes ainda aberto no andar atual; depois qualquer um aberto abaixo.
  */
 export function nextStep(data: TowerData, progress: ProgressMap, opts: { trackId?: string | null; after?: string } = {}): NextStep | null {
@@ -205,7 +205,7 @@ export function nextStep(data: TowerData, progress: ProgressMap, opts: { trackId
     const s = trackNextStep(data, progress, opts.trackId, opts.after);
     if (s) return { slug: s, trackId: opts.trackId, reason: "track" };
   }
-  // Detonado começado e não terminado: continua ele.
+  // Trilha começada e não terminada: continua ela.
   for (const t of data.tracks) {
     const started = t.steps.some((s) => solved(progress, s));
     const s = started ? trackNextStep(data, progress, t.id) : null;

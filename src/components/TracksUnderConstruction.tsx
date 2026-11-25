@@ -1,13 +1,18 @@
 import Link from "next/link";
-import { FlameTitle, UnderConstruction, Window } from "@/components/Retro";
+import { PageBanner, UnderConstruction, Window } from "@/components/Retro";
+import { PAGE_SCENES } from "@/lib/scenes";
 
-/** Detonados desligados: a página fica no ar, em obras. */
+/** Trilhas desligadas: a página fica no ar, em obras. */
 export function TracksUnderConstruction() {
   return (
     <>
-      <FlameTitle>Learning Paths</FlameTitle>
-      <Window title="detonados.txt">
-        <UnderConstruction what="Os detonados estão sendo refeitos. Volte depois!" />
+      <PageBanner
+        title="TRILHAS"
+        image={PAGE_SCENES.detonados}
+        lead="Listas de desafios para fazer em ordem, um assunto por trilha."
+      />
+      <Window title="trilhas.txt">
+        <UnderConstruction what="As trilhas estão sendo refeitas. Volte depois!" />
         <p>
           Enquanto isso, suba pela <Link href="/desafios">Torre</Link>.
         </p>

@@ -5,13 +5,11 @@ import { achievementCount, AchievementShelf } from "@/components/Achievements";
 import { Avatar } from "@/components/Avatar";
 import {
   Difficulty,
-  FlameTitle,
   PageBanner,
   Window,
   arcade,
 } from "@/components/Retro";
 import { normalizeUsername } from "@/lib/auth/password";
-import { GIFS } from "@/lib/gifs";
 import { getPlayerProfile } from "@/lib/profile";
 import { FLOORS } from "@/lib/tower";
 import { PAGE_SCENES } from "@/lib/scenes";
@@ -32,11 +30,10 @@ export default async function PlayerPage({ params }: Params) {
 
   return (
     <>
-      <FlameTitle>{arcade(profile.username.toUpperCase())}</FlameTitle>
       <PageBanner
+        title={arcade(profile.username.toUpperCase())}
         image={PAGE_SCENES.jogador}
-        kicker="Player Profile"
-        lead={profile.username}
+        kicker="Perfil"
         stats={[
           { n: profile.points, label: "pontos" },
           {
@@ -48,26 +45,21 @@ export default async function PlayerPage({ params }: Params) {
             label: count.got === 1 ? "conquista" : "conquistas",
           },
         ]}
-        gif={GIFS.gokuWon}
       />
-      <div className="two-col">
-        <Window title="Player Profile">
-          <p className="center">
+      <div className="account-grid">
+        <Window title="Perfil">
+          <div className="profile-head">
             <Avatar id={profile.avatar} size="lg" />
-          </p>
+          </div>
           <dl className="stats98">
             <dt>Andar</dt>
             <dd>
               {profile.floorsOpen} de {FLOORS}
             </dd>
-            <dt>Pontos</dt>
-            <dd>{profile.points}</dd>
-            <dt>Resolvidos</dt>
-            <dd>{profile.solved.length}</dd>
-            <dt>Streak atual</dt>
-            <dd>{profile.streak.current} dia(s)</dd>
-            <dt>Best streak</dt>
-            <dd>{profile.streak.best} dia(s)</dd>
+            <dt>Sequência</dt>
+            <dd>
+              {profile.streak.current} {profile.streak.current === 1 ? "dia" : "dias"} (melhor: {profile.streak.best})
+            </dd>
             <dt>Na torre desde</dt>
             <dd>
               {profile.createdAt.toLocaleDateString("pt-BR", {
@@ -75,9 +67,9 @@ export default async function PlayerPage({ params }: Params) {
               })}
             </dd>
           </dl>
-          <p>
+          <div className="profile-actions">
             <Link href="/hall-da-fama">Ver o Hall of Fame</Link>
-          </p>
+          </div>
         </Window>
         <Window title={`Conquistas (${count.got}/${count.total})`}>
           <AchievementShelf unlocked={profile.achievements} />

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChallengeList } from "@/components/ChallengeList";
-import { FlameTitle, PageBanner, UnderConstruction } from "@/components/Retro";
+import { PageBanner, UnderConstruction } from "@/components/Retro";
 import { FloorHeading } from "@/components/Tower";
 import { listCategories, listChallenges } from "@/lib/challenges";
 import { FLOORS, floorOf } from "@/lib/tower";
 import { PAGE_SCENES } from "@/lib/scenes";
-import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "A Torre" };
 
@@ -27,17 +26,16 @@ export default async function ChallengesPage({ searchParams }: Props) {
 
   return (
     <>
-      <FlameTitle>A TORRE</FlameTitle>
       <PageBanner
+        title="A TORRE"
         image={PAGE_SCENES.torre}
         focus="center 30%"
-        lead="Cada andar tem sua dificuldade. Resolva desafios para liberar o próximo."
+        lead="Resolva os desafios de um andar para liberar o próximo."
         stats={[
           { n: all.length, label: "desafios" },
           { n: FLOORS, label: "andares" },
           { n: categories.length, label: "temas" },
         ]}
-        gif={GIFS.gokuKick}
       >
         <p className="page-banner-extra">
           <Link href="/aleatorio">Desafio aleatório ►</Link>

@@ -3,7 +3,7 @@ import { Avatar } from "@/components/Avatar";
 import Link from "next/link";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
-import { Blink, FlameTitle, PageBanner } from "@/components/Retro";
+import { Blink, PageBanner } from "@/components/Retro";
 import { getCurrentUser } from "@/lib/auth/session";
 import { hallOfFame } from "@/lib/progress";
 import { DAILY_BONUS, HINT_PENALTY } from "@/lib/scoring";
@@ -24,20 +24,17 @@ export default async function HallOfFamePage() {
 
   return (
     <>
-      <FlameTitle>
-        <Gif gif={GIFS.sphere} height={34} /> HALL OF FAME{" "}
-        <Gif gif={GIFS.sphere} height={34} />
-      </FlameTitle>
       <PageBanner
+        title="HALL OF FAME"
         image={PAGE_SCENES.hallDaFama}
         focus="center 40%"
-        kicker="TORNEIO DE ARTES MARCIAIS DA TORRE"
+        kicker="Ranking"
         lead={`Os ${SIZE} jogadores com mais pontos.`}
         stats={[
           {
             n: entries.length,
             label:
-              entries.length === 1 ? "Player no ranking" : "Players no ranking",
+              entries.length === 1 ? "jogador no ranking" : "jogadores no ranking",
           },
         ]}
       />

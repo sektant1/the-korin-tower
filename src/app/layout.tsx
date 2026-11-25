@@ -1,11 +1,11 @@
 import "katex/dist/katex.min.css";
-import { Avatar } from "@/components/Avatar";
+import { Avatar, GuestAvatar } from "@/components/Avatar";
 import { AchievementNotifier, Toaster } from "@/components/Toaster";
 import { RuntimeWarmup } from "@/components/RuntimeWarmup";
 import { listUnseen, syncAchievementsQuietly } from "@/lib/achievements-server";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Press_Start_2P, VT323 } from "next/font/google";
+import { Press_Start_2P } from "next/font/google";
 import Link from "next/link";
 import { AccountProvider, type AccountData } from "@/components/Account";
 import {
@@ -14,13 +14,14 @@ import {
   StarTrail,
   VisitCounter,
 } from "@/components/ClientEffects";
-import { FlyingCloud, KonamiCode } from "@/components/PortalWidgets";
+import { KonamiCode } from "@/components/PortalWidgets";
+import { ShenlongGame } from "@/components/ShenlongGame";
 import { FloorNav, TowerPlayer, TowerProvider } from "@/components/Tower";
 import { getTowerData } from "@/lib/tower-server";
 import { Gif } from "@/components/Gif";
 import { MobileMenu } from "@/components/MobileMenu";
 import { GIFS } from "@/lib/gifs";
-import { ButtonWall, Difficulty, RainbowHr } from "@/components/Retro";
+import { ButtonWall, Difficulty, BallDivider } from "@/components/Retro";
 import { NEWS } from "@/lib/site-content";
 import { getDaily } from "@/lib/daily";
 import { getProgressSummary, hallOfFame } from "@/lib/progress";
@@ -40,12 +41,6 @@ const pixel = Press_Start_2P({
   variable: "--font-pixel",
   display: "swap",
 });
-const vt = VT323({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-vt",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: { default: "The Korin Tower", template: "%s :: The Korin Tower" },
@@ -54,12 +49,18 @@ export const metadata: Metadata = {
   alternates: { types: { "application/rss+xml": "/feed.xml" } },
 };
 
+/** Esfera do Dragão em CSS no lugar de um "O" do logo (sem texto dentro: a base dela é a das letras). */
+function LogoBall() {
+  return <span className="logo-ball" />;
+}
+
+
 const MENU = [
   { href: "/", label: "Home" },
   { href: "/desafios", label: "A Torre" },
-  { href: "/trilhas", label: "Paths" },
+  { href: "/trilhas", label: "Trilhas" },
   { href: "/biblioteca", label: "Biblioteca" },
-  { href: "/compilador", label: "Sandbox" },
+  { href: "/compilador", label: "Compilador" },
   { href: "/cli", label: "CLI" },
   { href: "/hall-da-fama", label: "Hall of Fame" },
   { href: "/galeria", label: "Galeria" },
@@ -120,7 +121,7 @@ export default async function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${pixel.variable} ${vt.variable}`}
+      className={pixel.variable}
       suppressHydrationWarning
     >
       <head>
@@ -138,36 +139,25 @@ export default async function RootLayout({
             <SettingsApplier />
             <StarTrail />
             <KonamiCode />
+            <ShenlongGame />
             <Toaster />
             <AchievementNotifier />
             <RuntimeWarmup />
 
+            {/* Cabeçalho: logo em Saiyan Sans (esferas no lugar dos "O") e o subtítulo, sobre o
+                cenário em pixel art de public/header-portal.svg. */}
             <header className="site-header">
-              <FlyingCloud />
-              <Link
-                href="/"
-                className="banner-link"
-                aria-label="The Korin Tower, página inicial"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- banner estático em public/ */}
-                <img
-                  src="/korin-banner.png"
-                  alt="The Korin Tower: desafios de programação"
-                  className="site-banner"
-                  width={2048}
-                  height={768}
-                />
+              <Link href="/" className="site-logo" aria-label="The Korin Tower, página inicial">
+                <span className="site-logo-the" aria-hidden="true">
+                  THE
+                </span>
+                <span className="flame site-logo-text" aria-hidden="true">
+                  K<LogoBall />
+                  RIN T<LogoBall />
+                  WER
+                </span>
               </Link>
-              {/* Páginas de editor: só o nome, numa linha, para sobrar tela. */}
-              <Link
-                href="/"
-                className="logo-link logo-compact"
-                aria-label="The Korin Tower, página inicial"
-              >
-                <Gif gif={GIFS.sphere} height={20} />
-                <span className="flame logo-text">THE KORIN TOWER</span>
-                <Gif gif={GIFS.sphere} height={20} />
-              </Link>
+              <p className="site-slogan">Desafios de Programação</p>
             </header>
 
             <MobileMenu items={menu} />
@@ -201,13 +191,13 @@ export default async function RootLayout({
                 aria-label="Jogador e novidades"
               >
                 <div className="side-box">
-                  <h2 className="side-title">PLAYER</h2>
+                  <h2 className="side-title">JOGADOR</h2>
                   {account ? (
                     <Link href="/conta#avatar" className="p1-avatar-link" title="Trocar avatar">
                       <Avatar id={account.avatar} size="lg" className="p1-avatar" />
                     </Link>
                   ) : (
-                    <Avatar id={null} size="lg" className="p1-avatar" />
+                    <GuestAvatar size="lg" className="p1-avatar" />
                   )}
                   <p className="p1-name">
                     {account ? account.username : "convidado"}
@@ -241,10 +231,10 @@ export default async function RootLayout({
                     <p className="side-action">
                       <Link
                         href={`/desafio/${daily.slug}`}
-                        className="btn98 small"
+                        className="btn98 small play"
                         aria-label={`Jogar o desafio do dia: ${daily.title}`}
                       >
-                        INICIAR{" "}
+                        JOGAR{" "}
                         <span className="arrow" aria-hidden="true">
                           ►
                         </span>
@@ -285,7 +275,7 @@ export default async function RootLayout({
 
                 {sideArt && (
                   <div className="side-box">
-                    <h2 className="side-title">ART GALLERY</h2>
+                    <h2 className="side-title">GALERIA</h2>
                     <Link href="/galeria" className="side-art">
                       {/* eslint-disable-next-line @next/next/no-img-element -- GIF animado do dono do site */}
                       <img src={sideArt} alt={captionOf(sideArt)} />
@@ -320,7 +310,7 @@ export default async function RootLayout({
             </div>
 
             <footer className="site-footer">
-              <RainbowHr />
+              <BallDivider />
               <div className="webring" aria-label="Webring">
                 <Link href="/sobre">◄ anterior</Link>
                 <span>

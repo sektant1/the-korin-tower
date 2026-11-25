@@ -218,7 +218,7 @@ ${bold("Começando")}
   korin status                              seu andar, pontos, esferas e o que falta para subir
   korin next [--pick]                       o próximo desafio da torre (--pick já baixa)
   korin list [-a ANDAR] [-c CATEGORIA] [--todo]   os desafios, andar por andar
-  korin tracks                              os detonados e seu progresso em cada um
+  korin tracks                              as trilhas e seu progresso em cada uma
   korin daily [--pick]                      desafio do dia (--pick já baixa)
 
 ${bold("Resolvendo")}
@@ -302,7 +302,7 @@ commands.next = async ({ flags }) => {
   const cfg = loadConfig();
   const { next } = await api(cfg, "GET", "/api/cli/next" + (flags.track ? `?track=${encodeURIComponent(flags.track)}` : ""));
   if (!next) return console.log(dim("nada aberto por enquanto: você fez tudo que a torre tem."));
-  const why = next.track ? `continua o detonado ${bold(next.track.title)}` : next.reason === "floor" ? `andar ${next.floor}` : `andar ${next.floor} (abaixo do seu)`;
+  const why = next.track ? `continua a trilha ${bold(next.track.title)}` : next.reason === "floor" ? `andar ${next.floor}` : `andar ${next.floor} (abaixo do seu)`;
   console.log(`${yellow("▶")} ${bold(next.title)} ${stars(next.difficulty)}  ${dim(next.slug)}  ${dim(why)}`);
   if (!cfg.token) console.log(dim("(sem login o próximo é sempre o primeiro da torre: korin login)"));
   if (flags.pick) await commands.pick({ flags, pos: [next.slug] });
@@ -320,7 +320,7 @@ commands.tracks = async () => {
       console.log(`  ${mark} ${s.slug.padEnd(28)} ${stars(s.difficulty)}  ${s.title}${s.scored ? "" : dim(" [livre]")}`);
     }
   }
-  console.log(dim("\nkorin next --track <id> --pick baixa o próximo passo de um detonado."));
+  console.log(dim("\nkorin next --track <id> --pick baixa o próximo passo de uma trilha."));
 };
 
 commands.doctor = async () => {

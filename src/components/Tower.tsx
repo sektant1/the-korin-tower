@@ -80,7 +80,7 @@ export function FloorNav() {
     <ol className="floor-nav">
       {[...t.floors].reverse().map((f) => (
         <li key={f.n} className={f.open ? "open" : "locked"} aria-current={f.n === t.current ? "true" : undefined}>
-          <Link href={`/desafios#andar-${f.n}`}>
+          <Link href={`/desafios#andar-${f.n}`} style={floorScene(f.n)}>
             <span className="floor-nav-n">{f.n}</span>
             <span className="floor-nav-name">{FLOOR_NAMES[f.n]}</span>
             <span className="floor-nav-count">{f.total === 0 ? "em obras" : f.open ? `${f.solved}/${f.scored}` : "trancado"}</span>
@@ -100,26 +100,35 @@ export function TowerPlayer() {
   const score = account ? account.points : t.solved * 100;
   return (
     <div className="player-one">
-      <div className="p1-floor">
-        <span>ANDAR</span>
-        <b>{t.current}</b>
-      </div>
-      <div className="power-level">
-        <span>NIVEL DE PODER</span> <b>{score}</b>
-      </div>
-      {score > 8000 && <div className="over-8000">É MAIS DE 8000!</div>}
-      <div className="xp-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Progresso no andar">
+      <dl className="p1-stats">
+        <div>
+          <dt>Pontos</dt>
+          <dd>{score}</dd>
+        </div>
+        <div>
+          <dt>Andar {t.current}</dt>
+          <dd>
+            {here.solved}/{here.scored}
+          </dd>
+        </div>
+      </dl>
+      <div
+        className="xp-bar"
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`Andar ${t.current}: ${here.solved} de ${here.scored} resolvidos`}
+      >
         <span style={{ width: `${pct}%` }} />
       </div>
-      <div className="p1-foot">
-        {here.solved}/{here.scored} neste andar
-      </div>
+      {score > 8000 && <div className="over-8000">É MAIS DE 8000!</div>}
       {TRACKS_ENABLED && <DragonBalls />}
     </div>
   );
 }
 
-/** Esferas do Dragão: uma por detonado zerado. */
+/** Esferas do Dragão: uma por trilha concluída. */
 export function DragonBalls() {
   const t = useTower();
   const total = Math.max(1, t.data.tracks.length);
@@ -133,7 +142,7 @@ export function DragonBalls() {
       </div>
       {found < total ? (
         <p className="balls-text">
-          {found}/{total} esferas · <Link href="/trilhas">detonados</Link>
+          {found}/{total} esferas · <Link href="/trilhas">trilhas</Link>
         </p>
       ) : (
         <p className="balls-text wish">
@@ -184,9 +193,7 @@ export function ContinueCard() {
       <p className="continue-kicker">
         {arcade(fresh ? "COMECE AQUI" : track ? `CONTINUAR · ${track.title}` : `ANDAR ${t.current} · PROXIMO`)}
       </p>
-      <p className="continue-title">
-        <Link href={href(c.slug, next!.trackId)}>{c.title}</Link>
-      </p>
+      <p className="continue-title">{c.title}</p>
       <p className="continue-meta">
         <Difficulty level={c.difficulty} /> · {c.categoryName} · Andar {floorOf(c)}
       </p>
@@ -373,13 +380,13 @@ export function ChallengeGate({ slug, children }: { slug: string; children: Reac
             ))}
           </ul>
         )}
-        <p className="dim small">Atalhos: o próximo passo de um detonado e o desafio do dia abrem mesmo com o andar trancado.</p>
+        <p className="dim small">Atalhos: o próximo passo de uma trilha e o desafio do dia abrem mesmo com o andar trancado.</p>
       </div>
     </div>
   );
 }
 
-/** Barra do detonado no topo da página do desafio. */
+/** Barra da trilha no topo da página do desafio. */
 export function TrackBar({ trackId, current }: { trackId: string; current: string }) {
   const t = useTower();
   const track = t.data.tracks.find((x) => x.id === trackId);
@@ -389,7 +396,7 @@ export function TrackBar({ trackId, current }: { trackId: string; current: strin
   const prev = track.steps[i - 1];
   const after = track.steps[i + 1];
   return (
-    <nav className="track-bar" aria-label={`Detonado ${track.title}`}>
+    <nav className="track-bar" aria-label={`Trilha ${track.title}`}>
       <Link href={`/trilhas/${track.id}`} className="track-bar-title">
         {track.title}
       </Link>

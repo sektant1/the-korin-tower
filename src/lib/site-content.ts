@@ -8,7 +8,7 @@ export const NEWS: { date: string; text: string }[] = [
   { date: "11/11/2026", text: "Compilador livre em /compilador, sem desafio." },
   { date: "11/11/2026", text: "Desafio do dia com bônus, recordes de menor código e mais rápido, perfil público e feed RSS." },
   { date: "11/11/2026", text: "Game Dev: C/C++ com raylib e SDL2 rodando no navegador." },
-  { date: "11/11/2026", text: "Detonados, guestbook, comentários, medalhas e soluções dos outros jogadores." },
+  { date: "11/11/2026", text: "Trilhas, guestbook, comentários, medalhas e soluções dos outros jogadores." },
   { date: "10/11/2026", text: "11 desafios novos: hash table, malloc first-fit, BigInt, LRU, Dijkstra e 3 shaders." },
   { date: "10/11/2026", text: "Contas por convite. Progresso, rascunhos e Hall of Fame." },
   { date: "10/11/2026", text: "A torre está no ar." },

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
 import { getFanart } from "@/lib/fanart";
-import { Marquee, RainbowHr, Window } from "@/components/Retro";
+import { Marquee, BallDivider, Window } from "@/components/Retro";
 import { TRACKS_ENABLED } from "@/lib/features";
 import { ContinueCard, FloorBackdrop, TowerMap } from "@/components/Tower";
 import { NEED_PER_FLOOR } from "@/lib/tower";
@@ -54,56 +54,49 @@ export default async function Home() {
         </div>
       </section>
 
-      <RainbowHr />
+      <BallDivider />
 
-      <div className="two-col home-grid">
-        <div>
-          <Window title="Mural">
+      <Window title="dica.txt" className="fact-window">
+        <div className="fact markdown" dangerouslySetInnerHTML={{ __html: fact }} />
+      </Window>
+
+      {/* Mapa e mural lado a lado, com a mesma altura: o mapa define a linha e o mural rola por dentro. */}
+      <div className="home-grid">
+        <div className="home-news">
+          <Window title="mural.txt" className="news-window">
             <ul className="news">
               {NEWS.map((n, k) => (
                 <li key={k}>
-                  <span className="news-date">{n.date}</span>{" "}
-                  {k === 0 && <span className="new-badge">NEW!</span>} {n.text}
+                  <p className="news-head">
+                    <span className="news-date">{n.date}</span>
+                    {k === 0 && <span className="new-badge">NEW!</span>}
+                  </p>
+                  <p className="news-text">{n.text}</p>
                 </li>
               ))}
             </ul>
           </Window>
         </div>
 
-        <Window title="Mapa da Torre">
-          <p className="dim small">
-            Cada andar tem sua dificuldade. Conclua mais {NEED_PER_FLOOR}{" "}
-            desafios para liberar o próximo.
-          </p>
+        <Window title="mapa.bmp" className="map-window">
+          <p className="dim small">Resolva {NEED_PER_FLOOR} desafios de um andar para liberar o próximo.</p>
           <TowerMap />
         </Window>
       </div>
 
-      <div className="two-col">
-        <Window title="Você sabia?">
-          <div
-            className="fact markdown"
-            dangerouslySetInnerHTML={{ __html: fact }}
-          />
+      {TRACKS_ENABLED && (
+        <Window title="Trilhas">
+          <p className="dim small">Cada trilha concluída vale uma Esfera do Dragão.</p>
+          <ul className="track-list">
+            {tracks.map((t) => (
+              <li key={t.id}>
+                <Link href={`/trilhas/${t.id}`}>{t.title}</Link>
+                <TrackProgress slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)} />
+              </li>
+            ))}
+          </ul>
         </Window>
-        {TRACKS_ENABLED && (
-          <Window title="Detonados">
-            <p className="dim small">
-              Learning paths, terminar um te da uma Esfera do Dragão.
-            </p>
-            <ul className="track-list">
-              {tracks.map((t) => (
-                <li key={t.id}>
-                  <Link href={`/trilhas/${t.id}`}>{t.title}</Link>
-                  <TrackProgress
-                    slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </Window>
-        )}
-      </div>
+      )}
     </>
   );
 }

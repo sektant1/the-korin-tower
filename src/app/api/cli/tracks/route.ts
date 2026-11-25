@@ -5,7 +5,7 @@ import { isScored, trackNextStep } from "@/lib/tower";
 import { getTowerData } from "@/lib/tower-server";
 import { listTracks } from "@/lib/tracks";
 
-// `korin tracks`: os detonados, com o progresso de quem tem token.
+// `korin tracks`: as trilhas, com o progresso de quem tem token.
 export async function GET() {
   const [user, tower, tracks] = await Promise.all([getCurrentUser(), getTowerData(), listTracks()]);
   const progress = user ? (await getProgressSummary(user.id)).map : {};

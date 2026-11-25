@@ -13,8 +13,8 @@ export function SettingsForm() {
         <label className="check98">
           <input type="checkbox" checked={s.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Modo Vim
         </label>
-        <label>
-          Tema do editor{" "}
+        <label className="field-row">
+          <span>Tema do editor</span>
           <select className="select98" value={s.editorTheme} onChange={(e) => updateSettings({ editorTheme: e.target.value as EditorTheme })}>
             {EDITOR_THEMES.map((t) => (
               <option key={t.id} value={t.id}>
@@ -23,8 +23,8 @@ export function SettingsForm() {
             ))}
           </select>
         </label>
-        <label>
-          Tamanho da fonte{" "}
+        <label className="field-row">
+          <span>Tamanho da fonte</span>
           <select className="select98" value={s.fontSize} onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}>
             {[12, 13, 14, 15, 16, 18, 20, 22].map((n) => (
               <option key={n} value={n}>
@@ -60,12 +60,12 @@ export function SettingsForm() {
         <p className="dim small">
           Flags extras, ex.: <code>-O0 -g -fsanitize=address</code>. Só uma lista segura é aceita.
         </p>
-        <label>
-          gcc{" "}
+        <label className="field-row">
+          <span>gcc</span>
           <input className="input98" value={s.flags.c} onChange={(e) => updateSettings({ flags: { ...s.flags, c: e.target.value } })} />
         </label>
-        <label>
-          g++{" "}
+        <label className="field-row">
+          <span>g++</span>
           <input className="input98" value={s.flags.cpp} onChange={(e) => updateSettings({ flags: { ...s.flags, cpp: e.target.value } })} />
         </label>
       </fieldset>

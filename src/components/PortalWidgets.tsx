@@ -54,11 +54,3 @@ export function KonamiCode() {
   );
 }
 
-/** Guerreiro voando pelo cabeçalho (decorativo). */
-export function FlyingCloud() {
-  return (
-    <div className="flying-cloud" aria-hidden="true">
-      <Gif gif={GIFS.krillinFlight} height={56} />
-    </div>
-  );
-}

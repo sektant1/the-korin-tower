@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/entrar/actions";
-import { FlameTitle, PageBanner, Window } from "@/components/Retro";
+import { PageBanner, Window } from "@/components/Retro";
 import { githubConfig } from "@/lib/auth/github";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { achievementCount, AchievementShelf } from "@/components/Achievements";
 import { Avatar } from "@/components/Avatar";
 import { AVATARS, DEFAULT_AVATAR_ID, isAvatarUnlocked, unlockHint } from "@/lib/avatars";
-import { AvatarPicker } from "./AvatarPicker";
+import { AvatarDialog } from "./AvatarDialog";
 import { getPlayerProfile } from "@/lib/profile";
 import { getProgressSummary } from "@/lib/progress";
 import { listApiTokens } from "@/lib/auth/tokens";
@@ -19,7 +19,6 @@ import { dropApiToken } from "./actions";
 import { PasswordForm } from "./PasswordForm";
 import { TokenForm } from "./TokenForm";
 import { PAGE_SCENES } from "@/lib/scenes";
-import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Minha conta" };
 
@@ -51,8 +50,8 @@ export default async function AccountPage() {
 
   return (
     <>
-      <FlameTitle>MINHA CONTA</FlameTitle>
       <PageBanner
+        title="MINHA CONTA"
         image={PAGE_SCENES.conta}
         focus="center 40%"
         kicker="JOGADOR"
@@ -62,33 +61,26 @@ export default async function AccountPage() {
           { n: solved, label: solved === 1 ? "resolvido" : "resolvidos" },
           { n: profile?.floorsOpen ?? 1, label: `de ${FLOORS} andares` },
         ]}
-        gif={GIFS.gokuSsj}
       >
         <p className="page-banner-extra">
           <Link href={`/jogador/${me.username}`}>Ver perfil público ►</Link>
         </p>
       </PageBanner>
-      <div className="two-col">
-        <Window title={`Jogador: ${me.username}`}>
-          <p className="center">
-            <Avatar id={profile?.avatar} size="lg" />
-          </p>
+      <div className="account-grid">
+        <Window title="Perfil">
+          <div className="profile-head">
+            <AvatarDialog options={avatarOptions} current={profile?.avatar ?? DEFAULT_AVATAR_ID}>
+              <Avatar id={profile?.avatar} size="lg" />
+            </AvatarDialog>
+          </div>
           <dl className="stats98">
-            <dt>Andar</dt>
-            <dd>
-              {profile?.floorsOpen ?? 1} de {FLOORS}
-            </dd>
-            <dt>Pontos</dt>
-            <dd>{summary.points}</dd>
-            <dt>Resolvidos</dt>
-            <dd>{solved}</dd>
-            <dt>Desistências</dt>
-            <dd>{gaveUp}</dd>
             <dt>Sequência</dt>
             <dd>
-              {profile?.streak.current ?? 0} dia(s) (melhor:{" "}
+              {profile?.streak.current ?? 0} {(profile?.streak.current ?? 0) === 1 ? "dia" : "dias"} (melhor:{" "}
               {profile?.streak.best ?? 0})
             </dd>
+            <dt>Desistências</dt>
+            <dd>{gaveUp}</dd>
             <dt>Na torre desde</dt>
             <dd>{user.createdAt.toLocaleDateString("pt-BR")}</dd>
             <dt>GitHub</dt>
@@ -104,31 +96,18 @@ export default async function AccountPage() {
               )}
             </dd>
           </dl>
-          <p>
-            <Link href={`/jogador/${me.username}`}>Meu perfil público</Link>
-            {" · "}
-            <Link href="/hall-da-fama">Ver o Hall of Fame</Link>
-            {me.isAdmin && (
-              <>
-                {" · "}
-                <Link href="/admin">Painel admin</Link>
-              </>
-            )}
-          </p>
-          <form action={logout}>
-            <button type="submit" className="btn98">
-              Sair
-            </button>
-          </form>
+          <div className="profile-actions">
+            {me.isAdmin && <Link href="/admin">Painel admin</Link>}
+            <form action={logout}>
+              <button type="submit" className="btn98">
+                Sair
+              </button>
+            </form>
+          </div>
         </Window>
         <Window title={`Conquistas (${count.got}/${count.total})`}>
           <AchievementShelf unlocked={unlocked} />
         </Window>
-        <div id="avatar" className="span-all">
-          <Window title="Avatar">
-            <AvatarPicker options={avatarOptions} current={profile?.avatar ?? DEFAULT_AVATAR_ID} />
-          </Window>
-        </div>
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
           {!user.passwordHash && (
             <p className="dim small">

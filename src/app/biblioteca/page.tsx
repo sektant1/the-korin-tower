@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { KindBadge, LibraryBrowser, SeriesProgress, type BrowserDoc } from "@/components/Biblioteca";
+import { LibraryBrowser, SeriesNext, SeriesProgress, type BrowserDoc } from "@/components/Biblioteca";
 import { FlameTitle, PageBanner, UnderConstruction, Window } from "@/components/Retro";
 import { listDocs, listSeries } from "@/lib/biblioteca";
 import { isDocKind } from "@/lib/biblioteca/kinds";
 import { DocError, seriesScene } from "@/lib/biblioteca/parse";
 import { PAGE_SCENES } from "@/lib/scenes";
 import { FLOOR_IMAGES } from "@/lib/tower";
-import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = {
   title: "Biblioteca",
@@ -48,8 +47,8 @@ export default async function LibraryPage({ searchParams }: Props) {
 
   return (
     <>
-      <FlameTitle>BIBLIOTECA</FlameTitle>
       <PageBanner
+        title="BIBLIOTECA"
         image={PAGE_SCENES.biblioteca}
         lead="Tutoriais, guias e referências de programação de baixo nível."
         stats={[
@@ -57,8 +56,6 @@ export default async function LibraryPage({ searchParams }: Props) {
           { n: series.length, label: series.length === 1 ? "série" : "séries" },
           { n: tagCount.size, label: tagCount.size === 1 ? "tag" : "tags" },
         ]}
-        gif={GIFS.piccolo}
-        gifHeight={120}
       >
         {latest && (
           <p className="page-banner-extra">
@@ -75,21 +72,15 @@ export default async function LibraryPage({ searchParams }: Props) {
 
       {series.length > 0 && (
         <Window title="series.dir" className="lib-series-window">
-          <h2 className="lib-h2">Séries</h2>
           <ul className="shelf">
             {series.map((s) => {
               const minutes = s.docs.reduce((n, d) => n + d.readingMin, 0);
-              const kinds = [...new Set(s.docs.map((d) => d.kind))];
               return (
                 <li key={s.id} className="tome">
-                  <div className="tome-spine" aria-hidden="true">
-                    VOL.{String(s.order + 1).padStart(2, "0")}
-                  </div>
                   <div
                     className="tome-body"
                     style={{
-                      backgroundImage: `linear-gradient(#201738e6, #201738f5), url(${FLOOR_IMAGES[seriesScene(s)]})`,
-                      backgroundPosition: "center",
+                      backgroundImage: `linear-gradient(90deg, #201738 40%, #201738d0), url(${FLOOR_IMAGES[seriesScene(s)]})`,
                     }}
                   >
                     <h3 className="tome-title">
@@ -97,12 +88,12 @@ export default async function LibraryPage({ searchParams }: Props) {
                     </h3>
                     {s.description && <p className="tome-desc">{s.description}</p>}
                     <p className="tome-meta">
-                      {kinds.map((k) => (
-                        <KindBadge key={k} kind={k} />
-                      ))}{" "}
                       {s.docs.length} {s.docs.length === 1 ? "parte" : "partes"} · ~{minutes} min
                     </p>
-                    <SeriesProgress slugs={s.docs.map((d) => d.slug)} />
+                    <div className="tome-foot">
+                      <SeriesProgress slugs={s.docs.map((d) => d.slug)} />
+                      <SeriesNext docs={s.docs} compact />
+                    </div>
                   </div>
                 </li>
               );
@@ -113,7 +104,6 @@ export default async function LibraryPage({ searchParams }: Props) {
 
       {docs.length > 0 && (
         <Window title="posts.txt">
-          <h2 className="lib-h2">Posts</h2>
           <LibraryBrowser docs={browserDocs} tags={tags} initial={{ q: sp.q ?? "", kind, tag: sp.tag ?? "" }} />
         </Window>
       )}
