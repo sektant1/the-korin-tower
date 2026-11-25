@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { FlameTitle, PageBanner, UnderConstruction, Window } from "@/components/Retro";
+import {
+  FlameTitle,
+  PageBanner,
+  UnderConstruction,
+  Window,
+} from "@/components/Retro";
 import { captionOf, getFanart, listGifArchive } from "@/lib/fanart";
 import { PAGE_SCENES } from "@/lib/scenes";
 import { GIFS } from "@/lib/gifs";
@@ -7,24 +12,29 @@ import { GIFS } from "@/lib/gifs";
 export const metadata: Metadata = { title: "Galeria" };
 
 export default async function GalleryPage() {
-  const [{ gallery, banner, mascot }, archive] = await Promise.all([getFanart(), listGifArchive()]);
-  const all = [banner, mascot, ...gallery].filter((x): x is string => Boolean(x));
+  const [{ gallery, banner, mascot }, archive] = await Promise.all([
+    getFanart(),
+    listGifArchive(),
+  ]);
+  const all = [banner, mascot, ...gallery].filter((x): x is string =>
+    Boolean(x),
+  );
 
   return (
     <>
       <FlameTitle>GALERIA</FlameTitle>
       <PageBanner
         image={PAGE_SCENES.galeria}
-        lead="Fan art da torre e o arquivo de GIFs do site."
+        lead="Art gallery da torre e arquivos GIFs do site."
         stats={[
-          { n: all.length, label: "fan arts" },
+          { n: all.length, label: "arts" },
           { n: archive.length, label: "GIFs" },
         ]}
         gif={GIFS.android18}
         gifHeight={90}
       />
 
-      <Window title="Fan art">
+      <Window title="Art Gallery">
         {all.length ? (
           <ul className="gallery">
             {all.map((src) => (
@@ -36,7 +46,7 @@ export default async function GalleryPage() {
             ))}
           </ul>
         ) : (
-          <UnderConstruction what="Nenhuma fan art ainda" />
+          <UnderConstruction what="Nenhuma art ainda" />
         )}
       </Window>
 
@@ -51,7 +61,6 @@ export default async function GalleryPage() {
           ))}
         </ul>
       </Window>
-
     </>
   );
 }

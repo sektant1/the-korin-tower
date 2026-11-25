@@ -13,20 +13,29 @@ import { listTracks } from "@/lib/tracks";
 import { FACTS, NEWS } from "@/lib/site-content";
 
 export default async function Home() {
-  const [latest, daily, tracks, { mascot }] = await Promise.all([latestChallenges(3), getDaily(), listTracks(), getFanart()]);
-  const fact = await renderMarkdown(FACTS[Math.floor(Math.random() * FACTS.length)]);
+  const [latest, daily, tracks, { mascot }] = await Promise.all([
+    latestChallenges(3),
+    getDaily(),
+    listTracks(),
+    getFanart(),
+  ]);
+  const fact = await renderMarkdown(
+    FACTS[Math.floor(Math.random() * FACTS.length)],
+  );
 
   return (
     <>
       <Marquee label="Novidades">
         {latest.map((c) => (
           <span key={c.slug}>
-            <Gif gif={GIFS.sphere} height={18} className="marquee-gif" /> NOVO DESAFIO: {c.title} &nbsp;&nbsp;&nbsp;
+            <Gif gif={GIFS.sphere} height={18} className="marquee-gif" /> NOVO
+            DESAFIO: {c.title} &nbsp;&nbsp;&nbsp;
           </span>
         ))}
         {daily && (
           <span>
-            <Gif gif={GIFS.sphere} height={18} className="marquee-gif" /> DESAFIO DO DIA: {daily.title} &nbsp;&nbsp;&nbsp;
+            <Gif gif={GIFS.sphere} height={18} className="marquee-gif" />{" "}
+            DESAFIO DO DIA: {daily.title} &nbsp;&nbsp;&nbsp;
           </span>
         )}
       </Marquee>
@@ -48,18 +57,25 @@ export default async function Home() {
 
       <div className="two-col home-grid">
         <Window title="Mapa da Torre">
-          <p className="dim small">Cada andar é uma dificuldade. {NEED_PER_FLOOR} desafios resolvidos abrem o andar de cima.</p>
+          <p className="dim small">
+            Cada andar tem sua dificuldade. Conclua mais {NEED_PER_FLOOR}{" "}
+            desafios para liberar o próximo.
+          </p>
           <TowerMap />
         </Window>
 
         <div>
           <Window title="Detonados">
-            <p className="dim small">Roteiros em ordem, de um tema só. Zerar um detonado vale uma Esfera do Dragão.</p>
+            <p className="dim small">
+              Learning paths, terminar um te da uma Esfera do Dragão.
+            </p>
             <ul className="track-list">
               {tracks.map((t) => (
                 <li key={t.id}>
                   <Link href={`/trilhas/${t.id}`}>{t.title}</Link>
-                  <TrackProgress slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)} />
+                  <TrackProgress
+                    slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)}
+                  />
                 </li>
               ))}
             </ul>
@@ -72,13 +88,17 @@ export default async function Home() {
           <ul className="news">
             {NEWS.map((n, k) => (
               <li key={k}>
-                <span className="news-date">{n.date}</span> {k === 0 && <span className="new-badge">NEW!</span>} {n.text}
+                <span className="news-date">{n.date}</span>{" "}
+                {k === 0 && <span className="new-badge">NEW!</span>} {n.text}
               </li>
             ))}
           </ul>
         </Window>
         <Window title="Você sabia?">
-          <div className="fact markdown" dangerouslySetInnerHTML={{ __html: fact }} />
+          <div
+            className="fact markdown"
+            dangerouslySetInnerHTML={{ __html: fact }}
+          />
         </Window>
       </div>
     </>

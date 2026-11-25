@@ -3,7 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BadgeShelf } from "@/components/Badges";
 import { Gif } from "@/components/Gif";
-import { Difficulty, FlameTitle, PageBanner, Window, arcade } from "@/components/Retro";
+import {
+  Difficulty,
+  FlameTitle,
+  PageBanner,
+  Window,
+  arcade,
+} from "@/components/Retro";
 import { normalizeUsername } from "@/lib/auth/password";
 import { GIFS } from "@/lib/gifs";
 import { getPlayerProfile } from "@/lib/profile";
@@ -18,7 +24,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 // Perfil público (Fase 5): pontos, sequência, medalhas e desafios resolvidos. Nunca mostra código.
 export default async function PlayerPage({ params }: Params) {
-  const profile = await getPlayerProfile(normalizeUsername((await params).username));
+  const profile = await getPlayerProfile(
+    normalizeUsername((await params).username),
+  );
   if (!profile) notFound();
 
   return (
@@ -26,33 +34,45 @@ export default async function PlayerPage({ params }: Params) {
       <FlameTitle>{arcade(profile.username.toUpperCase())}</FlameTitle>
       <PageBanner
         image={PAGE_SCENES.jogador}
-        kicker="FICHA DO LUTADOR"
+        kicker="Player Profile"
         lead={profile.username}
         stats={[
           { n: profile.points, label: "pontos" },
-          { n: profile.solved.length, label: profile.solved.length === 1 ? "resolvido" : "resolvidos" },
-          { n: profile.badges.length, label: profile.badges.length === 1 ? "medalha" : "medalhas" },
+          {
+            n: profile.solved.length,
+            label: profile.solved.length === 1 ? "resolvido" : "resolvidos",
+          },
+          {
+            n: profile.badges.length,
+            label: profile.badges.length === 1 ? "medalha" : "medalhas",
+          },
         ]}
         gif={GIFS.gokuWon}
       />
       <div className="two-col">
-        <Window title="Ficha do lutador">
+        <Window title="Player Profile">
           <p className="center">
             <Gif gif={GIFS.goku} alt="" />
           </p>
           <dl className="stats98">
             <dt>Andar</dt>
-            <dd>{profile.floorsOpen} de {FLOORS}</dd>
+            <dd>
+              {profile.floorsOpen} de {FLOORS}
+            </dd>
             <dt>Pontos</dt>
             <dd>{profile.points}</dd>
             <dt>Resolvidos</dt>
             <dd>{profile.solved.length}</dd>
-            <dt>Sequência atual</dt>
+            <dt>Streak atual</dt>
             <dd>{profile.streak.current} dia(s)</dd>
-            <dt>Melhor sequência</dt>
+            <dt>Best streak</dt>
             <dd>{profile.streak.best} dia(s)</dd>
             <dt>Na torre desde</dt>
-            <dd>{profile.createdAt.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}</dd>
+            <dd>
+              {profile.createdAt.toLocaleDateString("pt-BR", {
+                timeZone: "America/Sao_Paulo",
+              })}
+            </dd>
           </dl>
           <p>
             <Link href="/hall-da-fama">Ver o Hall of Fame</Link>
@@ -87,9 +107,15 @@ export default async function PlayerPage({ params }: Params) {
                     </td>
                     <td className="num">
                       {s.points}
-                      {s.dailyBonus && <span title="Bônus do desafio do dia"> ★</span>}
+                      {s.dailyBonus && (
+                        <span title="Bônus do desafio do dia"> ★</span>
+                      )}
                     </td>
-                    <td>{s.solvedAt?.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" }) ?? "-"}</td>
+                    <td>
+                      {s.solvedAt?.toLocaleDateString("pt-BR", {
+                        timeZone: "America/Sao_Paulo",
+                      }) ?? "-"}
+                    </td>
                   </tr>
                 ))}
               </tbody>

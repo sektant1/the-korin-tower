@@ -12,11 +12,16 @@ export default async function TracksPage() {
   const tracks = await listTracks();
   return (
     <>
-      <FlameTitle>DETONADOS</FlameTitle>
+      <FlameTitle>Learning Paths</FlameTitle>
       <PageBanner
         image={PAGE_SCENES.detonados}
-        lead="Sequências de desafios em ordem, como um detonado de revista."
-        stats={[{ n: tracks.length, label: tracks.length === 1 ? "detonado" : "detonados" }]}
+        lead="Sequências de desafios em ordem, para treinar uma skill especifica."
+        stats={[
+          {
+            n: tracks.length,
+            label: tracks.length === 1 ? "detonado" : "detonados",
+          },
+        ]}
         gif={GIFS.gokuDuo}
         gifHeight={90}
       />
@@ -27,10 +32,15 @@ export default async function TracksPage() {
             <Link href={`/trilhas/${t.id}`}>{t.title}</Link>
           </h2>
           <p>{t.description}</p>
-          <TrackProgress slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)} />
+          <TrackProgress
+            slugs={t.steps.filter((s) => s.scored).map((s) => s.slug)}
+          />
           <p>
             <Link href={`/trilhas/${t.id}`} className="btn98 play">
-              ABRIR <span className="arrow" aria-hidden="true">►</span>
+              ABRIR{" "}
+              <span className="arrow" aria-hidden="true">
+                ►
+              </span>
             </Link>
           </p>
         </Window>

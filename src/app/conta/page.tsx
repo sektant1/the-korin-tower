@@ -24,13 +24,20 @@ export default async function AccountPage() {
   const me = await getCurrentUser();
   if (!me) redirect("/entrar?next=/conta");
   const [user, summary, profile, tokens] = await Promise.all([
-    prisma.user.findUniqueOrThrow({ where: { id: me.id }, select: { passwordHash: true, githubId: true, createdAt: true } }),
+    prisma.user.findUniqueOrThrow({
+      where: { id: me.id },
+      select: { passwordHash: true, githubId: true, createdAt: true },
+    }),
     getProgressSummary(me.id),
     getPlayerProfile(me.username),
     listApiTokens(me.id),
   ]);
-  const solved = Object.values(summary.map).filter((s) => s === "solved").length;
-  const gaveUp = Object.values(summary.map).filter((s) => s === "gaveup").length;
+  const solved = Object.values(summary.map).filter(
+    (s) => s === "solved",
+  ).length;
+  const gaveUp = Object.values(summary.map).filter(
+    (s) => s === "gaveup",
+  ).length;
 
   return (
     <>
@@ -55,7 +62,9 @@ export default async function AccountPage() {
         <Window title={`Jogador: ${me.username}`}>
           <dl className="stats98">
             <dt>Andar</dt>
-            <dd>{profile?.floorsOpen ?? 1} de {FLOORS}</dd>
+            <dd>
+              {profile?.floorsOpen ?? 1} de {FLOORS}
+            </dd>
             <dt>Pontos</dt>
             <dd>{summary.points}</dd>
             <dt>Resolvidos</dt>
@@ -64,7 +73,8 @@ export default async function AccountPage() {
             <dd>{gaveUp}</dd>
             <dt>Sequência</dt>
             <dd>
-              {profile?.streak.current ?? 0} dia(s) (melhor: {profile?.streak.best ?? 0})
+              {profile?.streak.current ?? 0} dia(s) (melhor:{" "}
+              {profile?.streak.best ?? 0})
             </dd>
             <dt>Na torre desde</dt>
             <dd>{user.createdAt.toLocaleDateString("pt-BR")}</dd>
@@ -102,12 +112,18 @@ export default async function AccountPage() {
           <BadgeShelf earned={profile?.badges ?? []} />
         </Window>
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
-          {!user.passwordHash && <p className="dim small">Você entra pelo GitHub. Com uma senha, entra também por usuário e senha.</p>}
+          {!user.passwordHash && (
+            <p className="dim small">
+              Você entra pelo GitHub. Com uma senha, entra também por usuário e
+              senha.
+            </p>
+          )}
           <PasswordForm hasPassword={!!user.passwordHash} />
         </Window>
         <Window title="Tokens da CLI (korin)">
           <p className="small">
-            Para a <Link href="/cli">CLI</Link>. Um token vale como a sua senha: quem o tiver envia código em seu nome.
+            Para a <Link href="/cli">CLI</Link>. Um token vale como a sua senha,
+            quem o tiver envia código em seu nome.
           </p>
           {tokens.length > 0 && (
             <table className="table98 tokens-table">
@@ -128,7 +144,11 @@ export default async function AccountPage() {
                       <code>{t.prefix}…</code>
                     </td>
                     <td>{t.createdAt.toLocaleDateString("pt-BR")}</td>
-                    <td>{t.lastUsedAt ? t.lastUsedAt.toLocaleDateString("pt-BR") : "nunca"}</td>
+                    <td>
+                      {t.lastUsedAt
+                        ? t.lastUsedAt.toLocaleDateString("pt-BR")
+                        : "nunca"}
+                    </td>
                     <td>
                       <form action={dropApiToken}>
                         <input type="hidden" name="id" value={t.id} />

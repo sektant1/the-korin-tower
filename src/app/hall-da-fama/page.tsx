@@ -11,23 +11,34 @@ import { PAGE_SCENES } from "@/lib/scenes";
 export const metadata: Metadata = { title: "Hall of Fame" };
 
 const SIZE = 10;
-const ordinal = (n: number) => `${n}${n === 1 ? "ST" : n === 2 ? "ND" : n === 3 ? "RD" : "TH"}`;
+const ordinal = (n: number) =>
+  `${n}${n === 1 ? "ST" : n === 2 ? "ND" : n === 3 ? "RD" : "TH"}`;
 
 export default async function HallOfFamePage() {
   const [entries, me] = await Promise.all([hallOfFame(SIZE), getCurrentUser()]);
-  const rows = [...entries, ...Array.from({ length: Math.max(0, 5 - entries.length) }, () => null)];
+  const rows = [
+    ...entries,
+    ...Array.from({ length: Math.max(0, 5 - entries.length) }, () => null),
+  ];
 
   return (
     <>
       <FlameTitle>
-        <Gif gif={GIFS.sphere} height={34} /> HALL OF FAME <Gif gif={GIFS.sphere} height={34} />
+        <Gif gif={GIFS.sphere} height={34} /> HALL OF FAME{" "}
+        <Gif gif={GIFS.sphere} height={34} />
       </FlameTitle>
       <PageBanner
         image={PAGE_SCENES.hallDaFama}
         focus="center 40%"
         kicker="TORNEIO DE ARTES MARCIAIS DA TORRE"
         lead={`Os ${SIZE} jogadores com mais pontos.`}
-        stats={[{ n: entries.length, label: entries.length === 1 ? "lutador no ranking" : "lutadores no ranking" }]}
+        stats={[
+          {
+            n: entries.length,
+            label:
+              entries.length === 1 ? "Player no ranking" : "Players no ranking",
+          },
+        ]}
       />
       {/* Campeão no centro; de um lado quem treina, do outro o rival de braços cruzados. */}
       <div className="arena" aria-hidden="true">
@@ -50,25 +61,43 @@ export default async function HallOfFamePage() {
           </thead>
           <tbody>
             {rows.map((e, i) => (
-              <tr key={i} className={e && e.username === me?.username ? "hs-me" : undefined}>
+              <tr
+                key={i}
+                className={
+                  e && e.username === me?.username ? "hs-me" : undefined
+                }
+              >
                 <td>{ordinal(i + 1)}</td>
                 <td>{String(e?.points ?? 0).padStart(6, "0")}</td>
-                <td>{e ? <Link href={`/jogador/${e.username}`}>{e.username.toUpperCase()}</Link> : "---"}</td>
+                <td>
+                  {e ? (
+                    <Link href={`/jogador/${e.username}`}>
+                      {e.username.toUpperCase()}
+                    </Link>
+                  ) : (
+                    "---"
+                  )}
+                </td>
                 <td>{e?.solved ?? "-"}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <p className="hs-foot">
-          {entries.length === 0 ? "NINGUÉM AINDA" : me ? "CONTINUE SUBINDO" : "ENTRE PARA APARECER AQUI"}
+          {entries.length === 0
+            ? "NINGUÉM AINDA"
+            : me
+              ? "CONTINUE SUBINDO"
+              : "ENTRE PARA APARECER AQUI"}
         </p>
       </div>
       <p className="center dim small">
-        Cada desafio vale 100 × dificuldade. Dica revelada tira {HINT_PENALTY * 100}%. Desistir zera. Desafio do dia resolvido no dia vale +
-        {DAILY_BONUS * 100}%.{" "}
+        Cada desafio vale 100 × dificuldade. Dica revelada tira{" "}
+        {HINT_PENALTY * 100}%. Desafio do dia vale +{DAILY_BONUS * 100}%.{" "}
         {!me && (
           <>
-            <Link href="/entrar?next=/hall-da-fama">Entre</Link> para aparecer aqui.
+            <Link href="/entrar?next=/hall-da-fama">Entre</Link> para aparecer
+            aqui.
           </>
         )}
       </p>

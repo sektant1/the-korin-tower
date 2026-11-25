@@ -10,7 +10,9 @@ import { GIFS } from "@/lib/gifs";
 
 export const metadata: Metadata = { title: "Entrar" };
 
-type Props = { searchParams: Promise<{ next?: string; erro?: string; convite?: string }> };
+type Props = {
+  searchParams: Promise<{ next?: string; erro?: string; convite?: string }>;
+};
 
 export default async function LoginPage({ searchParams }: Props) {
   const { next, erro, convite } = await searchParams;
@@ -26,8 +28,8 @@ export default async function LoginPage({ searchParams }: Props) {
         lead="Com conta, seu progresso vai com você."
         sub={
           <>
-            Progresso e rascunhos salvos, soluções liberadas e nome no <Link href="/hall-da-fama">Hall of Fame</Link>. Sem conta dá para jogar
-            tudo, mas o progresso fica só neste navegador.
+            Progresso e rascunhos salvos, soluções liberadas e nome no{" "}
+            <Link href="/hall-da-fama">Hall of Fame</Link>.
           </>
         }
         gif={GIFS.powerUp}
@@ -49,7 +51,9 @@ export default async function LoginPage({ searchParams }: Props) {
           )}
         </Window>
         <Window title="Cadastro">
-          <p className="dim small">Cadastro só com convite. Peça o código a quem administra o site.</p>
+          <p className="dim small">
+            Cadastro só com convite. Peça o código a um admin.
+          </p>
           <RegisterForm next={target} invite={convite ?? ""} />
           {github && (
             <form action="/api/auth/github" method="get" className="auth-alt">
@@ -57,7 +61,14 @@ export default async function LoginPage({ searchParams }: Props) {
                 Ou cadastre com GitHub, também com convite:
               </label>
               <span className="auth-inline">
-                <input id="gh-invite" name="invite" className="input98" defaultValue={convite ?? ""} placeholder="KORIN-XXXX-XXXX" required />
+                <input
+                  id="gh-invite"
+                  name="invite"
+                  className="input98"
+                  defaultValue={convite ?? ""}
+                  placeholder="KORIN-XXXX-XXXX"
+                  required
+                />
                 <button type="submit" className="btn98">
                   GitHub
                 </button>

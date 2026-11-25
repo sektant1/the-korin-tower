@@ -15,10 +15,15 @@ type Props = { searchParams: Promise<{ sala?: string }> };
 // A torre inteira, andar por andar. `?sala=<categoria>` filtra por tema.
 export default async function ChallengesPage({ searchParams }: Props) {
   const { sala } = await searchParams;
-  const [categories, all] = await Promise.all([listCategories(), listChallenges()]);
+  const [categories, all] = await Promise.all([
+    listCategories(),
+    listChallenges(),
+  ]);
   const names = Object.fromEntries(categories.map((c) => [c.id, c.name]));
   const active = categories.find((c) => c.id === sala) ?? null;
-  const challenges = active ? all.filter((c) => c.categoryId === active.id) : all;
+  const challenges = active
+    ? all.filter((c) => c.categoryId === active.id)
+    : all;
 
   return (
     <>
@@ -26,7 +31,7 @@ export default async function ChallengesPage({ searchParams }: Props) {
       <PageBanner
         image={PAGE_SCENES.torre}
         focus="center 30%"
-        lead="Cada andar é uma dificuldade. Resolva desafios para subir."
+        lead="Cada andar tem sua dificuldade. Resolva desafios para liberar o próximo."
         stats={[
           { n: all.length, label: "desafios" },
           { n: FLOORS, label: "andares" },
@@ -35,7 +40,7 @@ export default async function ChallengesPage({ searchParams }: Props) {
         gif={GIFS.gokuKick}
       >
         <p className="page-banner-extra">
-          <Link href="/aleatorio">Sortear um desafio ►</Link>
+          <Link href="/aleatorio">Desafio aleatório ►</Link>
         </p>
       </PageBanner>
       <nav className="chips" aria-label="Filtrar por tema">
@@ -45,7 +50,11 @@ export default async function ChallengesPage({ searchParams }: Props) {
         {categories
           .filter((c) => c.count > 0)
           .map((c) => (
-            <Link key={c.id} href={`/desafios?sala=${c.id}`} className={active?.id === c.id ? "chip on" : "chip"}>
+            <Link
+              key={c.id}
+              href={`/desafios?sala=${c.id}`}
+              className={active?.id === c.id ? "chip on" : "chip"}
+            >
               {c.name} <span className="count">{c.count}</span>
             </Link>
           ))}
@@ -56,9 +65,17 @@ export default async function ChallengesPage({ searchParams }: Props) {
         const items = challenges.filter((c) => floorOf(c) === n);
         if (active && items.length === 0) return null;
         return (
-          <section key={n} className="floor-section" aria-labelledby={`andar-${n}`}>
+          <section
+            key={n}
+            className="floor-section"
+            aria-labelledby={`andar-${n}`}
+          >
             <FloorHeading n={n} />
-            {items.length > 0 ? <ChallengeList items={items} categoryNames={names} /> : <UnderConstruction />}
+            {items.length > 0 ? (
+              <ChallengeList items={items} categoryNames={names} />
+            ) : (
+              <UnderConstruction />
+            )}
           </section>
         );
       })}
