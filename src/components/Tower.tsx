@@ -323,8 +323,8 @@ export function ChallengeCard(c: CardProps) {
       </h3>
       <Difficulty level={c.difficulty} />
       <p className="cart-meta">
-        {/* categoria e linguagens numa lista só: na categoria "C" o C não aparece duas vezes */}
-        {[...new Set([c.categoryName, ...c.languages.map((l) => LANGUAGES[l].label)])].join(" / ")}
+        {/* só as linguagens; a categoria (Computação Gráfica, Game Dev...) já é a seção da página */}
+        {c.languages.map((l) => LANGUAGES[l].label).join(" / ")}
         {c.kind !== "stdio" && " · roda no navegador, não conta andar"}
       </p>
       <p className="tags">
