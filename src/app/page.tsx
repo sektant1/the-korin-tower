@@ -3,6 +3,7 @@ import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
 import { getFanart } from "@/lib/fanart";
 import { Marquee, RainbowHr, Window } from "@/components/Retro";
+import { TRACKS_ENABLED } from "@/lib/features";
 import { ContinueCard, FloorBackdrop, TowerMap } from "@/components/Tower";
 import { NEED_PER_FLOOR } from "@/lib/tower";
 import { TrackProgress } from "@/components/TrackProgress";
@@ -56,6 +57,19 @@ export default async function Home() {
       <RainbowHr />
 
       <div className="two-col home-grid">
+        <div>
+          <Window title="Mural">
+            <ul className="news">
+              {NEWS.map((n, k) => (
+                <li key={k}>
+                  <span className="news-date">{n.date}</span>{" "}
+                  {k === 0 && <span className="new-badge">NEW!</span>} {n.text}
+                </li>
+              ))}
+            </ul>
+          </Window>
+        </div>
+
         <Window title="Mapa da Torre">
           <p className="dim small">
             Cada andar tem sua dificuldade. Conclua mais {NEED_PER_FLOOR}{" "}
@@ -63,8 +77,16 @@ export default async function Home() {
           </p>
           <TowerMap />
         </Window>
+      </div>
 
-        <div>
+      <div className="two-col">
+        <Window title="Você sabia?">
+          <div
+            className="fact markdown"
+            dangerouslySetInnerHTML={{ __html: fact }}
+          />
+        </Window>
+        {TRACKS_ENABLED && (
           <Window title="Detonados">
             <p className="dim small">
               Learning paths, terminar um te da uma Esfera do Dragão.
@@ -80,26 +102,7 @@ export default async function Home() {
               ))}
             </ul>
           </Window>
-        </div>
-      </div>
-
-      <div className="two-col">
-        <Window title="Mural">
-          <ul className="news">
-            {NEWS.map((n, k) => (
-              <li key={k}>
-                <span className="news-date">{n.date}</span>{" "}
-                {k === 0 && <span className="new-badge">NEW!</span>} {n.text}
-              </li>
-            ))}
-          </ul>
-        </Window>
-        <Window title="Você sabia?">
-          <div
-            className="fact markdown"
-            dangerouslySetInnerHTML={{ __html: fact }}
-          />
-        </Window>
+        )}
       </div>
     </>
   );

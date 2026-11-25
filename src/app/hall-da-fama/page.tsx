@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Avatar } from "@/components/Avatar";
 import Link from "next/link";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
@@ -71,7 +72,8 @@ export default async function HallOfFamePage() {
                 <td>{String(e?.points ?? 0).padStart(6, "0")}</td>
                 <td>
                   {e ? (
-                    <Link href={`/jogador/${e.username}`}>
+                    <Link href={`/jogador/${e.username}`} className="hs-name">
+                      <Avatar id={e.avatar} size="xs" />
                       {e.username.toUpperCase()}
                     </Link>
                   ) : (

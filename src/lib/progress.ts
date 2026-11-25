@@ -92,6 +92,7 @@ export async function deleteDraft(userId: string, challengeId: string, language:
 
 export interface HallEntry {
   username: string;
+  avatar: string | null;
   points: number;
   solved: number;
 }
@@ -107,7 +108,7 @@ export async function hallOfFame(limit: number): Promise<HallEntry[]> {
     orderBy: [{ _sum: { points: "desc" } }, { _max: { solvedAt: "asc" } }],
     take: limit,
   });
-  const users = await prisma.user.findMany({ where: { id: { in: groups.map((g) => g.userId) } }, select: { id: true, username: true } });
-  const names = new Map(users.map((u) => [u.id, u.username]));
-  return groups.map((g) => ({ username: names.get(g.userId) ?? "???", points: g._sum.points ?? 0, solved: g._count._all }));
+  const users = await prisma.user.findMany({ where: { id: { in: groups.map((g) => g.userId) } }, select: { id: true, username: true, avatar: true } });
+  const byId = new Map(users.map((u) => [u.id, u]));
+  return groups.map((g) => ({ username: byId.get(g.userId)?.username ?? "???", avatar: byId.get(g.userId)?.avatar ?? null, points: g._sum.points ?? 0, solved: g._count._all }));
 }

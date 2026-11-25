@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getDaily } from "@/lib/daily";
 import type { ChallengeKind } from "@/lib/languages";
 import type { TowerData } from "@/lib/tower";
+import { TRACKS_ENABLED } from "@/lib/features";
 
 /** Manifesto da torre: tudo que as regras de progressão precisam, memoizado por requisição. */
 export const getTowerData = cache(async (): Promise<TowerData> => {
@@ -12,7 +13,7 @@ export const getTowerData = cache(async (): Promise<TowerData> => {
       orderBy: [{ category: { order: "asc" } }, { order: "asc" }, { difficulty: "asc" }, { title: "asc" }],
       select: { slug: true, title: true, difficulty: true, kind: true, categoryId: true, category: { select: { name: true } } },
     }),
-    prisma.track.findMany({ orderBy: { order: "asc" }, select: { id: true, title: true, steps: true } }),
+    TRACKS_ENABLED ? prisma.track.findMany({ orderBy: { order: "asc" }, select: { id: true, title: true, steps: true } }) : [],
     getDaily(),
   ]);
   return {

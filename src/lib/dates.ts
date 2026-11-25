@@ -5,6 +5,13 @@ export function siteDay(date: Date = new Date()): string {
   return DAY.format(date);
 }
 
+const HOUR = new Intl.DateTimeFormat("en-US", { timeZone: "America/Sao_Paulo", hour: "numeric", hourCycle: "h23" });
+
+/** Hora (0 a 23) no fuso de Brasília. */
+export function siteHour(date: Date): number {
+  return Number(HOUR.format(date));
+}
+
 /** Dia anterior a um "AAAA-MM-DD" (aritmética em UTC: sem horário de verão no meio). */
 export function previousDay(day: string): string {
   const d = new Date(`${day}T00:00:00Z`);

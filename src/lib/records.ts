@@ -72,7 +72,7 @@ export async function getRecords(challengeId: string): Promise<Records> {
   return { shortest: top((r) => r.bytes), fastest: top((r) => r.timeMs) };
 }
 
-/** Em quantos desafios o jogador é o 1º em tamanho ou em tempo (medalha "Recordista"). */
+/** Em quantos desafios o jogador é o 1º em tamanho ou em tempo (conquista "Recordista"). */
 export async function countRecordsHeld(userId: string): Promise<number> {
   const mine = await prisma.submission.findMany({ where: { userId }, select: { challengeId: true, bytes: true, timeMs: true } });
   if (!mine.length) return 0;

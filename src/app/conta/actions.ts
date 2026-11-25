@@ -50,3 +50,24 @@ export async function dropApiToken(form: FormData) {
   await revokeApiToken(me.id, id);
   revalidatePath("/conta");
 }
+
+// ---- Avatar de perfil
+
+import { refresh } from "next/cache";
+import { listUnlocked } from "@/lib/achievements-server";
+import { AVATARS, isAvatarUnlocked } from "@/lib/avatars";
+
+export type AvatarState = { error?: string; ok?: string } | undefined;
+
+/** Equipa um avatar. Confere no servidor se ele está liberado: o formulário não basta. */
+export async function chooseAvatar(_prev: AvatarState, form: FormData): Promise<AvatarState> {
+  const me = await getCurrentUser();
+  if (!me) return { error: "sessão expirada; entre de novo" };
+  const avatar = AVATARS.find((a) => a.id === form.get("avatar"));
+  if (!avatar) return { error: "avatar desconhecido" };
+  const unlocked = new Set((await listUnlocked(me.id)).map((u) => u.id));
+  if (!isAvatarUnlocked(avatar, { achievements: unlocked, isAdmin: me.isAdmin })) return { error: "esse avatar ainda está trancado" };
+  await prisma.user.update({ where: { id: me.id }, data: { avatar: avatar.id } });
+  refresh(); // o avatar novo aparece no layout (caixa PLAYER) sem recarregar a página
+  return { ok: avatar.id };
+}

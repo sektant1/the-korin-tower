@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BadgeShelf } from "@/components/Badges";
-import { Gif } from "@/components/Gif";
+import { achievementCount, AchievementShelf } from "@/components/Achievements";
+import { Avatar } from "@/components/Avatar";
 import {
   Difficulty,
   FlameTitle,
@@ -22,12 +22,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return { title: `Jogador ${(await params).username}` };
 }
 
-// Perfil público (Fase 5): pontos, sequência, medalhas e desafios resolvidos. Nunca mostra código.
+// Perfil público (Fase 5): avatar, pontos, sequência, conquistas e desafios resolvidos. Nunca mostra código.
 export default async function PlayerPage({ params }: Params) {
   const profile = await getPlayerProfile(
     normalizeUsername((await params).username),
   );
   if (!profile) notFound();
+  const count = achievementCount(profile.achievements);
 
   return (
     <>
@@ -43,8 +44,8 @@ export default async function PlayerPage({ params }: Params) {
             label: profile.solved.length === 1 ? "resolvido" : "resolvidos",
           },
           {
-            n: profile.badges.length,
-            label: profile.badges.length === 1 ? "medalha" : "medalhas",
+            n: count.got,
+            label: count.got === 1 ? "conquista" : "conquistas",
           },
         ]}
         gif={GIFS.gokuWon}
@@ -52,7 +53,7 @@ export default async function PlayerPage({ params }: Params) {
       <div className="two-col">
         <Window title="Player Profile">
           <p className="center">
-            <Gif gif={GIFS.goku} alt="" />
+            <Avatar id={profile.avatar} size="lg" />
           </p>
           <dl className="stats98">
             <dt>Andar</dt>
@@ -78,8 +79,8 @@ export default async function PlayerPage({ params }: Params) {
             <Link href="/hall-da-fama">Ver o Hall of Fame</Link>
           </p>
         </Window>
-        <Window title={`Medalhas (${profile.badges.length})`}>
-          <BadgeShelf earned={profile.badges} />
+        <Window title={`Conquistas (${count.got}/${count.total})`}>
+          <AchievementShelf unlocked={profile.achievements} />
         </Window>
       </div>
       <Window title="Desafios resolvidos">

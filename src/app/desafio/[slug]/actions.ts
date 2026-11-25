@@ -1,5 +1,6 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
+import { syncAchievementsQuietly } from "@/lib/achievements-server";
 import type { PostState } from "@/components/PostForm";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
@@ -17,6 +18,8 @@ export async function addComment(_prev: PostState, form: FormData): Promise<Post
   const wait = await postingLimit(me.id);
   if (wait) return { error: wait };
   await prisma.comment.create({ data: { challengeId: challenge.id, userId: me.id, body: clean.text } });
+  // Conquista nova: refresh() traz o layout de volta com o aviso pendente (toast).
+  if ((await syncAchievementsQuietly(me.id)).length) refresh();
   revalidatePath(`/desafio/${slug}`);
   return { ok: Date.now() };
 }

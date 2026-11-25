@@ -87,6 +87,11 @@ model User {
   invitesMade  Invite[]         @relation("InviteCreator")
   inviteUsed   Invite?          @relation("InviteUser")
   apiTokens    ApiToken[]
+  /// id do avatar escolhido (src/lib/avatars.ts); null = o padrão
+  avatar       String?
+  /// última conferência das conquistas; null = conta anterior ao sistema (a primeira vez é silenciosa)
+  achievementsSyncedAt DateTime? @default(now())
+  achievements UserAchievement[]
 }
 
 model Session {
@@ -210,4 +215,19 @@ model ApiToken {
   createdAt  DateTime  @default(now())
 
   @@index([userId])
+}
+
+// ---- Conquistas e avatares
+
+/// Conquista desbloqueada. Fica para sempre, mesmo que a condição deixe de valer.
+model UserAchievement {
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String // id em src/lib/achievements.ts
+  unlockedAt    DateTime  @default(now())
+  /// quando o jogador viu o aviso; null = toast pendente
+  seenAt        DateTime?
+
+  @@id([userId, achievementId])
+  @@index([userId, seenAt])
 }

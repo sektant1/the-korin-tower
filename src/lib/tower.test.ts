@@ -58,3 +58,12 @@ test("esferas: uma por detonado zerado", () => {
   assert.equal(tracksDone(data, {}), 0);
   assert.equal(tracksDone(data, { a1: "solved", a3: "solved" }), 1);
 });
+
+test("detonados desligados (sem trilhas): jogador novo só tem o andar 1", () => {
+  const off: TowerData = { ...data, tracks: [], daily: null };
+  for (const c of off.challenges) {
+    assert.equal(isOpen(off, {}, c.slug), c.difficulty === 1, c.slug);
+  }
+  assert.ok(!isOpen(off, { a1: "solved" }, "a3"), "sem trilha, a3 não vira escada");
+  assert.equal(tracksDone(off, {}), 0);
+});

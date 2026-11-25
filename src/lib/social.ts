@@ -12,6 +12,7 @@ export const GUESTBOOK_PAGE = 30;
 export interface Post {
   id: string;
   username: string;
+  avatar: string | null;
   text: string;
   createdAt: Date;
   /** quem está vendo pode apagar (autor ou admin) */
@@ -27,13 +28,13 @@ export async function listGuestbook(viewer: Viewer, page: number): Promise<{ ent
       orderBy: { createdAt: "desc" },
       skip: page * GUESTBOOK_PAGE,
       take: GUESTBOOK_PAGE,
-      select: { id: true, message: true, createdAt: true, userId: true, user: { select: { username: true } } },
+      select: { id: true, message: true, createdAt: true, userId: true, user: { select: { username: true, avatar: true } } },
     }),
     prisma.guestbookEntry.count(),
   ]);
   return {
     total,
-    entries: rows.map((r) => ({ id: r.id, username: r.user.username, text: r.message, createdAt: r.createdAt, mine: canDelete(viewer, r.userId) })),
+    entries: rows.map((r) => ({ id: r.id, username: r.user.username, avatar: r.user.avatar, text: r.message, createdAt: r.createdAt, mine: canDelete(viewer, r.userId) })),
   };
 }
 
@@ -42,9 +43,9 @@ export async function listComments(viewer: Viewer, challengeId: string): Promise
     where: { challengeId },
     orderBy: { createdAt: "asc" },
     take: 200,
-    select: { id: true, body: true, createdAt: true, userId: true, user: { select: { username: true } } },
+    select: { id: true, body: true, createdAt: true, userId: true, user: { select: { username: true, avatar: true } } },
   });
-  return rows.map((r) => ({ id: r.id, username: r.user.username, text: r.body, createdAt: r.createdAt, mine: canDelete(viewer, r.userId) }));
+  return rows.map((r) => ({ id: r.id, username: r.user.username, avatar: r.user.avatar, text: r.body, createdAt: r.createdAt, mine: canDelete(viewer, r.userId) }));
 }
 
 /** 5 mensagens por minuto por usuário (e por IP, para quem tem várias contas). */

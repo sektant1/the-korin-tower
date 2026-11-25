@@ -1,4 +1,7 @@
 import "katex/dist/katex.min.css";
+import { Avatar } from "@/components/Avatar";
+import { AchievementNotifier, Toaster } from "@/components/Toaster";
+import { listUnseen, syncAchievementsQuietly } from "@/lib/achievements-server";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
@@ -71,15 +74,19 @@ async function loadAccount(): Promise<AccountData | null> {
     getProgressSummary(user.id),
     prisma.user.findUnique({
       where: { id: user.id },
-      select: { settings: true },
+      select: { settings: true, avatar: true, achievementsSyncedAt: true },
     }),
   ]);
+  // Conta de antes das conquistas: a primeira conferência registra tudo sem toast.
+  if (row && row.achievementsSyncedAt === null) await syncAchievementsQuietly(user.id);
   return {
     username: user.username,
     isAdmin: user.isAdmin,
     points: summary.points,
     progress: summary.map,
     settings: (row?.settings ?? null) as Partial<Settings> | null,
+    avatar: row?.avatar ?? null,
+    unseen: await listUnseen(user.id),
   };
 }
 
@@ -127,6 +134,8 @@ export default async function RootLayout({
             <SettingsApplier />
             <StarTrail />
             <KonamiCode />
+            <Toaster />
+            <AchievementNotifier />
 
             <header className="site-header">
               <FlyingCloud />
@@ -188,7 +197,13 @@ export default async function RootLayout({
               >
                 <div className="side-box">
                   <h2 className="side-title">PLAYER</h2>
-                  <Gif gif={GIFS.goku} alt="" className="p1-avatar" />
+                  {account ? (
+                    <Link href="/conta#avatar" className="p1-avatar-link" title="Trocar avatar">
+                      <Avatar id={account.avatar} size="lg" className="p1-avatar" />
+                    </Link>
+                  ) : (
+                    <Avatar id={null} size="lg" className="p1-avatar" />
+                  )}
                   <p className="p1-name">
                     {account ? account.username : "convidado"}
                   </p>
@@ -247,7 +262,8 @@ export default async function RootLayout({
                           }
                         >
                           <span className="side-top-rank">{i + 1}</span>
-                          <Link href={`/jogador/${e.username}`}>
+                          <Link href={`/jogador/${e.username}`} className="side-top-name">
+                            <Avatar id={e.avatar} size="xs" />
                             {e.username}
                           </Link>
                           <span className="side-top-pts">{e.points}</span>

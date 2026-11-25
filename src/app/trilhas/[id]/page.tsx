@@ -7,6 +7,8 @@ import { TrackNext, TrackProgress } from "@/components/TrackProgress";
 import { getTrack } from "@/lib/tracks";
 import { PAGE_SCENES } from "@/lib/scenes";
 import { GIFS } from "@/lib/gifs";
+import { TRACKS_ENABLED } from "@/lib/features";
+import { TracksUnderConstruction } from "@/components/TracksUnderConstruction";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -15,6 +17,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function TrackPage({ params }: Params) {
+  if (!TRACKS_ENABLED) return <TracksUnderConstruction />;
   const track = await getTrack((await params).id);
   if (!track) notFound();
 

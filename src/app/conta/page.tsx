@@ -6,7 +6,10 @@ import { FlameTitle, PageBanner, Window } from "@/components/Retro";
 import { githubConfig } from "@/lib/auth/github";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
-import { BadgeShelf } from "@/components/Badges";
+import { achievementCount, AchievementShelf } from "@/components/Achievements";
+import { Avatar } from "@/components/Avatar";
+import { AVATARS, DEFAULT_AVATAR_ID, isAvatarUnlocked, unlockHint } from "@/lib/avatars";
+import { AvatarPicker } from "./AvatarPicker";
 import { getPlayerProfile } from "@/lib/profile";
 import { getProgressSummary } from "@/lib/progress";
 import { listApiTokens } from "@/lib/auth/tokens";
@@ -38,6 +41,13 @@ export default async function AccountPage() {
   const gaveUp = Object.values(summary.map).filter(
     (s) => s === "gaveup",
   ).length;
+  const unlocked = profile?.achievements ?? [];
+  const count = achievementCount(unlocked);
+  const owned = { achievements: new Set(unlocked.map((u) => u.id)), isAdmin: me.isAdmin };
+  const avatarOptions = AVATARS.map((a) => {
+    const open = isAvatarUnlocked(a, owned);
+    return { id: a.id, name: a.name, unlocked: open, how: open ? undefined : unlockHint(a) };
+  });
 
   return (
     <>
@@ -60,6 +70,9 @@ export default async function AccountPage() {
       </PageBanner>
       <div className="two-col">
         <Window title={`Jogador: ${me.username}`}>
+          <p className="center">
+            <Avatar id={profile?.avatar} size="lg" />
+          </p>
           <dl className="stats98">
             <dt>Andar</dt>
             <dd>
@@ -108,9 +121,14 @@ export default async function AccountPage() {
             </button>
           </form>
         </Window>
-        <Window title={`Medalhas (${profile?.badges.length ?? 0})`}>
-          <BadgeShelf earned={profile?.badges ?? []} />
+        <Window title={`Conquistas (${count.got}/${count.total})`}>
+          <AchievementShelf unlocked={unlocked} />
         </Window>
+        <div id="avatar" className="span-all">
+          <Window title="Avatar">
+            <AvatarPicker options={avatarOptions} current={profile?.avatar ?? DEFAULT_AVATAR_ID} />
+          </Window>
+        </div>
         <Window title={user.passwordHash ? "Trocar senha" : "Criar senha"}>
           {!user.passwordHash && (
             <p className="dim small">

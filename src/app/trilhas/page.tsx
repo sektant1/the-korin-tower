@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FlameTitle, PageBanner, Window } from "@/components/Retro";
+import { TracksUnderConstruction } from "@/components/TracksUnderConstruction";
+import { TRACKS_ENABLED } from "@/lib/features";
 import { TrackProgress } from "@/components/TrackProgress";
 import { GIFS } from "@/lib/gifs";
 import { listTracks } from "@/lib/tracks";
@@ -9,6 +11,7 @@ import { PAGE_SCENES } from "@/lib/scenes";
 export const metadata: Metadata = { title: "Detonados" };
 
 export default async function TracksPage() {
+  if (!TRACKS_ENABLED) return <TracksUnderConstruction />;
   const tracks = await listTracks();
   return (
     <>

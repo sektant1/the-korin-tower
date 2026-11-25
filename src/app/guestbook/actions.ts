@@ -1,5 +1,6 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
+import { syncAchievementsQuietly } from "@/lib/achievements-server";
 import type { PostState } from "@/components/PostForm";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
@@ -14,6 +15,8 @@ export async function signGuestbook(_prev: PostState, form: FormData): Promise<P
   const wait = await postingLimit(me.id);
   if (wait) return { error: wait };
   await prisma.guestbookEntry.create({ data: { userId: me.id, message: clean.text } });
+  // Conquista nova: refresh() traz o layout de volta com o aviso pendente (toast).
+  if ((await syncAchievementsQuietly(me.id)).length) refresh();
   revalidatePath("/guestbook");
   return { ok: Date.now() };
 }

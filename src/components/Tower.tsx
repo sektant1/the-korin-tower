@@ -2,6 +2,7 @@
 // A Torre no navegador: o manifesto vem do layout (servidor); o progresso, da conta ou do
 // localStorage. Tudo que mostra andar, tranca, "próximo" ou esferas passa por aqui, para
 // a regra ser uma só (src/lib/tower.ts).
+import { TRACKS_ENABLED } from "@/lib/features";
 import Link from "next/link";
 import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import {
@@ -113,7 +114,7 @@ export function TowerPlayer() {
       <div className="p1-foot">
         {here.solved}/{here.scored} neste andar
       </div>
-      <DragonBalls />
+      {TRACKS_ENABLED && <DragonBalls />}
     </div>
   );
 }
@@ -227,9 +228,13 @@ export function TowerMap() {
                 <b>{f.n}</b>
               </span>
               <span className="tfloor-main">
-                <Link href={`/desafios#andar-${f.n}`} className="tfloor-name">
-                  {FLOOR_NAMES[f.n]}
-                </Link>
+                {state === "obras" ? (
+                  <span className="tfloor-name">{FLOOR_NAMES[f.n]}</span>
+                ) : (
+                  <Link href={`/desafios#andar-${f.n}`} className="tfloor-name">
+                    {FLOOR_NAMES[f.n]}
+                  </Link>
+                )}
                 {state === "open" && (
                   <span className="xp-bar tfloor-bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
                     <span style={{ width: `${pct}%` }} />
@@ -237,7 +242,7 @@ export function TowerMap() {
                 )}
               </span>
               <span className="tfloor-status">
-                {state === "obras" && "em obras"}
+                {state === "obras" && <span className="tfloor-obras">EM OBRAS</span>}
                 {state === "open" && `${f.solved}/${f.scored}`}
                 {state === "locked" && (
                   <>

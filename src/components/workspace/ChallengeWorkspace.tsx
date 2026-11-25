@@ -1,4 +1,5 @@
 "use client";
+import { TRACKS_ENABLED } from "@/lib/features";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -199,7 +200,7 @@ export function ChallengeWorkspace(p: Props) {
           flash("resolvido! entre na sua conta para pontuar e ver a solução");
           return;
         }
-        router.refresh(); // traz o progresso novo do banco (badges, placar)
+        router.refresh(); // traz o progresso novo do banco (placar e conquistas novas, que viram toast)
         const pts = merged.awarded ?? 0;
         flash(pts > 0 ? `resolvido! +${pts} pontos. solução liberada` : "resolvido de novo. solução liberada");
       } catch (e) {
@@ -434,7 +435,7 @@ export function ChallengeWorkspace(p: Props) {
       submit: () => void execute("submit"),
       quit: () => {
         save(false);
-        router.push(p.trackId ? `/trilhas/${p.trackId}` : "/desafios");
+        router.push(TRACKS_ENABLED && p.trackId ? `/trilhas/${p.trackId}` : "/desafios");
       },
       hint: () => void nextHint(),
       stdin: () => {

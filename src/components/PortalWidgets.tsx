@@ -1,7 +1,9 @@
 "use client";
 // Widgets de "portal pessoal" dos anos 90, com tempero Dragon Ball.
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAccount } from "./Account";
 import { KONAMI_LINES } from "@/lib/site-content";
 import { GIFS } from "@/lib/gifs";
 import { Gif } from "./Gif";
@@ -11,6 +13,8 @@ const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "Ar
 /** Easter egg: ↑↑↓↓←→←→BA dispara um raio de energia pela tela. */
 export function KonamiCode() {
   const [line, setLine] = useState(-1);
+  const router = useRouter();
+  const logged = !!useAccount();
   useEffect(() => {
     let pos = 0;
     const onKey = (e: KeyboardEvent) => {
@@ -22,11 +26,18 @@ export function KonamiCode() {
       if (pos === KONAMI.length) {
         pos = 0;
         setLine(0);
+        // Conquista secreta: o servidor grava e o refresh traz o toast pendente.
+        if (logged) {
+          fetch("/api/me/achievements/event", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id: "konami" }) })
+            .then((r) => r.json())
+            .then((r: { unlocked?: boolean }) => r.unlocked && router.refresh())
+            .catch(() => {});
+        }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [logged, router]);
   useEffect(() => {
     if (line < 0) return;
     const id = setTimeout(() => setLine((l) => (l + 1 < KONAMI_LINES.length + 3 ? l + 1 : -1)), 450);

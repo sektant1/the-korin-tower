@@ -10,6 +10,10 @@ export interface AccountData {
   points: number;
   progress: Record<string, ProgressState>;
   settings: Partial<Settings> | null;
+  /** id do avatar escolhido (null = padrão) */
+  avatar: string | null;
+  /** conquistas com toast pendente */
+  unseen: string[];
 }
 
 const Ctx = createContext<AccountData | null>(null);

@@ -1,6 +1,7 @@
 import "server-only";
 import { isScored } from "@/lib/tower";
 import { prisma } from "@/lib/db";
+import { TRACKS_ENABLED } from "@/lib/features";
 import type { ChallengeKind } from "@/lib/languages";
 
 // Trilhas ("detonados"): vêm de challenges/tracks.yml pelo seed.
@@ -41,10 +42,12 @@ async function withSteps(rows: { id: string; title: string; description: string;
 }
 
 export async function listTracks(): Promise<Track[]> {
+  if (!TRACKS_ENABLED) return [];
   return withSteps(await prisma.track.findMany({ orderBy: { order: "asc" } }));
 }
 
 export async function getTrack(id: string): Promise<Track | null> {
+  if (!TRACKS_ENABLED) return null;
   const row = await prisma.track.findUnique({ where: { id } });
   return row ? (await withSteps([row]))[0] : null;
 }

@@ -12,6 +12,7 @@ import { getProgressSummary, recordSolve } from "@/lib/progress";
 import { lockInfo } from "@/lib/tower";
 import { getTowerData } from "@/lib/tower-server";
 import { recordSubmission } from "@/lib/records";
+import { syncAchievementsQuietly } from "@/lib/achievements-server";
 import { clientKey, rateLimit, Semaphore } from "@/lib/rate-limit";
 import type { RunResponse } from "@/lib/run-api";
 import { submitVerify } from "@/lib/submit-mode";
@@ -56,6 +57,7 @@ async function framesRun(challenge: FullChallenge, mode: "test" | "submit", lang
     const daily = await getDaily();
     response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
     await recordSubmission(user.id, challenge.id, language, source, [null]);
+    await syncAchievementsQuietly(user.id);
   }
   return NextResponse.json(response);
 }
@@ -112,6 +114,7 @@ export async function POST(req: Request) {
       const daily = await getDaily();
       response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
       await recordSubmission(user.id, challenge.id, language, source, times);
+      await syncAchievementsQuietly(user.id);
     }
     return NextResponse.json(response);
   }
@@ -156,6 +159,7 @@ export async function POST(req: Request) {
       response.awarded = (await recordSolve(user.id, challenge, daily?.challengeId === challenge.id)) ?? 0;
       // Guarda o código aprovado: "soluções dos outros" e recordes de tamanho e tempo.
       await recordSubmission(user.id, challenge.id, language, source, result.tests.map((t) => t.timeMs));
+      await syncAchievementsQuietly(user.id);
     }
     return NextResponse.json(response);
   } catch (e) {

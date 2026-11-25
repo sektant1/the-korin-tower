@@ -1,67 +1,50 @@
 import "server-only";
-import { earnedBadges, type Badge } from "@/lib/badges";
-import { computeStreak, siteDay, type Streak } from "@/lib/dates";
+import { collectStats, listUnlocked, syncAchievements, type UnlockedAchievement } from "@/lib/achievements-server";
+import type { Streak } from "@/lib/dates";
 import { prisma } from "@/lib/db";
-import { countRecordsHeld } from "@/lib/records";
-import { countTracksDone } from "@/lib/tracks";
-import { currentFloor } from "@/lib/tower";
-import { getTowerData } from "@/lib/tower-server";
 
 // Cartão do jogador: perfil público (/jogador/<nome>) e Minha conta.
 export interface PlayerProfile {
   username: string;
+  avatar: string | null;
+  isAdmin: boolean;
   createdAt: Date;
   points: number;
   gaveUp: number;
   floorsOpen: number;
   streak: Streak;
-  badges: Badge[];
+  achievements: UnlockedAchievement[];
   solved: { slug: string; title: string; difficulty: number; points: number; dailyBonus: boolean; solvedAt: Date | null }[];
 }
 
 export async function getPlayerProfile(username: string): Promise<PlayerProfile | null> {
-  const user = await prisma.user.findUnique({ where: { username }, select: { id: true, username: true, createdAt: true } });
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: { id: true, username: true, avatar: true, isAdmin: true, createdAt: true, achievementsSyncedAt: true },
+  });
   if (!user) return null;
-  const [progress, guestbook, comments, records] = await Promise.all([
+  const [progress, stats] = await Promise.all([
     prisma.progress.findMany({
       where: { userId: user.id, state: { not: null } },
       orderBy: { solvedAt: "desc" },
-      select: {
-        state: true,
-        points: true,
-        hintsRevealed: true,
-        dailyBonus: true,
-        solvedAt: true,
-        challenge: { select: { slug: true, title: true, difficulty: true, categoryId: true } },
-      },
+      select: { state: true, points: true, dailyBonus: true, solvedAt: true, challenge: { select: { slug: true, title: true, difficulty: true } } },
     }),
-    prisma.guestbookEntry.count({ where: { userId: user.id } }),
-    prisma.comment.count({ where: { userId: user.id } }),
-    countRecordsHeld(user.id),
+    collectStats(user.id),
   ]);
+  // Conta de antes das conquistas: registra o que ela já tem (sem toast) antes de mostrar.
+  if (user.achievementsSyncedAt === null) await syncAchievements(user.id, stats);
   const solved = progress.filter((p) => p.state === "solved");
-  const points = solved.reduce((n, p) => n + p.points, 0);
-  const streak = computeStreak(solved.flatMap((p) => (p.solvedAt ? [siteDay(p.solvedAt)] : [])), siteDay());
-  const [tracksDone, tower] = await Promise.all([countTracksDone(new Set(solved.map((p) => p.challenge.slug))), getTowerData()]);
-  const floorsOpen = currentFloor(tower, Object.fromEntries(progress.map((p) => [p.challenge.slug, p.state as "solved" | "gaveup"])));
 
   return {
     username: user.username,
+    avatar: user.avatar,
+    isAdmin: user.isAdmin,
     createdAt: user.createdAt,
-    points,
+    points: stats.points,
     gaveUp: progress.length - solved.length,
-    floorsOpen,
-    streak,
-    badges: earnedBadges({
-      solved: solved.map((p) => ({ categoryId: p.challenge.categoryId, difficulty: p.challenge.difficulty, hintsRevealed: p.hintsRevealed, dailyBonus: p.dailyBonus })),
-      points,
-      tracksDone,
-      guestbookSigned: guestbook > 0,
-      comments,
-      bestStreak: streak.best,
-      records,
-      floorsOpen,
-    }),
+    floorsOpen: stats.floorsOpen,
+    streak: stats.streak,
+    achievements: await listUnlocked(user.id),
     solved: solved.map((p) => ({
       slug: p.challenge.slug,
       title: p.challenge.title,

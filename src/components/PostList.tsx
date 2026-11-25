@@ -2,6 +2,7 @@ import Link from "next/link";
 import type React from "react";
 import type { Post } from "@/lib/social";
 import { FLOORS, floorScene } from "@/lib/tower";
+import { Avatar } from "./Avatar";
 import { UserText } from "./UserText";
 
 /** Cor estável por jogador: o mesmo nome sempre ganha o mesmo matiz (claro o bastante para o fundo escuro). */
@@ -24,9 +25,7 @@ export function PostList({ posts, onDelete, empty }: { posts: Post[]; onDelete(i
       {posts.map((p) => (
         <li key={p.id} className="post" style={{ "--post-hue": authorHash(p.username) % 360 } as React.CSSProperties}>
           <div className="post-head" style={authorScene(p.username)}>
-            <span className="post-avatar" aria-hidden="true">
-              {[...p.username][0]?.toUpperCase()}
-            </span>
+            <Avatar id={p.avatar} size="sm" className="post-avatar" />
             <Link href={`/jogador/${p.username}`} className="post-author">
               {p.username}
             </Link>
