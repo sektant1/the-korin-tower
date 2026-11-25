@@ -21,7 +21,7 @@ import {
   type NextStep,
   type TowerData,
 } from "@/lib/tower";
-import { LANGUAGES, type LanguageId } from "@/lib/languages";
+import { languageList, type LanguageId } from "@/lib/languages";
 import { useAccount, useProgressMap } from "./Account";
 import { Gif } from "./Gif";
 import { GIFS } from "@/lib/gifs";
@@ -324,7 +324,7 @@ export function ChallengeCard(c: CardProps) {
       <Difficulty level={c.difficulty} />
       <p className="cart-meta">
         {/* só as linguagens; a categoria (Computação Gráfica, Game Dev...) já é a seção da página */}
-        {c.languages.map((l) => LANGUAGES[l].label).join(" / ")}
+        {languageList(c.languages)}
         {c.kind !== "stdio" && " · roda no navegador, não conta andar"}
       </p>
       <p className="tags">

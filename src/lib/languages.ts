@@ -10,6 +10,13 @@ export const LANGUAGES = {
 
 export type LanguageId = keyof typeof LANGUAGES;
 
+const ORDER = Object.keys(LANGUAGES) as LanguageId[];
+
+/** "C / C++ / Rust": sempre na ordem de LANGUAGES, não na ordem do README. */
+export function languageList(langs: readonly LanguageId[]): string {
+  return [...langs].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b)).map((l) => LANGUAGES[l].label).join(" / ");
+}
+
 export function isLanguageId(x: unknown): x is LanguageId {
   return typeof x === "string" && Object.hasOwn(LANGUAGES, x);
 }

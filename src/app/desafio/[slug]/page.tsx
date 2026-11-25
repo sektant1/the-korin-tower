@@ -14,7 +14,7 @@ import { docsForChallenge } from "@/lib/biblioteca";
 import { DOC_KINDS } from "@/lib/biblioteca/kinds";
 import { getChallenge } from "@/lib/challenges";
 import { getDaily } from "@/lib/daily";
-import { LANGUAGES } from "@/lib/languages";
+import { LANGUAGES, languageList } from "@/lib/languages";
 import { renderMarkdown } from "@/lib/markdown";
 import { getChallengeProgress } from "@/lib/progress";
 import { getRecords, type RecordRow } from "@/lib/records";
@@ -114,7 +114,7 @@ export default async function ChallengePage({ params, searchParams }: Params) {
         </h1>
         <p className="ch-meta">
           <Difficulty level={c.difficulty} /> ·{" "}
-          {c.languages.map((l) => LANGUAGES[l].label).join(" / ")}
+          {languageList(c.languages)}
           {c.kind === "stdio" && (
             <>
               {" "}
