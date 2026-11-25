@@ -1,9 +1,9 @@
 "use client";
 import { cpp } from "@codemirror/lang-cpp";
+import { python } from "@codemirror/lang-python";
 import { rust } from "@codemirror/lang-rust";
-import { indentUnit, StreamLanguage } from "@codemirror/language";
+import { indentUnit } from "@codemirror/language";
 import { indentWithTab } from "@codemirror/commands";
-import { shader } from "@codemirror/legacy-modes/mode/clike";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { getCM, Vim, vim } from "@replit/codemirror-vim";
@@ -52,8 +52,8 @@ function languageExtension(lang: LanguageId): Extension {
       return cpp();
     case "rust":
       return rust();
-    case "glsl":
-      return StreamLanguage.define(shader);
+    case "python":
+      return python();
   }
 }
 

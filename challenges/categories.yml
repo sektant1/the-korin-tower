@@ -17,10 +17,6 @@
   name: Computação Gráfica 3D
   icon: radar
   description: Ray tracing, rasterização e shaders.
-- id: gamedev
-  name: Game Dev
-  icon: joystick
-  description: Game loops, física, colisão e ECS.
 - id: sistemas
   name: Sistemas
   icon: tower

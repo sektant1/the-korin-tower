@@ -7,4 +7,3 @@ src/generated
 .env
 .git
 *.log
-piston

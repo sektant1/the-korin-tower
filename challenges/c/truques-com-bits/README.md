@@ -2,7 +2,7 @@
 title: "Bit Twiddling"
 difficulty: 2
 tags: [bits, inteiros, uint64, hackers-delight]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 3

@@ -15,7 +15,7 @@ hints:
 
 Implemente `LinkedList<T>`, uma singly linked list genérica, sem usar `std::list`, `std::vector` ou qualquer container da STL dentro da classe.
 
-O `main` do template já lê os comandos e chama sua classe. Não mexa nele.
+O `main` que lê os comandos fica escondido e é anexado ao seu código na hora de rodar: você escreve só a classe, sem `main`.
 
 ## O que implementar
 

@@ -14,7 +14,7 @@ hints:
   - "Remover de linked list sem caso especial para a cabeça: ande com um ponteiro para ponteiro (`Entry **pp = &baldes[i]`) e faça `*pp = (*pp)->next`."
 ---
 
-Implemente um dicionário `string → inteiro` em C puro, sem bibliotecas. O `main` que lê os comandos já está pronto no template; você escreve as funções `ht_*`.
+Implemente um dicionário `string → inteiro` em C puro, sem bibliotecas. O `main` que lê os comandos fica escondido e é anexado ao seu código na hora de rodar; você escreve só as funções `ht_*`, sem `main`.
 
 ## Comandos
 

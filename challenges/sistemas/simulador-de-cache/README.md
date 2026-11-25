@@ -2,7 +2,7 @@
 title: "Cache Simulator"
 difficulty: 5
 tags: [arquitetura, cache, lru, bits]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 6

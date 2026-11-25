@@ -2,7 +2,7 @@
 title: "Dijkstra"
 difficulty: 3
 tags: [grafos, heap, fila-de-prioridade, menor-caminho]
-languages: [cpp, c]
+languages: [cpp, c, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 1

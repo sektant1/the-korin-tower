@@ -2,7 +2,7 @@
 title: "Mark and Sweep"
 difficulty: 5
 tags: [gc, grafos, memoria, dfs]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 128
 order: 5

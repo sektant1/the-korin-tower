@@ -2,7 +2,7 @@
 title: "Binary Search"
 difficulty: 2
 tags: [busca, vetores, logaritmo]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 1

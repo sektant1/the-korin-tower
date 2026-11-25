@@ -2,7 +2,7 @@
 title: "FizzBuzz"
 difficulty: 1
 tags: [iniciante, loops, stdio]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 1

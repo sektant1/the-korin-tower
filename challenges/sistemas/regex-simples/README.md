@@ -2,7 +2,7 @@
 title: "Regex Matcher"
 difficulty: 4
 tags: [regex, recursao, strings, kernighan]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 3

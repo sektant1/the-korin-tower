@@ -5,7 +5,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import YAML from "yaml";
-import { CHALLENGE_KINDS, LANGUAGES, isCanvasLanguage, isLanguageId, type Checker, type ChallengeKind, type LanguageId } from "./languages";
+import { CHALLENGE_KINDS, LANGUAGES, isLanguageId, type Checker, type ChallengeKind, type LanguageId } from "./languages";
 
 export interface LoadedCategory {
   id: string;
@@ -37,6 +37,8 @@ export interface LoadedChallenge {
   languages: LanguageId[];
   templates: Partial<Record<LanguageId, string>>;
   solutions: Partial<Record<LanguageId, string>>;
+  /** código oculto anexado ao do jogador antes de compilar (driver.<ext>) */
+  drivers: Partial<Record<LanguageId, string>>;
   timeLimitMs: number;
   memoryLimitMb: number;
   order: number;
@@ -97,7 +99,7 @@ async function loadTests(dir: string, hidden: boolean, where: string): Promise<L
   );
 }
 
-export type ChallengeMeta = Omit<LoadedChallenge, "statement" | "notes" | "templates" | "solutions" | "sourceDir" | "tests">;
+export type ChallengeMeta = Omit<LoadedChallenge, "statement" | "notes" | "templates" | "solutions" | "drivers" | "sourceDir" | "tests">;
 
 function positiveInt(raw: unknown, fallback: number, max: number, field: string, where: string): number {
   const n = raw === undefined || raw === "" ? fallback : Number(raw);
@@ -122,18 +124,14 @@ export function parseMeta(
     throw new ChallengeError(`${where}: 'difficulty' deve ser inteiro de 1 a 5`);
   }
   const kind = (fm.kind ?? "stdio") as ChallengeKind;
-  if (!CHALLENGE_KINDS.includes(kind)) throw new ChallengeError(`${where}: kind deve ser 'stdio', 'shader' ou 'canvas'`);
+  if (!CHALLENGE_KINDS.includes(kind)) {
+    throw new ChallengeError(`${where}: kind '${kind}' não existe mais (só 'stdio'; shader e canvas estão em arquivo/)`);
+  }
 
   const languages: unknown[] = Array.isArray(fm.languages) ? fm.languages : [];
   if (!languages.length) throw new ChallengeError(`${where}: 'languages' deve listar ao menos uma linguagem`);
   for (const l of languages) {
     if (!isLanguageId(l)) throw new ChallengeError(`${where}: linguagem desconhecida '${l}' (veja src/lib/languages.ts)`);
-    if ((kind === "shader") !== (l === "glsl")) {
-      throw new ChallengeError(`${where}: desafios 'shader' usam só glsl, e glsl só existe em desafios 'shader'`);
-    }
-    if (kind === "canvas" && !isCanvasLanguage(l)) {
-      throw new ChallengeError(`${where}: desafios 'canvas' (WASM) aceitam só c e cpp`);
-    }
   }
   const langs = [...new Set(languages)] as LanguageId[];
 
@@ -147,8 +145,8 @@ export function parseMeta(
     checker: parseChecker(fm.checker, where),
     hints: Array.isArray(fm.hints) ? fm.hints.map(String) : [],
     languages: langs,
-    // Teto do tempo = PISTON_RUN_TIMEOUT do docker-compose; memória = PISTON_RUN_MEMORY_LIMIT.
-    timeLimitMs: positiveInt(fm.timeLimitMs, 2000, 10_000, "timeLimitMs", where),
+    // Por teste, calibrado em C (Python ganha 3x, ver TIME_FACTOR). O lote inteiro tem teto de 5 s.
+    timeLimitMs: positiveInt(fm.timeLimitMs, 2000, 5000, "timeLimitMs", where),
     memoryLimitMb: positiveInt(fm.memoryLimitMb, 256, 512, "memoryLimitMb", where),
     order: Number.isInteger(Number(fm.order ?? 0)) ? Number(fm.order ?? 0) : 0,
   };
@@ -160,10 +158,11 @@ export async function loadChallenge(dir: string, repoRoot: string, categories: S
   if (readme === null) throw new ChallengeError(`${where}: falta README.md`);
   const { data: fm, content } = matter(readme);
   const meta = parseMeta(fm, where, categories, { slug: path.basename(dir), category: path.basename(path.dirname(dir)) });
-  const { kind, languages: langs } = meta;
+  const { languages: langs } = meta;
 
   const templates: Partial<Record<LanguageId, string>> = {};
   const solutions: Partial<Record<LanguageId, string>> = {};
+  const drivers: Partial<Record<LanguageId, string>> = {};
   for (const l of langs) {
     const ext = LANGUAGES[l].ext;
     const t = await readOptional(path.join(dir, `template.${ext}`));
@@ -171,11 +170,12 @@ export async function loadChallenge(dir: string, repoRoot: string, categories: S
     templates[l] = t;
     const s = await readOptional(path.join(dir, `solution.${ext}`));
     if (s !== null) solutions[l] = s;
+    const d = await readOptional(path.join(dir, `driver.${ext}`));
+    if (d !== null) drivers[l] = d;
   }
 
   const tests = [...(await loadTests(dir, false, where)), ...(await loadTests(dir, true, where))];
-  if (kind !== "stdio" && tests.length) throw new ChallengeError(`${where}: só desafios stdio têm testes (remova tests/)`);
-  if (kind === "stdio" && !tests.length) throw new ChallengeError(`${where}: desafio stdio precisa de testes em tests/public ou tests/hidden`);
+  if (!tests.length) throw new ChallengeError(`${where}: o desafio precisa de testes em tests/public ou tests/hidden`);
 
   return {
     ...meta,
@@ -183,6 +183,7 @@ export async function loadChallenge(dir: string, repoRoot: string, categories: S
     notes: (await readOptional(path.join(dir, "NOTES.md")))?.trim() ?? null,
     templates,
     solutions,
+    drivers,
     sourceDir: where,
     tests,
   };
@@ -220,8 +221,6 @@ export async function loadTracks(root: string, kinds: Map<string, ChallengeKind>
     if (new Set(steps).size !== steps.length) return errors.push(`${where}: desafio repetido em 'steps'`);
     const missing = steps.filter((s) => !kinds.has(s));
     if (missing.length) return errors.push(`${where}: desafio(s) inexistente(s): ${missing.join(", ")}`);
-    // Só desafios stdio têm "resolvido"; sem nenhum, a trilha nunca teria como ser zerada.
-    if (!steps.some((s) => kinds.get(s) === "stdio")) return errors.push(`${where}: precisa de ao menos um desafio com testes (stdio)`);
     tracks.push({ id: t.id, title: t.title.trim(), description: String(t.description ?? "").trim(), steps, order: i });
   });
   return { tracks, errors };

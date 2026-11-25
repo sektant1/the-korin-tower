@@ -1,6 +1,7 @@
 import "katex/dist/katex.min.css";
 import { Avatar } from "@/components/Avatar";
 import { AchievementNotifier, Toaster } from "@/components/Toaster";
+import { RuntimeWarmup } from "@/components/RuntimeWarmup";
 import { listUnseen, syncAchievementsQuietly } from "@/lib/achievements-server";
 import "./globals.css";
 import type { Metadata } from "next";
@@ -48,7 +49,7 @@ const vt = VT323({
 
 export const metadata: Metadata = {
   title: { default: "The Korin Tower", template: "%s :: The Korin Tower" },
-  description: "Desafios de programação de em C, C++, Rust, e shaders.",
+  description: "Desafios de programação em C, C++, Rust e Python.",
   icons: { icon: GIFS.sphere.src },
   alternates: { types: { "application/rss+xml": "/feed.xml" } },
 };
@@ -124,6 +125,9 @@ export default async function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: EARLY }} />
+        {/* C, C++ e Rust rodam no Compiler Explorer: conexão aberta antes do primeiro :run. */}
+        <link rel="preconnect" href="https://godbolt.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
       </head>
       <body>
         <AccountProvider account={account}>
@@ -136,6 +140,7 @@ export default async function RootLayout({
             <KonamiCode />
             <Toaster />
             <AchievementNotifier />
+            <RuntimeWarmup />
 
             <header className="site-header">
               <FlyingCloud />

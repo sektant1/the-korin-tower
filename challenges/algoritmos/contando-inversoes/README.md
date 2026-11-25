@@ -2,7 +2,7 @@
 title: "Counting Inversions"
 difficulty: 2
 tags: [merge-sort, divisao-e-conquista, vetores]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 2

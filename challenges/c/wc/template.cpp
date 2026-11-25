@@ -1,13 +1,10 @@
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <cctype>
 #include <iostream>
-#include <string>
-#include <vector>
+#include <iterator>
 
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    /* seu código aqui */
+    // seu código aqui
     return 0;
 }

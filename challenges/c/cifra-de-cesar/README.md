@@ -2,7 +2,7 @@
 title: "Caesar Cipher"
 difficulty: 1
 tags: [iniciante, strings, ascii]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 3

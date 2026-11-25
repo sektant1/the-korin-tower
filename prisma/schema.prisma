@@ -26,7 +26,7 @@ model Challenge {
   category      Category         @relation(fields: [categoryId], references: [id])
   tags          Json // string[]
   difficulty    Int // 1..5
-  kind          String // "stdio" | "shader" | "canvas"
+  kind          String // "stdio" (shader e canvas foram para arquivo/)
   checker       Json // { type: "exact" } | { type: "ppm", tolerance, maxBadRatio }
   statement     String // Markdown
   notes         String? // Markdown: notas do professor
@@ -34,6 +34,8 @@ model Challenge {
   languages     Json // LanguageId[]
   templates     Json // Record<LanguageId, string>
   solutions     Json // Record<LanguageId, string>
+  /// código oculto anexado ao do jogador antes de compilar (driver.<ext>): Record<LanguageId, string>
+  drivers       Json             @default("{}")
   timeLimitMs   Int
   memoryLimitMb Int
   order         Int              @default(0)

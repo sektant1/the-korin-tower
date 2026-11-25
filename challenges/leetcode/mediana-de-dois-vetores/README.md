@@ -2,7 +2,7 @@
 title: "Median of Two Sorted Arrays"
 difficulty: 4
 tags: [busca-binaria, dois-ponteiros, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 7

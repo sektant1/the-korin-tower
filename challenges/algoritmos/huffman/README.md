@@ -2,7 +2,7 @@
 title: "Huffman Coding"
 difficulty: 5
 tags: [compressao, heap, arvore, guloso]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 7

@@ -2,7 +2,7 @@
 title: "BigInt"
 difficulty: 3
 tags: [bigint, strings, aritmetica, arrays]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 2000
 memoryLimitMb: 64
 order: 4

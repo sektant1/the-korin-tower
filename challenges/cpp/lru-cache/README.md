@@ -15,7 +15,7 @@ hints:
 
 Um cache LRU (*least recently used*) guarda no máximo $C$ itens. Quando enche, descarta o item usado há mais tempo. CPUs, bancos de dados e navegadores usam variações disso.
 
-Implemente a classe `LRUCache` do template. O `main` já está pronto e não deve ser alterado.
+Implemente a classe `LRUCache` do template. O `main` que lê os comandos fica escondido e é anexado ao seu código na hora de rodar: não escreva um `main`.
 
 ## Operações
 

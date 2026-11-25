@@ -1,8 +1,6 @@
 # Trilhas ("Detonados"): sequências de desafios, na ordem em que aparecem em /trilhas.
 # steps: slugs dos desafios (nome da pasta em challenges/<categoria>/<slug>).
 # `npm run seed` importa; trilha removida daqui some do site.
-# Só desafios com testes (stdio) contam para zerar a trilha; shader e canvas entram como passo livre.
-# Toda trilha precisa de pelo menos um desafio stdio.
 - id: primeiros-passos-em-c
   title: Primeiros passos em C
   description: Do FizzBuzz a uma hash table feita na mão. Loops, strings, bases, bits e ponteiros, um andar por vez.
@@ -61,16 +59,6 @@
     - truques-com-bits
     - calculadora-rpn
     - alocador-first-fit
-
-- id: do-pixel-ao-ray-marching
-  title: Do pixel ao ray marching
-  description: Aqueça com shaders no navegador, trace uma esfera pixel a pixel num PPM e termine marchando raios em GLSL.
-  steps:
-    - xadrez-giratorio
-    - plasma-glsl
-    - mandelbrot
-    - ray-tracer-esfera
-    - raymarching-sdf
 
 - id: maratona-de-entrevista
   title: Maratona de entrevista

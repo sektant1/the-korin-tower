@@ -2,7 +2,7 @@
 title: "Trapping Rain Water"
 difficulty: 3
 tags: [dois-ponteiros, vetor, prefixos, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 5

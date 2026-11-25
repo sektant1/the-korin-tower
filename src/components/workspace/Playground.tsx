@@ -1,7 +1,9 @@
 "use client";
 // Compilador livre da página /compilador: qualquer linguagem da torre, sem desafio,
-// sem testes e sem pontos. Mesmo editor (Vim, temas, :comandos), mesma execução
-// (/api/playground -> runner) e rascunhos por linguagem no localStorage.
+// sem testes e sem pontos. Mesmo editor (Vim, temas, :comandos) e mesmo motor
+// (src/lib/runner): Python no Pyodide aqui mesmo; C, C++ e Rust direto no
+// Compiler Explorer (o stdin é pequeno, então não precisa passar pelo servidor).
+// Rascunhos por linguagem no localStorage.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -12,12 +14,11 @@ import {
   useSettings,
   type EditorTheme,
 } from "@/lib/client/store";
-import { LANGUAGES, type LanguageId } from "@/lib/languages";
-import type { RunResponse } from "@/lib/run-api";
-import { browserWasmProblem, prewarmEmception } from "@/lib/client/emception";
-import { BrowserWasmRunner, PHASE_LABEL } from "@/lib/client/wasm-run";
-import { judge } from "@/lib/judge/judge";
+import { LANGUAGE_IDS, LANGUAGES, acceptsFlags, type LanguageId } from "@/lib/languages";
+import { forDisplay } from "@/lib/run-api";
+import { engineLabel, getBrowserRunner, preloadLanguages, useEngineStage, useEngineStatus } from "@/lib/runner/browser";
 import { sanitizeFlags } from "@/lib/runner/flags";
+import { EngineBadge } from "./ChallengeWorkspace";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
@@ -25,8 +26,8 @@ import { SplitColumns } from "./SplitColumns";
 // Rascunhos ficam no navegador, como nos desafios sem login.
 const DRAFT = "playground";
 
-/** Linguagens que rodam no servidor (GLSL é só no navegador, via ShaderCanvas). */
-const SERVER_LANGS = (Object.keys(LANGUAGES) as LanguageId[]).filter((l) => LANGUAGES[l].piston);
+/** Folga maior que nos desafios: aqui ninguém está competindo (o lote tem teto de 5 s). */
+const TIME_LIMIT_MS = 5000;
 
 /** Ponto de partida de cada linguagem: o "ola, korin!" de sempre. */
 const TEMPLATES: Partial<Record<LanguageId, string>> = {
@@ -47,6 +48,8 @@ int main() {
     println!("ola, korin!");
 }
 `,
+  python: `print("ola, korin!")
+`,
 };
 
 export function Playground() {
@@ -61,6 +64,8 @@ export function Playground() {
   const stdinRef = useRef<HTMLTextAreaElement>(null);
   const outRef = useRef<HTMLDivElement>(null);
   const busy = output.status === "running";
+  const engine = useEngineStatus(lang);
+  const stage = useEngineStage(lang);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const skipChange = useRef(false);
 
@@ -96,9 +101,9 @@ export function Playground() {
     }
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(false), 800);
-    // Quem edita C/C++ vai compilar: sobe a toolchain já (no-op se já subiu).
-    if (lang === "c" || lang === "cpp") prewarmEmception(lang);
-  }, [save, lang]);
+  }, [save]);
+
+  useEffect(() => preloadLanguages(lang), [lang]);
 
   const setEditorText = useCallback((code: string) => {
     clearTimeout(saveTimer.current);
@@ -110,42 +115,22 @@ export function Playground() {
   const execute = useCallback(async () => {
     if (busy) return;
     save(false);
-    setOutput({ status: "running", label: "compilando e executando..." });
+    const running = `compilando e executando (${engineLabel(lang)})...`;
+    setOutput({ status: "running", label: lang === "python" && engine !== "ready" ? `loading: ${stage || "subindo o Python"}...` : running });
     const source = editor.current?.getValue() ?? "";
-    // C/C++: clang no navegador e execução num Web Worker, sem servidor. Rust vai para o runner.
-    if ((lang === "c" || lang === "cpp") && !browserWasmProblem()) {
-      const { flags, rejected } = sanitizeFlags(settings.flags[lang]);
-      try {
-        const runner = new BrowserWasmRunner((phase) => setOutput({ status: "running", label: PHASE_LABEL[phase] }));
-        const r = await judge(runner, { checker: { type: "exact" }, timeLimitMs: 5000, memoryLimitMb: 256 }, lang, source, [{ name: "stdin", input: stdin, expected: "", hidden: false }], flags);
-        const warnings = [...r.warnings, ...(rejected.length ? [`flags ignoradas (não permitidas): ${rejected.join(" ")}`] : [])];
-        setOutput({ status: "done", response: { mode: "run", compile: r.compile, run: r.tests[0] ?? null, warnings } });
-      } catch (e) {
-        setOutput({ status: "error", error: `compilador do navegador: ${(e as Error).message}` });
-      }
-      return;
-    }
+    const { flags, rejected } = acceptsFlags(lang) ? sanitizeFlags(settings.flags[lang]) : { flags: [], rejected: [] };
     try {
-      const res = await fetch("/api/playground", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          language: lang,
-          source,
-          stdin,
-          flags: lang === "c" || lang === "cpp" ? settings.flags[lang] : undefined,
-        }),
+      const r = await getBrowserRunner().run(source, lang, stdin, {
+        timeLimitMs: TIME_LIMIT_MS,
+        flags,
+        onPhase: (ph, detail) => setOutput({ status: "running", label: ph === "loading" ? `loading: ${detail ?? "subindo o Python"}...` : `${detail ?? running.slice(0, -3)}...` }),
       });
-      const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-      if (!res.ok) {
-        setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
-        return;
-      }
-      setOutput({ status: "done", response: body as RunResponse });
+      const warnings = [...r.warnings, ...(rejected.length ? [`flags ignoradas (não permitidas): ${rejected.join(" ")}`] : [])];
+      setOutput({ status: "done", response: { mode: "run", compile: r.compile, run: r.tests[0] ? forDisplay(r.tests[0]) : null, warnings, wallMs: r.wallMs } });
     } catch (e) {
-      setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
+      setOutput({ status: "error", error: (e as Error).message });
     }
-  }, [busy, lang, save, settings.flags, stdin]);
+  }, [busy, engine, lang, save, settings.flags, stage, stdin]);
 
   const commands: EditorCommands = useMemo(
     () => ({
@@ -188,6 +173,7 @@ export function Playground() {
   };
 
   const jump = useCallback((line: number, col: number) => editor.current?.gotoLine(line, col), []);
+  const codeLine = useCallback((n: number) => editor.current?.getValue().split("\n")[n - 1], []);
 
   const fkeys = [
     { cmd: ":w", label: "Salvar", run: commands.save },
@@ -203,7 +189,7 @@ export function Playground() {
           <label>
             Linguagem{" "}
             <select value={lang} onChange={(e) => switchLang(e.target.value as LanguageId)} className="select98">
-              {SERVER_LANGS.map((l) => (
+              {LANGUAGE_IDS.map((l) => (
                 <option key={l} value={l}>
                   {LANGUAGES[l].label}
                 </option>
@@ -213,12 +199,13 @@ export function Playground() {
           <button type="button" className="btn98 primary" onClick={() => execute()} disabled={busy} title=":run">
             ▶ Executar
           </button>
-          <button type="button" className="btn98" onClick={reset} disabled={busy} title="descartar o rascunho e voltar ao template">
-            Restaurar template
+          <button type="button" className="btn98" onClick={reset} disabled={busy} title="apaga o rascunho desta linguagem e volta ao template">
+            Reset
           </button>
           <label className="check98">
             <input type="checkbox" checked={settings.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Vim
           </label>
+          <EngineBadge status={engine} stage={stage} />
         </div>
 
         <CodeEditor
@@ -268,7 +255,7 @@ export function Playground() {
           spellCheck={false}
         />
         <div className="tab-out pg-out" ref={outRef}>
-          <OutputPanel state={output} checker="exact" onJump={jump} idle=":run compila e executa com a entrada acima" />
+          <OutputPanel state={output} checker="exact" language={lang} onJump={jump} codeLine={codeLine} idle=":run compila e executa com a entrada acima" />
         </div>
       </div>
   );

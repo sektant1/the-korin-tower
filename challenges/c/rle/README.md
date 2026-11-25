@@ -2,7 +2,7 @@
 title: "Run-Length Encoding"
 difficulty: 2
 tags: [strings, compressao, bytes]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 6

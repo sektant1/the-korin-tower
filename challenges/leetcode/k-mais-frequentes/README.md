@@ -2,7 +2,7 @@
 title: "Top K Frequent Elements"
 difficulty: 2
 tags: [hash, heap, ordenacao, contagem, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 6

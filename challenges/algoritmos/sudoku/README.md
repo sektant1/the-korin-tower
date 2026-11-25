@@ -2,7 +2,7 @@
 title: "Sudoku Solver"
 difficulty: 5
 tags: [backtracking, bits, recursao]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 2000
 memoryLimitMb: 64
 order: 6

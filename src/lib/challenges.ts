@@ -75,6 +75,7 @@ export async function getChallenge(slug: string) {
     languages: c.languages as LanguageId[],
     templates: c.templates as Partial<Record<LanguageId, string>>,
     solutions: c.solutions as Partial<Record<LanguageId, string>>,
+    drivers: c.drivers as Partial<Record<LanguageId, string>>,
     checker: c.checker as unknown as Checker,
   };
 }

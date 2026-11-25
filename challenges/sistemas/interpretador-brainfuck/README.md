@@ -2,7 +2,7 @@
 title: "Brainfuck Interpreter"
 difficulty: 5
 tags: [interpretador, turing, bytes, fita]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 2000
 memoryLimitMb: 64
 order: 4

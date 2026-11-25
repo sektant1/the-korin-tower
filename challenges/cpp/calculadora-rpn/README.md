@@ -2,7 +2,7 @@
 title: "RPN Calculator"
 difficulty: 2
 tags: [pilha, parsing, strings, stl]
-languages: [cpp, c]
+languages: [cpp, c, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 2

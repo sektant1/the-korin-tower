@@ -2,7 +2,7 @@
 title: "Base Conversion"
 difficulty: 1
 tags: [iniciante, bases, aritmetica, strings]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 5

@@ -2,7 +2,7 @@
 title: "Priority Queue"
 difficulty: 3
 tags: [heap, estruturas-de-dados, arvore]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 3

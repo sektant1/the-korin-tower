@@ -1,23 +1,13 @@
 "use client";
 import { startTransition, useActionState, useState } from "react";
 import type { ChallengeInput } from "@/lib/admin-challenges";
-import { LANGUAGES, isCanvasLanguage, type LanguageId } from "@/lib/languages";
+import { LANGUAGE_IDS, LANGUAGES, type LanguageId } from "@/lib/languages";
 import { saveChallenge } from "../actions";
-
-const STDIO_LANGS = (Object.keys(LANGUAGES) as LanguageId[]).filter((l) => l !== "glsl");
 
 export function ChallengeForm({ initial, categories }: { initial: ChallengeInput; categories: { id: string; name: string }[] }) {
   const [v, setV] = useState(initial);
   const [state, dispatch, pending] = useActionState(saveChallenge, undefined);
   const set = <K extends keyof ChallengeInput>(k: K, value: ChallengeInput[K]) => setV((s) => ({ ...s, [k]: value }));
-  const langs = v.kind === "shader" ? (["glsl"] as LanguageId[]) : v.kind === "canvas" ? STDIO_LANGS.filter(isCanvasLanguage) : STDIO_LANGS;
-
-  const setKind = (kind: ChallengeInput["kind"]) =>
-    setV((s) => ({
-      ...s,
-      kind,
-      languages: kind === "shader" ? ["glsl"] : s.languages.filter((l) => (kind === "canvas" ? isCanvasLanguage(l) : l !== "glsl")),
-    }));
   const toggleLang = (l: LanguageId, on: boolean) =>
     set("languages", on ? [...v.languages, l] : v.languages.filter((x) => x !== l));
   const setCode = (field: "templates" | "solutions", l: LanguageId, code: string) => set(field, { ...v[field], [l]: code });
@@ -82,30 +72,19 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
 
       <fieldset className="fieldset98">
         <legend>Execução</legend>
-        <label>
-          Tipo{" "}
-          <select className="select98" value={v.kind} onChange={(e) => setKind(e.target.value as ChallengeInput["kind"])}>
-            <option value="stdio">stdio (compila no servidor, testes de entrada/saída)</option>
-            <option value="shader">shader (GLSL no navegador, julgado pelos frames)</option>
-            <option value="canvas">canvas (C/C++ com raylib ou SDL2 em WASM, julgado pelos frames)</option>
-          </select>
-        </label>
-        {v.kind !== "shader" && (
-          <div role="group" aria-label="Linguagens" className="admin-inline">
-            Linguagens:
-            {langs.map((l) => (
-              <label key={l} className="check98">
-                <input type="checkbox" checked={v.languages.includes(l)} onChange={(e) => toggleLang(l, e.target.checked)} />{" "}
-                {LANGUAGES[l].label}
-              </label>
-            ))}
-          </div>
-        )}
-        {v.kind === "stdio" && (
+        <div role="group" aria-label="Linguagens" className="admin-inline">
+          Linguagens:
+          {LANGUAGE_IDS.map((l) => (
+            <label key={l} className="check98">
+              <input type="checkbox" checked={v.languages.includes(l)} onChange={(e) => toggleLang(l, e.target.checked)} />{" "}
+              {LANGUAGES[l].label}
+            </label>
+          ))}
+        </div>
           <>
             <label>
               Tempo (ms){" "}
-              <input className="input98 narrow" type="number" min={1} max={10000} value={v.timeLimitMs} onChange={(e) => set("timeLimitMs", Number(e.target.value))} />
+              <input className="input98 narrow" type="number" min={1} max={5000} value={v.timeLimitMs} onChange={(e) => set("timeLimitMs", Number(e.target.value))} />
             </label>
             <label>
               Memória (MB){" "}
@@ -131,7 +110,6 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
               </>
             )}
           </>
-        )}
       </fieldset>
 
       <fieldset className="fieldset98">
@@ -196,7 +174,6 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
         ))}
       </fieldset>
 
-      {v.kind === "stdio" && (
         <fieldset className="fieldset98">
           <legend>Testes ({v.tests.length})</legend>
           {v.tests.map((t, i) => (
@@ -242,7 +219,6 @@ export function ChallengeForm({ initial, categories }: { initial: ChallengeInput
             + Teste
           </button>
         </fieldset>
-      )}
 
       {state?.error && (
         <p className="out-warn" role="alert">

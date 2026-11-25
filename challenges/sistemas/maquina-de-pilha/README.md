@@ -2,7 +2,7 @@
 title: "Stack Machine"
 difficulty: 4
 tags: [vm, interpretador, bytecode, pilha]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 2000
 memoryLimitMb: 64
 order: 2

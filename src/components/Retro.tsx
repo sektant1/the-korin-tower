@@ -219,7 +219,9 @@ export function PageBanner({
   return (
     <header
       className={`floor-strip page-banner ${compact ? "compact" : ""}`}
-      style={{ backgroundImage: `url(${image})`, backgroundPosition: focus }}
+      // Segunda camada: céu do Kami se o cenário não carregar (as imagens de
+      // public/zones_backgrounds são locais do dono e não vão para o git).
+      style={{ backgroundImage: `url(${image}), linear-gradient(160deg, #3a1a7a 0%, #7a4bd0 45%, #ff8800 100%)`, backgroundPosition: `${focus}, center` }}
     >
       <div className="page-banner-text">
         {kicker && <p className="page-banner-kicker">{kicker}</p>}

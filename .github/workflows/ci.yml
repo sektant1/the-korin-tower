@@ -86,10 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
-      # Runner local: compila na própria VM do Actions (descartável). Só roda as
-      # soluções do repositório, nunca código de usuário.
-      RUNNER: local
-      RUNNER_COMPILE_TIMEOUT_MS: "180000" # VM do Actions é lenta; rustc -O passa de 30s
+      # Motor local (scripts/local-engine.ts): compila e roda na própria VM do
+      # Actions (descartável). Só roda as soluções do repositório, nunca código de jogador.
+      VERIFY_COMPILE_TIMEOUT_MS: "180000" # VM do Actions é lenta; rustc -O passa de 30s
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -97,7 +96,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - run: gcc --version && g++ --version && rustc --version
+      - run: gcc --version && g++ --version && rustc --version && python3 --version
       - run: npm run verify
 
   deploy:

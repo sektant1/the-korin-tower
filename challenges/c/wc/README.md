@@ -2,7 +2,7 @@
 title: "wc: Word Counting"
 difficulty: 1
 tags: [iniciante, stdio, unix, strings]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 2

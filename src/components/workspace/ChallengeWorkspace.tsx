@@ -13,24 +13,18 @@ import {
   useSettings,
   type EditorTheme,
 } from "@/lib/client/store";
-import { LANGUAGES, isCanvasLanguage, type CanvasLanguage, type ChallengeKind, type LanguageId } from "@/lib/languages";
-import { renderShaderPpm } from "@/lib/client/shader";
-import { browserWasmProblem, prewarmEmception } from "@/lib/client/emception";
-import { BrowserWasmRunner, PHASE_LABEL, compileStdioCached, wasmToBase64 } from "@/lib/client/wasm-run";
-import { judge, type JudgeLimits, type JudgeTest, type TestOutcome } from "@/lib/judge/judge";
-import { FRAME_TEST_NAME, framesOutcome } from "@/lib/judge/frames";
-import { submitVerify } from "@/lib/submit-mode";
+import { LANGUAGES, acceptsFlags, type Checker, type LanguageId } from "@/lib/languages";
+import { engineLabel, getBrowserRunner, preloadLanguages, useEngineStage, useEngineStatus } from "@/lib/runner/browser";
+import { withHarness } from "@/lib/runner/code-runner";
 import { sanitizeFlags } from "@/lib/runner/flags";
-import type { RunResponse } from "@/lib/run-api";
+import type { IoTestCase, Phase } from "@/lib/runner/types";
+import { forDisplay, type RunResponse } from "@/lib/run-api";
 import { HINT_PENALTY } from "@/lib/scoring";
 import { useAccount, useProgressMap } from "../Account";
 import { NextStepBar } from "../Tower";
 import { CodeEditor, type CodeEditorHandle, type EditorCommands } from "./CodeEditor";
 import { OutputPanel, type OutputState } from "./OutputPanel";
 import { SplitColumns } from "./SplitColumns";
-import { ShaderCanvas } from "./ShaderCanvas";
-import type { ShaderError } from "@/lib/client/shader";
-import { EmceptionCanvas } from "./EmceptionCanvas";
 
 /** Código aprovado de outro jogador (GET /api/challenges/<slug>/solutions). */
 interface PlayerSolution {
@@ -43,17 +37,18 @@ interface PlayerSolution {
 
 interface Props {
   slug: string;
-  kind: ChallengeKind;
   languages: LanguageId[];
   templates: Partial<Record<LanguageId, string>>;
-  checker: "exact" | "ppm";
+  checker: Checker;
+  /** limite por teste do desafio (o motor aplica o fator da linguagem) */
+  timeLimitMs: number;
+  /** wrapper oculto do Python (driver.py), anexado ao código antes de rodar no navegador */
+  pythonDriver: string | null;
   hintsTotal: number;
   hasSolution: boolean;
   defaultStdin: string;
-  /** limites e checker do desafio: o :run/:test de C/C++ é julgado aqui no navegador */
-  limits: JudgeLimits;
-  /** testes públicos (já aparecem no enunciado); os ocultos só existem no servidor */
-  publicTests: JudgeTest[];
+  /** testes públicos (já aparecem no enunciado): o :test de Python roda com eles no navegador */
+  publicTests: IoTestCase[];
   /** detonado pelo qual o jogador chegou (?trilha=), para o "próximo" seguir a ordem dele */
   trackId: string | null;
   /** Com login: o que está salvo na conta. Sem login: null (usa o localStorage). */
@@ -62,10 +57,15 @@ interface Props {
 
 type Mode = "run" | "test" | "submit";
 const MODE_LABEL: Record<Mode, string> = {
-  run: "compilando e executando...",
-  test: "rodando os testes públicos...",
-  submit: "rodando todos os testes, públicos e ocultos...",
+  run: "compilando e executando",
+  test: "compilando e rodando os testes públicos",
+  submit: "compilando e rodando todos os testes",
 };
+/** Texto do painel em cada fase: a etapa que o motor contou, ou a da fase. */
+function phaseLabel(mode: Mode, phase: Phase, detail?: string): string {
+  if (phase === "loading") return `loading: ${detail ?? "subindo o Python"}...`;
+  return `${detail ?? MODE_LABEL[mode]}...`;
+}
 
 export function ChallengeWorkspace(p: Props) {
   const router = useRouter();
@@ -84,14 +84,13 @@ export function ChallengeWorkspace(p: Props) {
   const [hints, setHints] = useState<string[]>([]);
   const [solution, setSolution] = useState<Partial<Record<LanguageId, string>> | null>(null);
   const [others, setOthers] = useState<PlayerSolution[] | null>(null);
-  const [wasm, setWasm] = useState<{ source: string; language: CanvasLanguage; version: number }>({ source: "", language: "c", version: 0 });
   const [confirm, setConfirm] = useState<null | "giveup" | "reset">(null);
-  const [shader, setShader] = useState({ source: initialCode, version: 0 });
-  const [shaderErrors, setShaderErrors] = useState<ShaderError[]>([]);
   const [tab, setTab] = useState<"out" | "hints" | "sol">("out");
   const stdinRef = useRef<HTMLTextAreaElement>(null);
   const busy = output.status === "running";
   const status = progress[p.slug];
+  const engine = useEngineStatus(lang);
+  const stage = useEngineStage(lang);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   // setValue() programático (troca de linguagem, restaurar) dispara onChange; não é edição do jogador.
   const skipChange = useRef(false);
@@ -107,7 +106,6 @@ export function ChallengeWorkspace(p: Props) {
     const draft = accountDrafts.current[p.languages[0]] ?? loadDraft(p.slug, p.languages[0]);
     if (draft != null && draft !== initialCode) {
       setEditorText(draft);
-      if (p.kind === "shader") setShader({ source: draft, version: 1 });
       flash(logged ? "rascunho da conta restaurado" : "rascunho restaurado");
     }
     const n = Math.min(p.saved ? p.saved.hintsRevealed : loadHintsRevealed(p.slug), p.hintsTotal);
@@ -154,9 +152,11 @@ export function ChallengeWorkspace(p: Props) {
     }
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => save(false), 800);
-    // Quem edita C/C++ vai compilar: sobe a toolchain já (no-op se já subiu).
-    if (lang === "c" || lang === "cpp") prewarmEmception(p.kind === "stdio" ? lang : undefined); // canvas: só sobe a toolchain
-  }, [save, lang, p.kind]);
+  }, [save]);
+
+  // Motor da linguagem atual sobe já (Python: Worker + Pyodide do cache); os
+  // das outras linguagens do desafio, quando o navegador ficar ocioso.
+  useEffect(() => preloadLanguages(lang, p.languages), [lang, p.languages]);
 
   /** Troca o texto do editor sem que isso conte como edição (nem gere save na linguagem errada). */
   const setEditorText = useCallback((code: string) => {
@@ -166,231 +166,93 @@ export function ChallengeWorkspace(p: Props) {
     skipChange.current = false;
   }, []);
 
-  /** Ocultos chegam sem a resposta (só o hash); no painel, nem a entrada aparece. */
-  const redactHidden = (tests: TestOutcome[]) =>
-    tests.map((t) => (t.hidden ? { ...t, input: "", expected: "", stdout: "", stderr: "", message: t.verdict === "AC" ? undefined : t.message } : t));
-
-  // Mostra o resultado e, num :submit aprovado, registra (na conta ou no navegador).
-  const finish = useCallback(
-    async (r: Extract<RunResponse, { mode: "test" | "submit" }>, record?: () => Promise<Response>, serverJudges = false) => {
-      setOutput({ status: "done", response: r });
-      if (r.mode !== "submit" || !r.allPassed) return;
-      // Convidado não pontua: o progresso fica no navegador, sem tocar o servidor
-      // (exceto no modo "server", em que só ele pode rodar os ocultos).
-      if (!record || (!logged && !serverJudges)) {
+  /** Resultado de um submit aprovado: pontos, progresso e solução liberada. */
+  const celebrate = useCallback(
+    (awarded: number | undefined) => {
+      if (awarded === undefined) {
         setProgress(p.slug, "solved");
         flash("resolvido! entre na sua conta para pontuar e ver a solução");
         return;
       }
-      setOutput({ status: "running", label: serverJudges ? "públicos ok; o servidor está rodando os testes ocultos..." : "aprovado! registrando na sua conta..." });
-      try {
-        const res = await record();
-        const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-        if (!res.ok) {
-          setOutput({ status: "done", response: { ...r, warnings: [...r.warnings, `não registrou na conta: ${body.error ?? res.status}`] } });
-          return;
-        }
-        const server = body as RunResponse;
-        // Os testes que o servidor rodou (modo "server": os ocultos) se juntam aos daqui.
-        const merged = server.mode === "submit" ? { ...r, tests: [...r.tests, ...server.tests], allPassed: server.allPassed, awarded: server.awarded, warnings: [...r.warnings, ...server.warnings] } : r;
-        setOutput({ status: "done", response: merged });
-        if (!merged.allPassed) return;
-        if (merged.awarded === undefined) {
-          setProgress(p.slug, "solved");
-          flash("resolvido! entre na sua conta para pontuar e ver a solução");
-          return;
-        }
-        router.refresh(); // traz o progresso novo do banco (placar e conquistas novas, que viram toast)
-        const pts = merged.awarded ?? 0;
-        flash(pts > 0 ? `resolvido! +${pts} pontos. solução liberada` : "resolvido de novo. solução liberada");
-      } catch (e) {
-        setOutput({ status: "done", response: { ...r, warnings: [...r.warnings, `sem conexão para registrar: ${(e as Error).message}`] } });
-      }
+      router.refresh(); // traz o progresso novo do banco (placar e conquistas novas, que viram toast)
+      flash(awarded > 0 ? `resolvido! +${awarded} pontos. solução liberada` : "resolvido de novo. solução liberada");
     },
-    [flash, logged, p.slug, router],
+    [flash, p.slug, router],
   );
 
-  /** POST /api/run só para registrar/conferir (nunca compila nada). */
   const post = useCallback(
     (body: Record<string, unknown>) =>
       fetch("/api/run", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ slug: p.slug, ...body }) }),
     [p.slug],
   );
 
-  // Resposta de /api/run quando o servidor executa (Rust, ou navegador sem SharedArrayBuffer).
-  const handleRunResponse = useCallback(
-    async (res: Response) => {
-      const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+  /** POST /api/run e mostra a resposta (C, C++ e Rust rodam no servidor; Python só registra). */
+  const send = useCallback(
+    async (body: Record<string, unknown>): Promise<RunResponse | null> => {
+      const res = await post(body);
+      const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
       if (!res.ok) {
-        setOutput({ status: "error", error: body.error ?? `HTTP ${res.status}` });
-        return;
+        setOutput({ status: "error", error: data.error ?? `HTTP ${res.status}` });
+        return null;
       }
-      const r = body as RunResponse;
-      setOutput({ status: "done", response: r });
-      if (r.mode === "submit" && r.allPassed) {
-        if (r.awarded === undefined) {
-          setProgress(p.slug, "solved");
-          flash("resolvido! entre na sua conta para pontuar e ver a solução");
-        } else {
-          router.refresh();
-          flash(r.awarded > 0 ? `resolvido! +${r.awarded} pontos. solução liberada` : "resolvido de novo. solução liberada");
-        }
-      }
+      return data as RunResponse;
     },
-    [flash, p.slug, router],
+    [post],
   );
 
-  /** Frames de shader/canvas: veredito aqui mesmo; o servidor só reconfere ao registrar. */
-  const judgeFrames = useCallback(
-    async (mode: "test" | "submit", language: LanguageId, source: string, frames: string[], compileOutput = "") => {
-      let test: TestOutcome;
-      try {
-        test = framesOutcome(frames, FRAME_TEST_NAME[p.kind === "canvas" ? "canvas" : "shader"]);
-      } catch (e) {
-        return setOutput({ status: "error", error: `não deu para capturar o frame: ${(e as Error).message}` });
-      }
-      const r = { mode, compile: { ok: true, output: compileOutput }, tests: [test], allPassed: test.verdict === "AC", warnings: [] };
-      await finish(r, () => post({ language, source, mode, frames }));
-    },
-    [finish, p.kind, post],
-  );
-
-  // Canvas :test/:submit: o EmceptionCanvas compila, roda e devolve os frames.
-  const pendingCapture = useRef<{ mode: "test" | "submit"; language: CanvasLanguage; source: string; compileOutput: string } | null>(null);
-  const [capture, setCapture] = useState(0);
-
-  // O canvas compila no navegador; o resultado do clang/wasm-ld vira o mesmo
-  // painel de compilação dos desafios stdio (avisos e erros clicáveis).
-  const onWasmCompile = useCallback((r: { ok: boolean; output: string }) => {
-    const pend = pendingCapture.current;
-    if (!pend) {
-      setOutput({ status: "done", response: { mode: "run", compile: { ok: r.ok, output: r.output }, run: null, warnings: [] } });
-      return;
-    }
-    if (!r.ok) {
-      pendingCapture.current = null;
-      setOutput({ status: "done", response: { mode: pend.mode, compile: { ok: false, output: r.output }, tests: [], allPassed: false, warnings: [] } });
-      return;
-    }
-    pend.compileOutput = r.output;
-    setOutput({ status: "running", label: "rodando o programa e fotografando o canvas (3 s)..." });
-  }, []);
-
-  const onFrames = useCallback(
-    (frames: string[] | null, error?: string) => {
-      const pend = pendingCapture.current;
-      pendingCapture.current = null;
-      if (!pend) return;
-      if (!frames) {
-        if (error !== "não compilou") setOutput({ status: "error", error: `o programa não rodou: ${error ?? "erro desconhecido"}` });
+  // Python: compila e roda aqui (Pyodide no Worker). No :submit, baixa todos os
+  // testes, julga e manda só o veredito para registrar.
+  const executePython = useCallback(
+    async (mode: Mode, source: string) => {
+      const runner = getBrowserRunner();
+      const code = p.pythonDriver ? withHarness("python", source, p.pythonDriver) : source;
+      const opts = { checker: p.checker, timeLimitMs: p.timeLimitMs, onPhase: (ph: Phase, detail?: string) => setOutput({ status: "running", label: phaseLabel(mode, ph, detail) }) };
+      if (mode === "run") {
+        const r = await runner.run(code, "python", stdin, opts);
+        setOutput({ status: "done", response: { mode, compile: r.compile, run: r.tests[0] ? forDisplay(r.tests[0]) : null, warnings: r.warnings, wallMs: r.wallMs } });
         return;
       }
-      void judgeFrames(pend.mode, pend.language, pend.source, frames, pend.compileOutput);
+      let tests = p.publicTests;
+      if (mode === "submit") {
+        setOutput({ status: "running", label: "baixando os testes..." });
+        const res = await fetch(`/api/challenges/${p.slug}/tests`);
+        if (!res.ok) throw new Error(`não consegui baixar os testes (HTTP ${res.status})`);
+        tests = ((await res.json()) as { tests: IoTestCase[] }).tests;
+      }
+      const r = await runner.runAndTest(code, "python", tests, opts);
+      const local: RunResponse = { mode, compile: r.compile, tests: r.tests.map(forDisplay), allPassed: r.compile.ok && r.allPassed, warnings: r.warnings, wallMs: r.wallMs };
+      setOutput({ status: "done", response: local });
+      if (mode !== "submit" || !local.allPassed) return;
+      if (!logged) return celebrate(undefined); // convidado: progresso só no navegador
+      setOutput({ status: "running", label: "aprovado! registrando na sua conta..." });
+      const server = await send({ language: "python", source, mode, verdict: { allPassed: true, timesMs: r.tests.map((t) => t.timeMs) } });
+      if (!server) return setOutput({ status: "done", response: { ...local, warnings: [...local.warnings, "não registrou na conta; tente enviar de novo"] } });
+      setOutput({ status: "done", response: { ...local, awarded: server.mode === "submit" ? server.awarded : undefined } });
+      celebrate(server.mode === "submit" ? server.awarded : undefined);
     },
-    [judgeFrames],
+    [celebrate, logged, p.checker, p.publicTests, p.pythonDriver, p.slug, p.timeLimitMs, send, stdin],
   );
 
   const execute = useCallback(
     async (mode: Mode) => {
       setTab("out");
-      if (p.kind === "shader") {
-        if (mode === "run") {
-          setShader((s) => ({ source: editor.current?.getValue() ?? s.source, version: s.version + 1 }));
-          return;
-        }
-        // :test/:submit de shader: renderiza frames com iTime fixo e julga aqui.
-        if (busy) return;
-        const source = editor.current?.getValue() ?? "";
-        setOutput({ status: "running", label: "renderizando o shader..." });
-        await new Promise((r) => setTimeout(r, 50)); // deixa o painel pintar antes do render
-        const f0 = renderShaderPpm(source, 0);
-        const f3 = renderShaderPpm(source, 3);
-        if (f0.ppm === null && f3.ppm === null) {
-          const errors = (f0.errors.length ? f0 : f3).errors;
-          setOutput({
-            status: "done",
-            response: {
-              mode,
-              compile: { ok: false, output: errors.map((e) => `shader.frag:${e.line ?? 0}:1: erro: ${e.message}`).join("\n") },
-              tests: [],
-              allPassed: false,
-              warnings: [],
-            },
-          });
-          return;
-        }
-        save(false);
-        setShader((s) => ({ source, version: s.version + 1 })); // o canvas mostra o que foi julgado
-        await judgeFrames(mode, "glsl", source, [f0.ppm, f3.ppm].filter((f): f is string => f !== null));
-        return;
-      }
       if (busy) return;
       save(false);
       const source = editor.current?.getValue() ?? "";
-      if (p.kind === "canvas") {
-        if (!isCanvasLanguage(lang)) return;
-        // Compila e roda no próprio navegador (Emception/clang num Worker).
-        // :test/:submit ainda fotografam o canvas para o veredito.
-        pendingCapture.current = mode === "run" ? null : { mode, language: lang, source, compileOutput: "" };
-        setOutput({ status: "running", label: PHASE_LABEL.loading });
-        const version = wasm.version + 1;
-        if (mode !== "run") setCapture(version);
-        setWasm({ source, language: lang, version });
-        return;
-      }
-      // C/C++ compila aqui mesmo (clang no Web Worker do Emception) e roda cada
-      // teste num Web Worker: o servidor não compila nem executa nada. No
-      // :submit, os ocultos vêm de /api/challenges/<slug>/tests só com o hash
-      // da resposta. Sem SharedArrayBuffer (ou Rust), cai no runner do servidor.
-      if ((lang === "c" || lang === "cpp") && !browserWasmProblem()) {
-        const { flags, rejected } = sanitizeFlags(settings.flags[lang]);
-        const extra = rejected.length ? [`flags ignoradas (não permitidas): ${rejected.join(" ")}`] : [];
-        const onPhase = (phase: keyof typeof PHASE_LABEL) => setOutput({ status: "running", label: PHASE_LABEL[phase] });
-        setOutput({ status: "running", label: MODE_LABEL[mode] });
-        try {
-          if (mode === "run") {
-            const r = await judge(new BrowserWasmRunner(onPhase), p.limits, lang, source, [{ name: "stdin", input: stdin, expected: "", hidden: false }], flags);
-            setOutput({ status: "done", response: { mode, compile: r.compile, run: r.tests[0] ?? null, warnings: [...r.warnings, ...extra] } });
-            return;
-          }
-          const serverVerify = submitVerify() === "server";
-          let tests = p.publicTests;
-          if (mode === "submit" && !serverVerify) {
-            const res = await fetch(`/api/challenges/${p.slug}/tests`);
-            if (!res.ok) throw new Error(`não consegui baixar os testes (${res.status})`);
-            tests = ((await res.json()) as { tests: JudgeTest[] }).tests;
-          }
-          const r = await judge(new BrowserWasmRunner(onPhase), p.limits, lang, source, tests, flags);
-          const local = { mode, compile: r.compile, tests: redactHidden(r.tests), allPassed: r.allPassed, warnings: [...r.warnings, ...extra] };
-          if (mode === "test" || !r.compile.ok) return setOutput({ status: "done", response: local });
-          if (!serverVerify) {
-            await finish(local, () => post({ language: lang, source, mode, verdict: { allPassed: true, timesMs: r.tests.map((t) => t.timeMs) } }));
-            return;
-          }
-          // Modo "server": públicos passaram aqui; o servidor roda os ocultos no mesmo .wasm.
-          if (!r.allPassed) return setOutput({ status: "done", response: local });
-          const compiled = await compileStdioCached({ language: lang, source, flags, memoryLimitMb: p.limits.memoryLimitMb });
-          await finish({ ...local, allPassed: true }, () => post({ language: lang, source, mode, wasm: wasmToBase64(compiled.wasm!), publicPassed: true }), true);
-        } catch (e) {
-          setOutput({ status: "error", error: `compilador do navegador: ${(e as Error).message}` });
-        }
-        return;
-      }
-      setOutput({ status: "running", label: MODE_LABEL[mode] });
+      setOutput({ status: "running", label: lang === "python" ? phaseLabel(mode, engine === "ready" ? "compiling" : "loading", engine === "ready" ? undefined : stage || undefined) : `${MODE_LABEL[mode]} (${engineLabel(lang)})...` });
       try {
-        const res = await post({
-          language: lang,
-          source,
-          stdin: mode === "run" ? stdin : undefined,
-          mode,
-          flags: lang === "c" || lang === "cpp" ? settings.flags[lang] : undefined,
-        });
-        await handleRunResponse(res);
+        if (lang === "python") return await executePython(mode, source);
+        const { flags, rejected } = acceptsFlags(lang) ? sanitizeFlags(settings.flags[lang]) : { flags: [], rejected: [] };
+        const r = await send({ language: lang, source, mode, stdin: mode === "run" ? stdin : undefined, flags: flags.join(" ") });
+        if (!r) return;
+        if (rejected.length) r.warnings = [...r.warnings, `flags ignoradas (não permitidas): ${rejected.join(" ")}`];
+        setOutput({ status: "done", response: r });
+        if (r.mode === "submit" && r.allPassed) celebrate(r.awarded);
       } catch (e) {
-        setOutput({ status: "error", error: `falha de rede: ${(e as Error).message}` });
+        setOutput({ status: "error", error: (e as Error).message });
       }
     },
-    [busy, finish, handleRunResponse, judgeFrames, lang, p.kind, p.limits, p.publicTests, p.slug, post, save, settings.flags, stdin, wasm.version],
+    [busy, celebrate, engine, executePython, lang, save, send, settings.flags, stage, stdin],
   );
 
   const nextHint = useCallback(async () => {
@@ -420,12 +282,12 @@ export function ChallengeWorkspace(p: Props) {
 
   // Soluções dos outros jogadores: mesma regra, e só ao abrir a aba (podem ser muitas).
   useEffect(() => {
-    if (tab !== "sol" || !logged || !status || others || p.kind === "canvas") return;
+    if (tab !== "sol" || !logged || !status || others) return;
     fetch(`/api/challenges/${p.slug}/solutions`)
       .then((r) => (r.ok ? r.json() : { solutions: [] }))
       .then((d) => setOthers(d.solutions))
       .catch(() => setOthers([]));
-  }, [tab, logged, status, others, p.kind, p.slug]);
+  }, [tab, logged, status, others, p.slug]);
 
   const commands: EditorCommands = useMemo(
     () => ({
@@ -476,21 +338,20 @@ export function ChallengeWorkspace(p: Props) {
   };
 
   const jump = useCallback((line: number, col: number) => editor.current?.gotoLine(line, col), []);
+  const codeLine = useCallback((n: number) => editor.current?.getValue().split("\n")[n - 1], []);
 
-  // Todo tipo tem :test/:submit: stdio por testes, shader e canvas pelos frames.
   const fkeys = [
     { cmd: ":w", label: "Salvar", run: commands.save },
     { cmd: ":run", label: "Executar", run: commands.run },
     { cmd: ":test", label: "Testar", run: commands.test },
     { cmd: ":submit", label: "Enviar", run: commands.submit },
-    ...(p.kind === "stdio" ? [{ cmd: ":stdin", label: "Entrada", run: commands.stdin }] : []),
-    { cmd: ":hint", label: "Dica", run: commands.hint },
+    { cmd: ":stdin", label: "Entrada", run: commands.stdin },
     { cmd: ":out", label: "Saída", run: commands.output },
     { cmd: ":q", label: "Sair", run: commands.quit },
   ];
 
   const tabs = [
-    { id: "out", label: p.kind === "stdio" ? "Saída" : "Canvas" },
+    { id: "out", label: "Saída" },
     { id: "hints", label: `Dicas ${hints.length}/${p.hintsTotal}` },
     { id: "sol", label: "Solução" },
   ] as const;
@@ -519,12 +380,13 @@ export function ChallengeWorkspace(p: Props) {
           <button type="button" className="btn98 primary" onClick={() => execute("submit")} disabled={busy} title=":submit">
             Enviar
           </button>
-          <button type="button" className="btn98" onClick={() => setTab("hints")} title="abre as dicas (:hint revela a próxima)">
-            Dicas
+          <button type="button" className="btn98" onClick={() => setConfirm("reset")} disabled={busy} title="apaga o rascunho desta linguagem e volta ao template">
+            Reset
           </button>
           <label className="check98">
             <input type="checkbox" checked={settings.vim} onChange={(e) => updateSettings({ vim: e.target.checked })} /> Vim
           </label>
+          <EngineBadge status={engine} stage={stage} />
         </div>
 
         <CodeEditor
@@ -572,63 +434,30 @@ export function ChallengeWorkspace(p: Props) {
         </div>
 
         <div className="tab-panel" role="tabpanel" id="ws-panel" aria-labelledby={`tab-${tab}`}>
-          {/* A aba de saída fica montada (só escondida) para não perder canvas e resultado. */}
+          {/* A aba de saída fica montada (só escondida) para não perder o resultado. */}
           <div className="tab-out" hidden={tab !== "out"}>
-            {p.kind === "stdio" ? (
-              <>
-                <label className="stdin-label" htmlFor="stdin">
-                  Entrada (stdin) <span className="stdin-hint">Ctrl+Enter executa · Esc volta ao editor</span>
-                </label>
-                <textarea
-                  id="stdin"
-                  ref={stdinRef}
-                  className="stdin98 stdin-box"
-                  rows={5}
-                  value={stdin}
-                  onChange={(e) => setStdin(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-                      e.preventDefault();
-                      void execute("run");
-                    } else if (e.key === "Escape") {
-                      e.preventDefault();
-                      editor.current?.focus();
-                    }
-                  }}
-                  spellCheck={false}
-                />
-                <OutputPanel state={output} checker={p.checker} onJump={jump} />
-              </>
-            ) : p.kind === "canvas" ? (
-              <>
-                <EmceptionCanvas source={wasm.source} language={wasm.language} version={wasm.version} onCompile={onWasmCompile} capture={capture} onFrames={onFrames} />
-                {output.status !== "idle" && <OutputPanel state={output} checker={p.checker} onJump={jump} />}
-              </>
-            ) : (
-              <>
-                <ShaderCanvas source={shader.source} version={shader.version} onResult={setShaderErrors} />
-                {output.status !== "idle" && <OutputPanel state={output} checker={p.checker} onJump={jump} />}
-                {shaderErrors.length > 0 && (
-                  <div className="crt">
-                    <div className="crt-inner">
-                      <div className="out-head bad">erro no shader</div>
-                      <ul className="tests">
-                        {shaderErrors.map((e, i) => (
-                          <li key={i}>
-                            {e.line ? (
-                              <button type="button" className="loc-link" onClick={() => jump(e.line!, 1)}>
-                                linha {e.line}
-                              </button>
-                            ) : null}{" "}
-                            {e.message}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
+            <label className="stdin-label" htmlFor="stdin">
+              Entrada (stdin) <span className="stdin-hint">Ctrl+Enter executa · Esc volta ao editor</span>
+            </label>
+            <textarea
+              id="stdin"
+              ref={stdinRef}
+              className="stdin98 stdin-box"
+              rows={5}
+              value={stdin}
+              onChange={(e) => setStdin(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                  e.preventDefault();
+                  void execute("run");
+                } else if (e.key === "Escape") {
+                  e.preventDefault();
+                  editor.current?.focus();
+                }
+              }}
+              spellCheck={false}
+            />
+            <OutputPanel state={output} checker={p.checker.type} language={lang} onJump={jump} codeLine={codeLine} />
           </div>
 
           {tab === "hints" && (
@@ -713,7 +542,7 @@ export function ChallengeWorkspace(p: Props) {
 
   return (
     <>
-      <SplitColumns storageKey="workspace" initial={58} min={30} max={78} className="workspace" id="editor" left={editorPane} right={ioPane} />
+      <SplitColumns storageKey="workspace-v2" initial={75} min={30} max={85} className="workspace" id="editor" left={editorPane} right={ioPane} />
       {confirm && (
         <div className="dialog-backdrop" role="presentation" onClick={() => setConfirm(null)} onKeyDown={(e) => e.key === "Escape" && setConfirm(null)}>
           <div className="window98 dialog" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title" onClick={(e) => e.stopPropagation()}>
@@ -735,5 +564,15 @@ export function ChallengeWorkspace(p: Props) {
         </div>
       )}
     </>
+  );
+}
+
+/** Enquanto o motor sobe: "loading" e a etapa. Some quando fica pronto. */
+export function EngineBadge({ status, stage }: { status: ReturnType<typeof useEngineStatus>; stage?: string }) {
+  if (status === "ready" || status === "idle") return null;
+  return (
+    <span className={`engine-badge ${status}`} role="status" aria-live="polite" title={stage}>
+      {status === "loading" ? `loading${stage ? `: ${stage}` : ""}` : "erro ao carregar o Python"}
+    </span>
   );
 }

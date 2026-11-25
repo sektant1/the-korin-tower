@@ -16,7 +16,7 @@ hints:
 
 Reimplemente uma versão pequena de `Vec<T>` com alocação manual (`std::alloc`). Não pode usar `Vec`, `Box<[T]>` ou qualquer coleção da std dentro de `MyVec`.
 
-O `main` do template já lê os comandos e chama sua struct. Não mexa nele.
+O `main` que lê os comandos fica escondido e é anexado ao seu código na hora de rodar: você escreve só a struct, sem `fn main`.
 
 ## API
 
@@ -26,8 +26,8 @@ impl<T> MyVec<T> {
     fn push(&mut self, x: T);
     fn pop(&mut self) -> Option<T>;
     fn get(&self, i: usize) -> Option<&T>;
-    fn insert(&mut self, i: usize, x: T); // 0 <= i <= len (o main garante)
-    fn remove(&mut self, i: usize) -> T;  // 0 <= i <  len (o main garante)
+    fn insert(&mut self, i: usize, x: T); // 0 <= i <= len (o driver garante)
+    fn remove(&mut self, i: usize) -> T;  // 0 <= i <  len (o driver garante)
     fn len(&self) -> usize;
     fn capacity(&self) -> usize;
     fn as_slice(&self) -> &[T];

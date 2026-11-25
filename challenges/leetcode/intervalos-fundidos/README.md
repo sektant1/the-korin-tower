@@ -2,7 +2,7 @@
 title: "Merge Intervals"
 difficulty: 2
 tags: [ordenacao, intervalos, varredura, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 4

@@ -1,0 +1,271 @@
+- generic [active] [ref=f8e1]:
+  - link "Pular para o conteúdo" [ref=f8e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - region "Notificações":
+    - list
+  - banner [ref=f8e3]:
+    - link "The Korin Tower, página inicial":
+      - /url: /
+    - link "The Korin Tower, página inicial" [ref=f8e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=f8e6]: THE KORIN TOWER
+  - generic [ref=f8e8]:
+    - text: » » » » » » » » » » » »
+    - main [ref=f8e9]:
+      - generic [ref=f8e10]:
+        - article [ref=f8e11]:
+          - generic [ref=f8e12]: enunciado.txt
+          - generic [ref=f8e14]:
+            - generic [ref=f8e15]:
+              - generic [ref=f8e16]: ANDAR 3
+              - generic [ref=f8e17]: Torre de Karin
+            - navigation "Você está em" [ref=f8e18]:
+              - link "A Torre" [ref=f8e19] [cursor=pointer]:
+                - /url: /desafios
+              - text: »
+              - link "Andar 3" [ref=f8e20] [cursor=pointer]:
+                - /url: /desafios#andar-3
+              - text: »
+              - link "C" [ref=f8e21] [cursor=pointer]:
+                - /url: /desafios?sala=c
+            - heading "Hash Table" [level=1] [ref=f8e22]
+            - paragraph [ref=f8e23]:
+              - generic "Dificuldade 3 de 5" [ref=f8e24]:
+                - generic [aria-hidden] [ref=f8e26]:
+                  - generic [ref=f8e27]: ★
+                  - generic [ref=f8e28]: ★
+                  - generic [ref=f8e29]: ★
+                  - generic [ref=f8e30]: ★
+                  - generic [ref=f8e31]: ★
+              - text: · C · 2000 ms · 128 MB · 2 testes públicos, 6 ocultos
+            - paragraph [ref=f8e32]:
+              - generic [ref=f8e33]: "#hash"
+              - generic [ref=f8e34]: "#malloc"
+              - generic [ref=f8e35]: "#structs"
+              - generic [ref=f8e36]: "#estruturas-de-dados"
+            - generic [ref=f8e37]:
+              - paragraph [ref=f8e38]:
+                - text: Implemente um dicionário
+                - code [ref=f8e39]: string → inteiro
+                - text: em C puro, sem bibliotecas. O
+                - code [ref=f8e40]: main
+                - text: que lê os comandos fica escondido e é anexado ao seu código na hora de rodar; você escreve só as funções
+                - code [ref=f8e41]: ht_*
+                - text: ", sem"
+                - code [ref=f8e42]: main
+                - text: .
+              - heading "Comandos" [level=2] [ref=f8e43]
+              - table [ref=f8e44]:
+                - rowgroup [ref=f8e45]:
+                  - row [ref=f8e46]:
+                    - columnheader "Comando" [ref=f8e47]
+                    - columnheader "Efeito" [ref=f8e48]
+                    - columnheader "Saída" [ref=f8e49]
+                - rowgroup [ref=f8e50]:
+                  - row [ref=f8e51]:
+                    - cell [ref=f8e52]:
+                      - code [ref=f8e53]: set K V
+                    - cell [ref=f8e54]:
+                      - text: associa
+                      - code [ref=f8e55]: V
+                      - text: à chave
+                      - code [ref=f8e56]: K
+                      - text: (sobrescreve se já existir)
+                    - cell "nada" [ref=f8e57]
+                  - row [ref=f8e58]:
+                    - cell [ref=f8e59]:
+                      - code [ref=f8e60]: get K
+                    - cell "consulta" [ref=f8e61]
+                    - cell [ref=f8e62]:
+                      - text: o valor, ou
+                      - code [ref=f8e63]: nil
+                  - row [ref=f8e64]:
+                    - cell [ref=f8e65]:
+                      - code [ref=f8e66]: del K
+                    - cell "remove" [ref=f8e67]
+                    - cell [ref=f8e68]:
+                      - code [ref=f8e69]: "1"
+                      - text: se removeu,
+                      - code [ref=f8e70]: "0"
+                      - text: se não existia
+                  - row [ref=f8e71]:
+                    - cell [ref=f8e72]:
+                      - code [ref=f8e73]: count
+                    - cell [ref=f8e74]
+                    - cell "número de chaves" [ref=f8e75]
+              - paragraph [ref=f8e76]:
+                - text: As chaves têm de 1 a 32 caracteres
+                - code [ref=f8e77]: "[a-z0-9_]"
+                - text: . Os valores são inteiros de 64 bits com sinal.
+              - heading "Entrada" [level=2] [ref=f8e78]
+              - paragraph [ref=f8e79]:
+                - text: Até
+                - generic [ref=f8e80]:
+                  - math [ref=f8e82]:
+                    - generic [ref=f8e84]:
+                      - generic [ref=f8e85]: "2"
+                      - generic [ref=f8e86]: ⋅
+                      - generic [ref=f8e87]:
+                        - generic [ref=f8e88]: "10"
+                        - generic [ref=f8e89]: "5"
+                  - generic [aria-hidden] [ref=f8e90]:
+                    - generic [ref=f8e91]: 2 ⋅
+                    - generic [ref=f8e92]:
+                      - text: "1"
+                      - generic [ref=f8e93]:
+                        - text: "0"
+                        - generic [ref=f8e94]: "5"
+                - text: comandos, um por linha, até o fim da entrada.
+              - heading "Saída" [level=2] [ref=f8e99]
+              - paragraph [ref=f8e100]:
+                - text: Uma linha para cada
+                - code [ref=f8e101]: get
+                - text: ","
+                - code [ref=f8e102]: del
+                - text: e
+                - code [ref=f8e103]: count
+                - text: .
+              - heading "Exemplo" [level=2] [ref=f8e104]
+              - paragraph [ref=f8e105]: "Entrada:"
+              - code [ref=f8e107]: set goku 9001 set vegeta 8000 get goku set goku 9002 get goku get kuririn count del vegeta del vegeta count
+              - paragraph [ref=f8e108]: "Saída:"
+              - code [ref=f8e110]: 9001 9002 nil 2 1 0 1
+              - heading "Desempenho" [level=2] [ref=f8e111]
+              - paragraph [ref=f8e112]:
+                - text: Os testes ocultos têm dezenas de milhares de chaves. Uma lista simples,
+                - generic [ref=f8e113]:
+                  - math [ref=f8e115]:
+                    - generic [ref=f8e117]:
+                      - generic [ref=f8e118]: O
+                      - generic [ref=f8e119]: (
+                      - generic [ref=f8e120]: "n"
+                      - generic [ref=f8e121]: )
+                  - generic [ref=f8e123]: O(n)
+                - text: "por busca, estoura o tempo: você precisa de"
+                - generic [ref=f8e124]:
+                  - math [ref=f8e126]:
+                    - generic [ref=f8e128]:
+                      - generic [ref=f8e129]: O
+                      - generic [ref=f8e130]: (
+                      - generic [ref=f8e131]: "1"
+                      - generic [ref=f8e132]: )
+                  - generic [ref=f8e134]: O(1)
+                - text: em média, e para isso a tabela tem que crescer (rehash) quando enche.
+            - group [ref=f8e135]:
+              - generic "Exemplos (2)" [ref=f8e136] [cursor=pointer]
+              - generic [ref=f8e137]:
+                - generic [ref=f8e138]:
+                  - generic [ref=f8e139]: Exemplo 1
+                  - generic [ref=f8e140]: 01-exemplo
+                - generic [ref=f8e141]: input
+                - generic [ref=f8e142]: set goku 9001 set vegeta 8000 get goku set goku 9002 get goku get kuririn count del vegeta del vegeta count
+                - generic [ref=f8e143]: output esperado
+                - generic [ref=f8e144]: 9001 9002 nil 2 1 0 1
+              - generic [ref=f8e145]:
+                - generic [ref=f8e146]:
+                  - generic [ref=f8e147]: Exemplo 2
+                  - generic [ref=f8e148]: 02-pequeno
+                - generic [ref=f8e149]: input
+                - generic [ref=f8e150]: get pqja del cuoo17dw3za1b71b3d8c7049vz1cj9 count get 827uiwg4xe50_vegmtu_h3166wtw68p del pqja count get s91l8nci8u3v0l set kg -5018301496186200057 set 1ro1hut8dqhx -8854223450987082286 set cuoo17dw3za1b71b3d8c7049vz1cj9 5803724852105626897 set kg 906134253214074238 get 827uiwg4xe50_vegmtu_h3166wtw68p del s91l8nci8u3v0l del 1ro1hut8dqhx set kg -6746101068017558940 set 827uiwg4xe50_vegmtu_h3166wtw68p 4631929629313165030 get ryhwhtw set cuoo17dw3za1b71b3d8c7049vz1cj9 -7809123793091084307 set pqja -6706496455198547453 del 2rh del 827uiwg4xe50_vegmtu_h3166wtw68p get cuoo17dw3za1b71b3d8c7049vz1cj9 get ryhwhtw del emidz4yxe set 827uiwg4xe50_vegmtu_h3166wtw68p -6550335673244729310 set 1ro1hut8dqhx 458491648229190803 set s91l8nci8u3v0l 6210613674303581218 set s91l8nci8u3v0l -316500095269584429 get cuoo17dw3za1b71b3d8c7049vz1cj9 get kg del 1ro1hut8dqhx set ryhwhtw 7034757565769738941 count get yx2bhwkf54od58nu5fn8zqatczf set ryhwhtw -8364708299572119793 get yx2bhwkf54od58nu5fn8zqatczf get 827uiwg4xe50_vegmtu_h3166wtw68p set yx2bhwkf54od58nu5fn8zqatczf 7257039110962398052 set yx2bhwkf54od58nu5fn8zqatczf -7067501683899141451 get ryhwhtw get 2rh set emidz4yxe -7505087498979576230 get pqja get 1ro1hut8dqhx set s91l8nci8u3v0l -4349262463273295747 get 827uiwg4xe50_vegmtu_h3166wtw68p get emidz4yxe set yx2bhwkf54od58nu5fn8zqatczf 5164477280083817884 del emidz4yxe set emidz4yxe -6058326805091064881 set pqja -1141990735222308795 get cuoo17dw3za1b71b3d8c7049vz1cj9 del emidz4yxe del yx2bhwkf54od5 …
+                - generic [ref=f8e151]: output esperado
+                - generic [ref=f8e152]: nil 0 0 nil 0 0 nil nil 0 1 nil 0 1 -7809123793091084307 nil 0 -7809123793091084307 -6746101068017558940 1 6 nil nil -6550335673244729310 -8364708299572119793 nil -6706496455198547453 nil -6550335673244729310 -7505087498979576230 1 -7809123793091084307 1 1 7 -7809123793091084307 1
+            - group [ref=f8e153]:
+              - generic "Recordes (ninguém ainda)" [ref=f8e154] [cursor=pointer]
+            - group [ref=f8e155]:
+              - generic "Comentários (0)" [ref=f8e156] [cursor=pointer]
+        - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f8e157]
+        - generic [ref=f8e158]:
+          - generic [ref=f8e159]: andar 3 trancado
+          - generic [ref=f8e161]:
+            - generic [ref=f8e162]:
+              - generic [ref=f8e163]: ANDAR 3
+              - generic [ref=f8e164]: Torre de Karin
+            - paragraph [ref=f8e166]:
+              - text: Este desafio fica no
+              - generic [ref=f8e167]: andar 3
+              - text: . Para subir até aqui, resolva mais 4 do andar 1 (1/7 feitos).
+            - list [ref=f8e168]:
+              - listitem [ref=f8e169]:
+                - 'link "wc: Word Counting" [ref=f8e170] [cursor=pointer]':
+                  - /url: /desafio/wc
+                - generic "Dificuldade 1 de 5" [ref=f8e171]:
+                  - generic [aria-hidden] [ref=f8e173]:
+                    - generic [ref=f8e174]: ★
+                    - generic [ref=f8e175]: ★
+                    - generic [ref=f8e176]: ★
+                    - generic [ref=f8e177]: ★
+                    - generic [ref=f8e178]: ★
+              - listitem [ref=f8e179]:
+                - link "Caesar Cipher" [ref=f8e180] [cursor=pointer]:
+                  - /url: /desafio/cifra-de-cesar
+                - generic "Dificuldade 1 de 5" [ref=f8e181]:
+                  - generic [aria-hidden] [ref=f8e183]:
+                    - generic [ref=f8e184]: ★
+                    - generic [ref=f8e185]: ★
+                    - generic [ref=f8e186]: ★
+                    - generic [ref=f8e187]: ★
+                    - generic [ref=f8e188]: ★
+              - listitem [ref=f8e189]:
+                - link "Sieve of Eratosthenes" [ref=f8e190] [cursor=pointer]:
+                  - /url: /desafio/crivo-de-eratostenes
+                - generic "Dificuldade 1 de 5" [ref=f8e191]:
+                  - generic [aria-hidden] [ref=f8e193]:
+                    - generic [ref=f8e194]: ★
+                    - generic [ref=f8e195]: ★
+                    - generic [ref=f8e196]: ★
+                    - generic [ref=f8e197]: ★
+                    - generic [ref=f8e198]: ★
+              - listitem [ref=f8e199]:
+                - link "Base Conversion" [ref=f8e200] [cursor=pointer]:
+                  - /url: /desafio/conversor-de-bases
+                - generic "Dificuldade 1 de 5" [ref=f8e201]:
+                  - generic [aria-hidden] [ref=f8e203]:
+                    - generic [ref=f8e204]: ★
+                    - generic [ref=f8e205]: ★
+                    - generic [ref=f8e206]: ★
+                    - generic [ref=f8e207]: ★
+                    - generic [ref=f8e208]: ★
+            - paragraph [ref=f8e209]: "Atalhos: o próximo passo de um detonado e o desafio do dia abrem mesmo com o andar trancado."
+    - text: $
+  - contentinfo [ref=f8e210]:
+    - separator [ref=f8e211]
+    - generic "Webring" [ref=f8e212]:
+      - link "◄ anterior" [ref=f8e213] [cursor=pointer]:
+        - /url: /sobre
+      - generic [ref=f8e214]: Webring dos crias
+      - link "aleatório" [ref=f8e217] [cursor=pointer]:
+        - /url: /aleatorio
+      - link "próximo ►" [ref=f8e218] [cursor=pointer]:
+        - /url: /desafios
+    - generic [ref=f8e219]:
+      - link [ref=f8e220] [cursor=pointer]:
+        - /url: /
+        - img "The Korin Tower" [ref=f8e221]
+      - link [ref=f8e222] [cursor=pointer]:
+        - /url: /guestbook
+        - img "Guest book" [ref=f8e223]
+      - generic "Netscape Now!" [ref=f8e224]:
+        - img "Netscape Now!" [ref=f8e225]
+      - generic "Made with Notepad" [ref=f8e226]:
+        - img "Made with Notepad" [ref=f8e227]
+      - generic "Best viewed 800x600" [ref=f8e228]:
+        - img "Best viewed 800x600" [ref=f8e229]
+      - link [ref=f8e230] [cursor=pointer]:
+        - /url: /aleatorio
+        - img "Web rings" [ref=f8e231]
+      - generic "Y2K Neocities" [ref=f8e232]:
+        - img "Y2K Neocities" [ref=f8e233]
+      - generic "Best viewed with open eyes" [ref=f8e234]:
+        - img "Best viewed with open eyes" [ref=f8e235]
+      - link "KI 9000+ carregado" [ref=f8e236] [cursor=pointer]:
+        - /url: /hall-da-fama
+        - generic [ref=f8e237]: KI 9000+
+        - generic [ref=f8e238]: carregado
+    - paragraph [ref=f8e239]:
+      - text: Atualizado em 25/11/2026 // Best viewed in Netscape Navigator 4.0 at 800x600 // © 1998–2026 The Korin Tower //
+      - link "linke para cá" [ref=f8e240] [cursor=pointer]:
+        - /url: /sobre#botao
+      - text: //
+      - link "▲ topo" [ref=f8e241] [cursor=pointer]:
+        - /url: "#conteudo"
+  - alert [ref=f8e242]

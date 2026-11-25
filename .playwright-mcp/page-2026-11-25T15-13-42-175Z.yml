@@ -1,0 +1,364 @@
+- generic [ref=f15e1]:
+  - link "Pular para o conteúdo" [ref=f15e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - region "Notificações":
+    - list
+  - banner [ref=f15e3]:
+    - link "The Korin Tower, página inicial":
+      - /url: /
+    - link "The Korin Tower, página inicial" [ref=f15e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=f15e6]: THE KORIN TOWER
+  - generic [ref=f15e8]:
+    - text: » » » » » » » » » » » »
+    - main [ref=f15e9]:
+      - generic [ref=f15e10]:
+        - article [ref=f15e11]:
+          - generic [ref=f15e12]: enunciado.txt
+          - generic [ref=f15e14]:
+            - generic [ref=f15e15]:
+              - generic [ref=f15e16]: ANDAR 1
+              - generic [ref=f15e17]: Kame House
+            - navigation "Você está em" [ref=f15e18]:
+              - link "A Torre" [ref=f15e19] [cursor=pointer]:
+                - /url: /desafios
+              - text: »
+              - link "Andar 1" [ref=f15e20] [cursor=pointer]:
+                - /url: /desafios#andar-1
+              - text: »
+              - link "LeetCode" [ref=f15e21] [cursor=pointer]:
+                - /url: /desafios?sala=leetcode
+            - heading "Two Sum" [level=1] [ref=f15e22]
+            - paragraph [ref=f15e23]:
+              - generic "Dificuldade 1 de 5" [ref=f15e24]:
+                - generic [aria-hidden] [ref=f15e26]:
+                  - generic [ref=f15e27]: ★
+                  - generic [ref=f15e28]: ★
+                  - generic [ref=f15e29]: ★
+                  - generic [ref=f15e30]: ★
+                  - generic [ref=f15e31]: ★
+              - text: · C / C++ / Rust / Python · 2000 ms · 256 MB · 2 testes públicos, 5 ocultos
+            - paragraph [ref=f15e32]:
+              - generic [ref=f15e33]: "#hash"
+              - generic [ref=f15e34]: "#vetor"
+              - generic [ref=f15e35]: "#leetcode"
+            - generic [ref=f15e36]:
+              - paragraph [ref=f15e37]: Dado um vetor de inteiros e um alvo, encontre os dois índices cujos valores somam o alvo.
+              - paragraph [ref=f15e38]: Sempre existe exatamente uma resposta. Não vale usar o mesmo elemento duas vezes.
+              - heading "Entrada" [level=2] [ref=f15e39]
+              - paragraph [ref=f15e40]:
+                - text: A primeira linha tem
+                - generic [ref=f15e41]:
+                  - math [ref=f15e43]:
+                    - generic [ref=f15e44]: "N"
+                  - generic [ref=f15e48]: "N"
+                - generic [ref=f15e49]:
+                  - text: (
+                  - generic [ref=f15e50]:
+                    - math [ref=f15e52]:
+                      - generic [ref=f15e54]:
+                        - generic [ref=f15e55]: "2"
+                        - generic [ref=f15e56]: ≤
+                        - generic [ref=f15e57]: "N"
+                        - generic [ref=f15e58]: ≤
+                        - generic [ref=f15e59]: "2"
+                        - generic [ref=f15e60]: ⋅
+                        - generic [ref=f15e61]:
+                          - generic [ref=f15e62]: "10"
+                          - generic [ref=f15e63]: "5"
+                    - generic [aria-hidden] [ref=f15e64]:
+                      - generic [ref=f15e65]: 2 ≤
+                      - generic [ref=f15e66]: N ≤
+                      - generic [ref=f15e67]: 2 ⋅
+                      - generic [ref=f15e68]:
+                        - text: "1"
+                        - generic [ref=f15e69]:
+                          - text: "0"
+                          - generic [ref=f15e70]: "5"
+                  - text: ).
+                - text: A segunda tem os
+                - generic [ref=f15e75]:
+                  - math [ref=f15e77]:
+                    - generic [ref=f15e78]: "N"
+                  - generic [ref=f15e82]: "N"
+                - text: inteiros do vetor
+                - generic [ref=f15e83]:
+                  - text: (
+                  - generic [ref=f15e84]:
+                    - math [ref=f15e86]:
+                      - generic [ref=f15e88]:
+                        - generic [ref=f15e89]: −
+                        - generic [ref=f15e90]:
+                          - generic [ref=f15e91]: "10"
+                          - generic [ref=f15e92]: "9"
+                        - generic [ref=f15e93]: ≤
+                        - generic [ref=f15e94]:
+                          - generic [ref=f15e95]: a
+                          - generic [ref=f15e96]: i
+                        - generic [ref=f15e97]: ≤
+                        - generic [ref=f15e98]:
+                          - generic [ref=f15e99]: "10"
+                          - generic [ref=f15e100]: "9"
+                    - generic [aria-hidden] [ref=f15e101]:
+                      - generic [ref=f15e102]:
+                        - text: −1
+                        - generic [ref=f15e103]:
+                          - text: "0"
+                          - generic [ref=f15e104]: "9"
+                        - text: ≤
+                      - generic [ref=f15e109]:
+                        - generic [ref=f15e110]:
+                          - text: a
+                          - generic [ref=f15e111]: i
+                        - text: ≤
+                      - generic [ref=f15e119]:
+                        - text: "1"
+                        - generic [ref=f15e120]:
+                          - text: "0"
+                          - generic [ref=f15e121]: "9"
+                  - text: ).
+                - text: A terceira tem o alvo
+                - generic [ref=f15e126]:
+                  - math [ref=f15e128]:
+                    - generic [ref=f15e129]: T
+                  - generic [ref=f15e133]: T
+                - generic [ref=f15e134]:
+                  - text: (
+                  - generic [ref=f15e135]:
+                    - math [ref=f15e137]:
+                      - generic [ref=f15e139]:
+                        - generic [ref=f15e140]: −
+                        - generic [ref=f15e141]: "2"
+                        - generic [ref=f15e142]: ⋅
+                        - generic [ref=f15e143]:
+                          - generic [ref=f15e144]: "10"
+                          - generic [ref=f15e145]: "9"
+                        - generic [ref=f15e146]: ≤
+                        - generic [ref=f15e147]: T
+                        - generic [ref=f15e148]: ≤
+                        - generic [ref=f15e149]: "2"
+                        - generic [ref=f15e150]: ⋅
+                        - generic [ref=f15e151]:
+                          - generic [ref=f15e152]: "10"
+                          - generic [ref=f15e153]: "9"
+                    - generic [aria-hidden] [ref=f15e154]:
+                      - generic [ref=f15e155]: −2 ⋅
+                      - generic [ref=f15e156]:
+                        - text: "1"
+                        - generic [ref=f15e157]:
+                          - text: "0"
+                          - generic [ref=f15e158]: "9"
+                        - text: ≤
+                      - generic [ref=f15e163]: T ≤
+                      - generic [ref=f15e164]: 2 ⋅
+                      - generic [ref=f15e165]:
+                        - text: "1"
+                        - generic [ref=f15e166]:
+                          - text: "0"
+                          - generic [ref=f15e167]: "9"
+                  - text: ).
+              - heading "Saída" [level=2] [ref=f15e172]
+              - paragraph [ref=f15e173]: Os dois índices (base 0), o menor primeiro, separados por espaço.
+              - heading "Exemplo" [level=2] [ref=f15e174]
+              - paragraph [ref=f15e175]: "Entrada:"
+              - code [ref=f15e177]: 4 2 7 11 15 9
+              - paragraph [ref=f15e178]: "Saída:"
+              - code [ref=f15e180]: 0 1
+              - paragraph [ref=f15e181]:
+                - text: Porque
+                - generic [ref=f15e182]:
+                  - generic [ref=f15e183]:
+                    - math [ref=f15e185]:
+                      - generic [ref=f15e187]:
+                        - generic [ref=f15e188]:
+                          - generic [ref=f15e189]: a
+                          - generic [ref=f15e190]: "0"
+                        - generic [ref=f15e191]: +
+                        - generic [ref=f15e192]:
+                          - generic [ref=f15e193]: a
+                          - generic [ref=f15e194]: "1"
+                        - generic [ref=f15e195]: =
+                        - generic [ref=f15e196]: "2"
+                        - generic [ref=f15e197]: +
+                        - generic [ref=f15e198]: "7"
+                        - generic [ref=f15e199]: =
+                        - generic [ref=f15e200]: "9"
+                    - generic [aria-hidden] [ref=f15e201]:
+                      - generic [ref=f15e202]:
+                        - generic [ref=f15e203]:
+                          - text: a
+                          - generic [ref=f15e204]: "0"
+                        - text: +
+                      - generic [ref=f15e212]:
+                        - generic [ref=f15e213]:
+                          - text: a
+                          - generic [ref=f15e214]: "1"
+                        - text: =
+                      - generic [ref=f15e222]: 2 +
+                      - generic [ref=f15e223]: 7 =
+                      - generic [ref=f15e224]: "9"
+                  - text: .
+              - separator [ref=f15e225]
+              - blockquote [ref=f15e226]:
+                - paragraph [ref=f15e227]:
+                  - text: Versão stdin/stdout de
+                  - 'link "LeetCode #1 Two Sum" [ref=f15e228] [cursor=pointer]':
+                    - /url: https://leetcode.com/problems/two-sum/
+                  - text: . Lá você implementa só a função. Aqui é o programa inteiro.
+            - group [ref=f15e229]:
+              - generic "Exemplos (2)" [ref=f15e230] [cursor=pointer]
+              - generic [ref=f15e231]:
+                - generic [ref=f15e232]:
+                  - generic [ref=f15e233]: Exemplo 1
+                  - generic [ref=f15e234]: 01-exemplo
+                - generic [ref=f15e235]: input
+                - generic [ref=f15e236]: 4 2 7 11 15 9
+                - generic [ref=f15e237]: output esperado
+                - generic [ref=f15e238]: 0 1
+              - generic [ref=f15e239]:
+                - generic [ref=f15e240]:
+                  - generic [ref=f15e241]: Exemplo 2
+                  - generic [ref=f15e242]: 02-nao-repete
+                - generic [ref=f15e243]: input
+                - generic [ref=f15e244]: 3 3 2 4 6
+                - generic [ref=f15e245]: output esperado
+                - generic [ref=f15e246]: 1 2
+            - group [ref=f15e247]:
+              - generic "Recordes (ninguém ainda)" [ref=f15e248] [cursor=pointer]
+            - group [ref=f15e249]:
+              - generic "Comentários (0)" [ref=f15e250] [cursor=pointer]
+        - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f15e251]
+        - generic [ref=f15e252]:
+          - generic [ref=f15e253]:
+            - toolbar "Ações do editor" [ref=f15e254]:
+              - generic [ref=f15e255]:
+                - text: Linguagem
+                - combobox "Linguagem" [ref=f15e256]:
+                  - option "C"
+                  - option "C++" [selected]
+                  - option "Rust"
+                  - option "Python"
+              - button "▶ Executar" [ref=f15e257] [cursor=pointer]
+              - button "Testar" [ref=f15e258] [cursor=pointer]
+              - button "Enviar" [ref=f15e259] [cursor=pointer]
+              - button "Dicas" [ref=f15e260] [cursor=pointer]
+              - generic [ref=f15e261] [cursor=pointer]:
+                - checkbox "Vim" [checked] [ref=f15e262]
+                - text: Vim
+            - generic [ref=f15e263]:
+              - generic [ref=f15e346]:
+                - generic [aria-hidden] [ref=f15e347]:
+                  - generic [ref=f15e348]:
+                    - generic [ref=f15e349]: "1"
+                    - generic [ref=f15e350]: "2"
+                    - generic [ref=f15e351]: "3"
+                    - generic [ref=f15e352]: "4"
+                    - generic [ref=f15e361]: "5"
+                    - generic [ref=f15e363]: "6"
+                    - generic [ref=f15e364]: "7"
+                    - generic [ref=f15e365]: "8"
+                    - generic [ref=f15e366]: "9"
+                    - generic [ref=f15e367]: "10"
+                    - generic [ref=f15e368]: "11"
+                  - generic [ref=f15e353]: ⌄
+                - textbox "Editor de código" [active] [ref=f15e355]:
+                  - generic [ref=f15e356]: "#include <iostream>"
+                  - generic [ref=f15e370]: "#include <unordered_map>"
+                  - generic [ref=f15e371]: "#include <vector>"
+                  - generic [ref=f15e373]: "int main() {"
+                  - generic [ref=f15e374]: std::ios::sync_with_stdio(false);
+                  - generic [ref=f15e375]: std::cin.tie(nullptr);
+                  - generic [ref=f15e376]: // seu código aqui
+                  - generic [ref=f15e377]: return 0;
+                  - generic [ref=f15e378]: "}"
+              - status [ref=f15e265]:
+                - generic [ref=f15e266]: "-- INSERT --"
+                - generic [ref=f15e268]: 11,1
+                - generic [ref=f15e269]: C++
+            - toolbar "Comandos do editor" [ref=f15e270]:
+              - button ":w Salvar" [ref=f15e271] [cursor=pointer]:
+                - generic [ref=f15e272]: :w
+                - generic [ref=f15e273]: Salvar
+              - button ":run Executar" [ref=f15e274] [cursor=pointer]:
+                - generic [ref=f15e275]: :run
+                - generic [ref=f15e276]: Executar
+              - button ":test Testar" [ref=f15e277] [cursor=pointer]:
+                - generic [ref=f15e278]: :test
+                - generic [ref=f15e279]: Testar
+              - button ":submit Enviar" [ref=f15e280] [cursor=pointer]:
+                - generic [ref=f15e281]: :submit
+                - generic [ref=f15e282]: Enviar
+              - button ":stdin Entrada" [ref=f15e283] [cursor=pointer]:
+                - generic [ref=f15e284]: :stdin
+                - generic [ref=f15e285]: Entrada
+              - button ":hint Dica" [ref=f15e286] [cursor=pointer]:
+                - generic [ref=f15e287]: :hint
+                - generic [ref=f15e288]: Dica
+              - button ":out Saída" [ref=f15e289] [cursor=pointer]:
+                - generic [ref=f15e290]: :out
+                - generic [ref=f15e291]: Saída
+              - button ":q Sair" [ref=f15e292] [cursor=pointer]:
+                - generic [ref=f15e293]: :q
+                - generic [ref=f15e294]: Sair
+          - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f15e295]
+          - generic [ref=f15e296]:
+            - tablist "Painel de saída" [ref=f15e297]:
+              - tab "Saída" [selected] [ref=f15e298] [cursor=pointer]
+              - tab "Dicas 0/3" [ref=f15e299] [cursor=pointer]
+              - tab "Solução" [ref=f15e300] [cursor=pointer]
+            - tabpanel "Saída" [ref=f15e301]:
+              - generic [ref=f15e302]:
+                - generic [ref=f15e303]:
+                  - text: Entrada (stdin)
+                  - generic [ref=f15e304]: Ctrl+Enter executa · Esc volta ao editor
+                - textbox "Entrada (stdin) Ctrl+Enter executa · Esc volta ao editor" [ref=f15e305]: 4 2 7 11 15 9
+                - paragraph [ref=f15e308]:
+                  - generic [ref=f15e309]: :run
+                  - text: executa com a entrada acima ·
+                  - generic [ref=f15e310]: :test
+                  - text: roda os testes públicos ·
+                  - generic [ref=f15e311]: :submit
+                  - text: envia _
+    - text: $
+  - contentinfo [ref=f15e312]:
+    - separator [ref=f15e313]
+    - generic "Webring" [ref=f15e314]:
+      - link "◄ anterior" [ref=f15e315] [cursor=pointer]:
+        - /url: /sobre
+      - generic [ref=f15e316]: Webring dos crias
+      - link "aleatório" [ref=f15e319] [cursor=pointer]:
+        - /url: /aleatorio
+      - link "próximo ►" [ref=f15e320] [cursor=pointer]:
+        - /url: /desafios
+    - generic [ref=f15e321]:
+      - link [ref=f15e322] [cursor=pointer]:
+        - /url: /
+        - img "The Korin Tower" [ref=f15e323]
+      - link [ref=f15e324] [cursor=pointer]:
+        - /url: /guestbook
+        - img "Guest book" [ref=f15e325]
+      - generic "Netscape Now!" [ref=f15e326]:
+        - img "Netscape Now!" [ref=f15e327]
+      - generic "Made with Notepad" [ref=f15e328]:
+        - img "Made with Notepad" [ref=f15e329]
+      - generic "Best viewed 800x600" [ref=f15e330]:
+        - img "Best viewed 800x600" [ref=f15e331]
+      - link [ref=f15e332] [cursor=pointer]:
+        - /url: /aleatorio
+        - img "Web rings" [ref=f15e333]
+      - generic "Y2K Neocities" [ref=f15e334]:
+        - img "Y2K Neocities" [ref=f15e335]
+      - generic "Best viewed with open eyes" [ref=f15e336]:
+        - img "Best viewed with open eyes" [ref=f15e337]
+      - link "KI 9000+ carregado" [ref=f15e338] [cursor=pointer]:
+        - /url: /hall-da-fama
+        - generic [ref=f15e339]: KI 9000+
+        - generic [ref=f15e340]: carregado
+    - paragraph [ref=f15e341]:
+      - text: Atualizado em 25/11/2026 // Best viewed in Netscape Navigator 4.0 at 800x600 // © 1998–2026 The Korin Tower //
+      - link "linke para cá" [ref=f15e342] [cursor=pointer]:
+        - /url: /sobre#botao
+      - text: //
+      - link "▲ topo" [ref=f15e343] [cursor=pointer]:
+        - /url: "#conteudo"
+  - alert [ref=f15e360]

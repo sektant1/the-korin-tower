@@ -1,7 +1,9 @@
 "use client";
 import type { ReactNode } from "react";
-import type { TestOutcome } from "@/lib/judge/judge";
+import { explainRuntime, parseDiagnostics, type Diagnostic } from "@/lib/diagnostics";
+import type { LanguageId } from "@/lib/languages";
 import { looksLikePpm } from "@/lib/ppm";
+import type { TestOutcome } from "@/lib/runner/types";
 import type { RunResponse } from "@/lib/run-api";
 import { Gif } from "@/components/Gif";
 import { GIFS } from "@/lib/gifs";
@@ -16,21 +18,25 @@ export type OutputState =
 interface Props {
   state: OutputState;
   checker: "exact" | "ppm";
+  /** para entender os erros do compilador/interpretador certo */
+  language: LanguageId;
   onJump(line: number, col: number): void;
   /** Texto do estado inicial; padrão é a dica de :run/:test/:submit dos desafios. */
   idle?: string;
+  /** Linha n (1-based) do código no editor, para mostrar onde o erro aconteceu. */
+  codeLine?: (n: number) => string | undefined;
 }
 
-// gcc/g++: "main.c:12:5: error"   rustc: "--> main.rs:12:5"
-const LOC_RE = /\b(?:main|shader)\.(?:c|cpp|rs|frag):(\d+):(\d+)/g;
+// gcc/g++: "main.c:12:5: error"   rustc: "--> main.rs:12:5"   Python: 'File "main.py", line 12'
+const LOC_RE = /\bmain\.(?:c|cpp|rs):(\d+):(\d+)|File "main\.py", line (\d+)/g;
 
 export function ClickableLog({ text, onJump }: { text: string; onJump(line: number, col: number): void }) {
   const parts: ReactNode[] = [];
   let last = 0;
   for (const m of text.matchAll(LOC_RE)) {
     parts.push(text.slice(last, m.index));
-    const line = Number(m[1]);
-    const col = Number(m[2]);
+    const line = Number(m[1] ?? m[3]);
+    const col = Number(m[2] ?? 1);
     parts.push(
       <button key={m.index} type="button" className="loc-link" onClick={() => onJump(line, col)} title={`Ir para a linha ${line}`}>
         {m[0]}
@@ -99,7 +105,106 @@ function Diff({ expected, actual }: { expected: string; actual: string }) {
   );
 }
 
-function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker"]; open: boolean }) {
+const SEV_LABEL = { error: "erro", warning: "aviso", note: "nota" } as const;
+const MAX_SNIPPET = 10;
+
+/** Um diagnóstico do compilador: onde, o quê e o trecho de código com o ^. */
+function DiagnosticCard({ d, onJump }: { d: Diagnostic; onJump: Props["onJump"] }) {
+  const snippet = d.snippet.length > MAX_SNIPPET ? [...d.snippet.slice(0, MAX_SNIPPET), "  …"] : d.snippet;
+  const userFile = d.file && /^main\./.test(d.file);
+  return (
+    <li className={`diag diag-${d.severity}`}>
+      <div className="diag-head">
+        <span className="diag-sev">{SEV_LABEL[d.severity]}</span>
+        {d.line != null &&
+          (userFile ? (
+            <button type="button" className="loc-link" onClick={() => onJump(d.line!, d.col ?? 1)} title={`Ir para a linha ${d.line}`}>
+              linha {d.line}
+              {d.col ? `:${d.col}` : ""}
+            </button>
+          ) : (
+            <span className="out-dim">
+              {d.file}:{d.line}
+            </span>
+          ))}
+        <span className="diag-msg">{d.message}</span>
+        {d.code && <span className="out-dim diag-code">{d.code}</span>}
+      </div>
+      {snippet.length > 0 && <pre className="out-pre diag-snippet">{snippet.join("\n")}</pre>}
+    </li>
+  );
+}
+
+/** Saída do compilador: cartões quando dá para entender, texto cru sempre à mão. */
+function CompilerLog({ text, language, onJump, failed }: { text: string; language: LanguageId; onJump: Props["onJump"]; failed: boolean }) {
+  const all = parseDiagnostics(language, text);
+  const shown = failed ? all.filter((d) => d.severity !== "note" || all.length < 4) : all.filter((d) => d.severity === "warning");
+  if (!shown.length) return <ClickableLog text={text} onJump={onJump} />;
+  return (
+    <>
+      <ul className="diags">
+        {shown.map((d, i) => (
+          <DiagnosticCard key={i} d={d} onJump={onJump} />
+        ))}
+      </ul>
+      <details className="out-raw">
+        <summary>saída completa do {language === "python" ? "Python" : "compilador"}</summary>
+        <ClickableLog text={text} onJump={onJump} />
+      </details>
+    </>
+  );
+}
+
+/** "ZeroDivisionError: division by zero" -> ["ZeroDivisionError", "division by zero"] */
+function splitTitle(title: string): [string, string] {
+  const m = /^([A-Za-z_][\w.]*(?:Error|Exception|Exit|Interrupt|Warning)|panic|assert falhou): ?(.*)$/s.exec(title);
+  return m ? [m[1], m[2]] : [title, ""];
+}
+
+/** Linha do código do jogador onde o erro aconteceu, com o número. */
+function CodeAt({ line, codeLine, onJump, col }: { line: number; col?: number; codeLine?: Props["codeLine"]; onJump: Props["onJump"] }) {
+  const code = codeLine?.(line);
+  return (
+    <button type="button" className="err-code" onClick={() => onJump(line, col ?? 1)} title={`Ir para a linha ${line}`}>
+      <span className="err-ln">{line}</span>
+      <code>{code?.trim() ? code.replace(/\s+$/, "") : `linha ${line}`}</code>
+    </button>
+  );
+}
+
+/** Erro de execução: o quê (tipo + mensagem), onde (a linha do seu código) e o porquê provável. */
+function RuntimeError({ t, language, onJump, codeLine }: { t: Pick<TestOutcome, "exitCode" | "stderr">; language: LanguageId; onJump: Props["onJump"]; codeLine?: Props["codeLine"] }) {
+  const e = explainRuntime(language, t.exitCode, t.stderr);
+  if (!e) return null;
+  const [kind, msg] = splitTitle(e.title);
+  return (
+    <div className="err-card">
+      <div className="err-title">
+        <span className="err-kind">{kind}</span>
+        {msg && <span className="err-msg">{msg}</span>}
+      </div>
+      {e.line != null && <CodeAt line={e.line} col={e.col} codeLine={codeLine} onJump={onJump} />}
+      {e.hint && <p className="err-hint">provável causa: {e.hint}</p>}
+    </div>
+  );
+}
+
+/** stderr inteiro (traceback, avisos), recolhido: o cartão acima já diz o essencial. */
+function RawStderr({ text, onJump, open }: { text: string; onJump: Props["onJump"]; open?: boolean }) {
+  if (!text.trim()) return null;
+  return (
+    <details className="out-raw" open={open}>
+      <summary>{/Traceback/.test(text) ? "traceback completo" : "stderr"}</summary>
+      <ClickableLog text={clipText(text, 8000)} onJump={onJump} />
+    </details>
+  );
+}
+
+function clipText(s: string, n = 2000) {
+  return s.length > n ? s.slice(0, n) + "\n…" : s;
+}
+
+function TestRow({ t, checker, language, open, onJump, codeLine }: { t: TestOutcome; checker: Props["checker"]; language: LanguageId; open: boolean; onJump: Props["onJump"]; codeLine?: Props["codeLine"] }) {
   const ok = t.verdict === "AC";
   const name = t.hidden ? `${t.name} (oculto)` : t.name;
   const head = (
@@ -112,8 +217,7 @@ function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker
       <span className="out-dim test-metrics">{metrics(t)}</span>
     </>
   );
-  // Ocultos e aprovados: só a linha. O detalhe fica para os públicos que falharam.
-  if (t.hidden || ok) {
+  if (ok) {
     return (
       <li className="test">
         <div className="test-sum">{head}</div>
@@ -126,7 +230,7 @@ function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker
       <details open={open}>
         <summary className="test-sum">{head}</summary>
         <div className="test-body">
-          {t.message && <p className="out-note test-msg">{t.message}</p>}
+          {t.verdict === "RE" ? <RuntimeError t={t} language={language} onJump={onJump} codeLine={codeLine} /> : t.message && <p className="out-note test-msg">{t.message}</p>}
           {looksLikePpm(t.stdout) ? (
             checker === "ppm" ? (
               <div className="ppm-pair">
@@ -142,18 +246,13 @@ function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker
           {t.verdict !== "WA" && t.stdout.trim() && !looksLikePpm(t.stdout) && (
             <>
               <div className="io-label">stdout</div>
-              <pre className="out-pre">{t.stdout.length > 2000 ? t.stdout.slice(0, 2000) + "\n…" : t.stdout}</pre>
+              <pre className="out-pre">{clipText(t.stdout)}</pre>
             </>
           )}
-          {t.stderr && (
-            <>
-              <div className="io-label">stderr</div>
-              <pre className="out-pre out-err">{t.stderr.length > 2000 ? t.stderr.slice(0, 2000) + "\n…" : t.stderr}</pre>
-            </>
-          )}
+          <RawStderr text={t.stderr} onJump={onJump} open={t.verdict !== "RE"} />
           <details className="test-input">
             <summary>entrada deste teste</summary>
-            <pre className="out-pre">{t.input.length > 2000 ? t.input.slice(0, 2000) + "\n…" : t.input || "(vazia)"}</pre>
+            <pre className="out-pre">{clipText(t.input) || "(vazia)"}</pre>
           </details>
         </div>
       </details>
@@ -161,7 +260,7 @@ function TestRow({ t, checker, open }: { t: TestOutcome; checker: Props["checker
   );
 }
 
-export function OutputPanel({ state, checker, onJump, idle }: Props) {
+export function OutputPanel({ state, checker, language, onJump, idle, codeLine }: Props) {
   return (
     <div className="crt" aria-live="polite" aria-busy={state.status === "running"}>
       <div className="crt-inner">
@@ -180,14 +279,21 @@ export function OutputPanel({ state, checker, onJump, idle }: Props) {
             <Gif gif={GIFS.loading} /> {state.label}
           </p>
         )}
-        {state.status === "error" && <div className="out-head bad">erro: {state.error}</div>}
-        {state.status === "done" && <Done r={state.response} checker={checker} onJump={onJump} />}
+        {state.status === "error" && (
+          <div className="err-card">
+            <div className="err-title">
+              <span className="err-kind">não deu para rodar</span>
+            </div>
+            <p className="err-plain">{state.error}</p>
+          </div>
+        )}
+        {state.status === "done" && <Done r={state.response} checker={checker} language={language} onJump={onJump} codeLine={codeLine} />}
       </div>
     </div>
   );
 }
 
-function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"]; onJump: Props["onJump"] }) {
+function Done({ r, checker, language, onJump, codeLine }: { r: RunResponse; checker: Props["checker"]; language: LanguageId; onJump: Props["onJump"]; codeLine?: Props["codeLine"] }) {
   const notes = r.warnings.length > 0 && (
     <ul className="out-notes">
       {r.warnings.map((w) => (
@@ -195,22 +301,27 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
       ))}
     </ul>
   );
+  const wall = r.wallMs != null ? <span className="out-dim out-wall"> · {(r.wallMs / 1000).toFixed(1)} s</span> : null;
 
   if (!r.compile.ok) {
+    const n = parseDiagnostics(language, r.compile.output).filter((d) => d.severity === "error").length;
     return (
       <>
-        <div className="out-head bad">erro de compilação</div>
-        <ClickableLog text={r.compile.output} onJump={onJump} />
-        <p className="out-dim">clique em arquivo:linha para ir até o erro</p>
+        <div className="out-head bad">
+          {language === "python" ? "erro de sintaxe" : "não compilou"}
+          {n > 1 && <span className="out-head-meta">{n} erros</span>}
+        </div>
+        <CompilerLog text={r.compile.output} language={language} onJump={onJump} failed />
         {notes}
       </>
     );
   }
 
+  const warnCount = parseDiagnostics(language, r.compile.output).filter((d) => d.severity === "warning").length;
   const warnings = r.compile.output.trim() ? (
     <details className="out-warnings">
-      <summary>avisos do compilador</summary>
-      <ClickableLog text={r.compile.output} onJump={onJump} />
+      <summary>{warnCount ? `${warnCount} aviso(s) do compilador` : "avisos do compilador"}</summary>
+      <CompilerLog text={r.compile.output} language={language} onJump={onJump} failed={false} />
     </details>
   ) : null;
 
@@ -226,17 +337,27 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
             <span className="out-head-meta">{metrics(run, true)}</span>
           </div>
         )}
+        {run?.verdict === "RE" && <RuntimeError t={run} language={language} onJump={onJump} codeLine={codeLine} />}
+        {(run?.verdict === "TLE" || run?.verdict === "OLE") && run.message && (
+          <div className="err-card">
+            <div className="err-title">
+              <span className="err-kind">{VERDICT[run.verdict]}</span>
+              <span className="err-msg">{run.message}</span>
+            </div>
+            {run.verdict === "TLE" && <p className="err-hint">provável causa: laço que nunca termina, ou um algoritmo lento demais para a entrada</p>}
+          </div>
+        )}
         {warnings}
         {run && (
           <>
             {looksLikePpm(run.stdout) && <PpmView text={run.stdout} label="stdout" />}
-            <pre className="out-pre">{run.stdout.length > 20000 ? run.stdout.slice(0, 20000) + "\n… (cortado)" : run.stdout || "(sem saída)"}</pre>
-            {run.stderr && (
+            {(run.stdout || !failed) && (
               <>
-                <div className="io-label">stderr</div>
-                <pre className="out-pre out-err">{run.stderr}</pre>
+                {failed && <div className="io-label">saída até o erro</div>}
+                <pre className="out-pre">{run.stdout.length > 20000 ? run.stdout.slice(0, 20000) + "\n… (cortado)" : run.stdout || "(sem saída)"}</pre>
               </>
             )}
+            <RawStderr text={run.stderr} onJump={onJump} open={!failed} />
           </>
         )}
         {notes}
@@ -246,7 +367,7 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
 
   const passed = r.tests.filter((t) => t.verdict === "AC").length;
   const total = r.tests.length;
-  const firstFail = r.tests.findIndex((t) => t.verdict !== "AC" && !t.hidden);
+  const firstFail = r.tests.findIndex((t) => t.verdict !== "AC");
   const submitted = r.mode === "submit";
   return (
     <>
@@ -256,6 +377,7 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
           {submitted ? "resolvido" : "testes públicos ok"}
           <span className="out-head-meta">
             {passed}/{total} testes{!submitted && " · :submit roda os ocultos"}
+            {wall}
           </span>
         </div>
       ) : (
@@ -263,13 +385,14 @@ function Done({ r, checker, onJump }: { r: RunResponse; checker: Props["checker"
           {submitted ? "reprovado" : "ainda não"}
           <span className="out-head-meta">
             {passed}/{total} testes
+            {wall}
           </span>
         </div>
       )}
       {warnings}
       <ul className="tests">
         {r.tests.map((t, i) => (
-          <TestRow key={(t.hidden ? "h" : "p") + t.name} t={t} checker={checker} open={i === firstFail} />
+          <TestRow key={(t.hidden ? "h" : "p") + t.name} t={t} checker={checker} language={language} open={i === firstFail} onJump={onJump} codeLine={codeLine} />
         ))}
       </ul>
       {notes}

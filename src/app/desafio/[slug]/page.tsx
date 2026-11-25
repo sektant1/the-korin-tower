@@ -249,9 +249,10 @@ export default async function ChallengePage({ params, searchParams }: Params) {
 
   return (
     <SplitColumns
-      storageKey="desafio"
-      initial={40}
-      min={22}
+      // enunciado | editor | saída em 1/3/1: 20% aqui, e o editor fica com 75% do resto
+      storageKey="desafio-v2"
+      initial={20}
+      min={14}
       max={65}
       className="challenge-page"
       left={statementPane}
@@ -260,18 +261,14 @@ export default async function ChallengePage({ params, searchParams }: Params) {
           <ChallengeWorkspace
             slug={c.slug}
             trackId={inTrack?.id ?? null}
-            kind={c.kind}
             languages={c.languages}
             templates={c.templates}
-            checker={c.checker.type}
+            checker={c.checker}
+            timeLimitMs={c.timeLimitMs}
+            pythonDriver={c.drivers.python ?? null}
             hintsTotal={c.hints.length}
             hasSolution={Object.keys(c.solutions).length > 0}
             defaultStdin={publicTests[0]?.input ?? ""}
-            limits={{
-              checker: c.checker,
-              timeLimitMs: c.timeLimitMs,
-              memoryLimitMb: c.memoryLimitMb,
-            }}
             publicTests={publicTests.map((t) => ({
               name: t.name,
               input: t.input,

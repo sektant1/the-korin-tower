@@ -2,7 +2,7 @@
 title: "Valid Parentheses"
 difficulty: 1
 tags: [pilha, strings, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 2

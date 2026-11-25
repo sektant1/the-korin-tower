@@ -2,7 +2,7 @@
 title: "Sphere Ray Tracer"
 difficulty: 3
 tags: [ray-tracing, ppm, vetores, geometria]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 checker:
   type: ppm
   tolerance: 2

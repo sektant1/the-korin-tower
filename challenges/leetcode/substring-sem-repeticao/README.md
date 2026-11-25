@@ -2,7 +2,7 @@
 title: "Longest Substring Without Repeating Characters"
 difficulty: 2
 tags: [janela-deslizante, strings, dois-ponteiros, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 3

@@ -2,7 +2,7 @@
 title: "Two Sum"
 difficulty: 1
 tags: [hash, vetor, leetcode]
-languages: [c, cpp, rust]
+languages: [c, cpp, rust, python]
 timeLimitMs: 2000
 memoryLimitMb: 256
 order: 1

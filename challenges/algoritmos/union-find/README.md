@@ -2,7 +2,7 @@
 title: "Union-Find"
 difficulty: 3
 tags: [grafos, union-find, estruturas-de-dados]
-languages: [c, cpp]
+languages: [c, cpp, python]
 timeLimitMs: 1000
 memoryLimitMb: 64
 order: 4

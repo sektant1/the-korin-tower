@@ -1,0 +1,121 @@
+- generic [active] [ref=f5e1]:
+  - link "Pular para o conteúdo" [ref=f5e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - region "Notificações":
+    - list
+  - banner [ref=f5e3]:
+    - link "The Korin Tower, página inicial":
+      - /url: /
+    - link "The Korin Tower, página inicial" [ref=f5e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=f5e6]: THE KORIN TOWER
+  - generic [ref=f5e8]:
+    - text: » » » » » » » » » » » »
+    - main [ref=f5e9]:
+      - generic [ref=f5e10]:
+        - generic [ref=f5e11]:
+          - heading "Sandbox" [level=1] [ref=f5e12]
+          - paragraph [ref=f5e15]: Sandbox para praticar
+        - generic [ref=f5e16]:
+          - generic [ref=f5e17]:
+            - toolbar "Ações do compilador" [ref=f5e18]:
+              - generic [ref=f5e19]:
+                - text: Linguagem
+                - combobox "Linguagem" [ref=f5e20]:
+                  - option "C" [selected]
+                  - option "C++"
+                  - option "Rust"
+                  - option "Python"
+              - button "▶ Executar" [ref=f5e21] [cursor=pointer]
+              - button "Restaurar template" [ref=f5e22] [cursor=pointer]
+              - generic [ref=f5e23] [cursor=pointer]:
+                - checkbox "Vim" [checked] [ref=f5e24]
+                - text: Vim
+            - generic [ref=f5e25]:
+              - generic [ref=f5e28]:
+                - generic [aria-hidden] [ref=f5e29]:
+                  - generic [ref=f5e30]:
+                    - generic [ref=f5e31]: "1"
+                    - generic [ref=f5e32]: "2"
+                    - generic [ref=f5e33]: "3"
+                    - generic [ref=f5e34]: "4"
+                    - generic [ref=f5e35]: "5"
+                    - generic [ref=f5e36]: "6"
+                    - generic [ref=f5e37]: "7"
+                  - generic [ref=f5e38]: ⌄
+                - textbox "Editor de código" [ref=f5e41]:
+                  - generic [ref=f5e42]: "#include <stdio.h>"
+                  - generic [ref=f5e44]: "int main(void) {"
+                  - generic [ref=f5e45]: puts("ola, korin!");
+                  - generic [ref=f5e46]: return 0;
+                  - generic [ref=f5e47]: "}"
+                - generic: "#"
+              - status [ref=f5e49]:
+                - generic [ref=f5e52]: 1,1
+                - generic [ref=f5e53]: C
+            - toolbar "Comandos do editor" [ref=f5e54]:
+              - button ":w Salvar" [ref=f5e55] [cursor=pointer]:
+                - generic [ref=f5e56]: :w
+                - generic [ref=f5e57]: Salvar
+              - button ":run Executar" [ref=f5e58] [cursor=pointer]:
+                - generic [ref=f5e59]: :run
+                - generic [ref=f5e60]: Executar
+              - button ":stdin Entrada" [ref=f5e61] [cursor=pointer]:
+                - generic [ref=f5e62]: :stdin
+                - generic [ref=f5e63]: Entrada
+              - button ":out Saída" [ref=f5e64] [cursor=pointer]:
+                - generic [ref=f5e65]: :out
+                - generic [ref=f5e66]: Saída
+              - button ":q Sair" [ref=f5e67] [cursor=pointer]:
+                - generic [ref=f5e68]: :q
+                - generic [ref=f5e69]: Sair
+          - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f5e70]
+          - generic [ref=f5e71]:
+            - generic [ref=f5e72]:
+              - text: Entrada (stdin)
+              - generic [ref=f5e73]: Ctrl+Enter executa · Esc volta ao editor
+            - textbox "Entrada (stdin) Ctrl+Enter executa · Esc volta ao editor" [ref=f5e74]
+            - paragraph [ref=f5e78]: :run compila e executa com a entrada acima _
+    - text: $
+  - contentinfo [ref=f5e79]:
+    - separator [ref=f5e80]
+    - generic "Webring" [ref=f5e81]:
+      - link "◄ anterior" [ref=f5e82] [cursor=pointer]:
+        - /url: /sobre
+      - generic [ref=f5e83]: Webring dos crias
+      - link "aleatório" [ref=f5e86] [cursor=pointer]:
+        - /url: /aleatorio
+      - link "próximo ►" [ref=f5e87] [cursor=pointer]:
+        - /url: /desafios
+    - generic [ref=f5e88]:
+      - link [ref=f5e89] [cursor=pointer]:
+        - /url: /
+        - img "The Korin Tower" [ref=f5e90]
+      - link [ref=f5e91] [cursor=pointer]:
+        - /url: /guestbook
+        - img "Guest book" [ref=f5e92]
+      - generic "Netscape Now!" [ref=f5e93]:
+        - img "Netscape Now!" [ref=f5e94]
+      - generic "Made with Notepad" [ref=f5e95]:
+        - img "Made with Notepad" [ref=f5e96]
+      - generic "Best viewed 800x600" [ref=f5e97]:
+        - img "Best viewed 800x600" [ref=f5e98]
+      - link [ref=f5e99] [cursor=pointer]:
+        - /url: /aleatorio
+        - img "Web rings" [ref=f5e100]
+      - generic "Y2K Neocities" [ref=f5e101]:
+        - img "Y2K Neocities" [ref=f5e102]
+      - generic "Best viewed with open eyes" [ref=f5e103]:
+        - img "Best viewed with open eyes" [ref=f5e104]
+      - link "KI 9000+ carregado" [ref=f5e105] [cursor=pointer]:
+        - /url: /hall-da-fama
+        - generic [ref=f5e106]: KI 9000+
+        - generic [ref=f5e107]: carregado
+    - paragraph [ref=f5e108]:
+      - text: Atualizado em 25/11/2026 // Best viewed in Netscape Navigator 4.0 at 800x600 // © 1998–2026 The Korin Tower //
+      - link "linke para cá" [ref=f5e109] [cursor=pointer]:
+        - /url: /sobre#botao
+      - text: //
+      - link "▲ topo" [ref=f5e110] [cursor=pointer]:
+        - /url: "#conteudo"
+  - alert [ref=f5e111]

@@ -1,7 +1,8 @@
-# docker compose up -d --build                       app + PostgreSQL + Piston
+# docker compose up -d --build                       app + PostgreSQL
 # docker compose exec app npx tsx scripts/invite.ts --admin   primeiro convite de admin
-# docker compose --profile test run --rm test         typecheck + testes + verificação das soluções
-# App em http://localhost:3000. O Piston NÃO é exposto para fora da rede interna.
+# docker compose --profile test run --rm test         typecheck + testes unitários
+# App em http://localhost:3000. O código dos jogadores não roda aqui: roda no navegador
+# (Python/Pyodide) ou no Compiler Explorer (C, C++, Rust). Veja src/lib/runner/README.md.
 services:
   app:
     build: .
@@ -11,21 +12,16 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://korin:${POSTGRES_PASSWORD:-korin}@db:5432/korin
-      RUNNER: piston
-      PISTON_URL: http://piston:2000
       APP_URL: ${APP_URL:-http://localhost:${APP_PORT:-3000}}
       ADMIN_BOOTSTRAP_CODE: ${ADMIN_BOOTSTRAP_CODE:-}
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
       RUN_RATE_PER_MINUTE: "20"
-      RUN_MAX_CONCURRENCY: "4"
     volumes:
       - ./challenges:/app/challenges:ro
     depends_on:
       db:
         condition: service_healthy
-      piston-init:
-        condition: service_completed_successfully
 
   # Mesmo motor do Supabase. Dev local com o app fora do container:
   #   docker compose up -d db   e no .env: DATABASE_URL="postgresql://korin:korin@localhost:5432/korin"
@@ -46,66 +42,19 @@ services:
       timeout: 3s
       retries: 20
 
-  # Sandbox de execução (isolate + cgroups). Precisa de privileged e cgroup v2 no host.
-  # Os compiladores vêm embutidos na imagem (piston/Dockerfile), então a VPS já
-  # sobe com tudo instalado; `piston-init` fica só como rede de segurança.
-  piston:
-    build:
-      context: ./piston
-      args:
-        PISTON_PACKAGES: ${PISTON_PACKAGES:-gcc,rust,go,zig,nasm,pascal}
-    restart: unless-stopped
-    privileged: true
-    tmpfs:
-      - /piston/jobs:exec,uid=1000,gid=1000,mode=711
-    volumes:
-      - piston-packages:/piston/packages
-    environment:
-      PISTON_DISABLE_NETWORKING: "true"
-      PISTON_RUN_TIMEOUT: "10000"
-      PISTON_COMPILE_TIMEOUT: "20000"
-      PISTON_RUN_MEMORY_LIMIT: "536870912"
-      PISTON_MAX_PROCESS_COUNT: "64"
-      PISTON_OUTPUT_MAX_SIZE: "2097152"
-    healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:2000/api/v2/runtimes',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 30s
-
-  # Rede de segurança: se a imagem do Piston for antiga ou o volume tiver sido
-  # criado sem algum runtime, instala o que faltar antes de o app subir.
-  piston-init:
-    image: node:24-alpine
-    command: node /piston-install.mjs
-    environment:
-      PISTON_URL: http://piston:2000
-      PISTON_PACKAGES: ${PISTON_PACKAGES:-gcc,rust,go,zig,nasm,pascal}
-    volumes:
-      - ./scripts/piston-install.mjs:/piston-install.mjs:ro
-    depends_on:
-      piston:
-        condition: service_healthy
-
-  # Testes num container: typecheck, unitários e todas as soluções de referência no Piston.
+  # Testes num container: typecheck e unitários. As soluções de referência (npm run verify)
+  # precisam de gcc, g++, rustc e python3 e rodam no CI (.github/workflows/ci.yml).
   #   docker compose --profile test run --rm test
   test:
     profiles: ["test"]
     build:
       context: .
       target: build # estágio com devDependencies e código-fonte
-    command: sh -c "npm run typecheck && npm test && npm run verify"
+    command: sh -c "npm run typecheck && npm test"
     environment:
       DATABASE_URL: postgresql://korin:${POSTGRES_PASSWORD:-korin}@db:5432/korin
-      RUNNER: piston
-      PISTON_URL: http://piston:2000
     volumes:
       - ./challenges:/app/challenges:ro
-    depends_on:
-      piston-init:
-        condition: service_completed_successfully
 
 volumes:
   pg-data:
-  piston-packages:

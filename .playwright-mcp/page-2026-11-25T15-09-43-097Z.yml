@@ -1,0 +1,239 @@
+- generic [active] [ref=f7e1]:
+  - link "Pular para o conteúdo" [ref=f7e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - region "Notificações":
+    - list
+  - banner [ref=f7e3]:
+    - link "The Korin Tower, página inicial":
+      - /url: /
+    - link "The Korin Tower, página inicial" [ref=f7e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=f7e6]: THE KORIN TOWER
+  - generic [ref=f7e8]:
+    - text: » » » » » » » » » » » »
+    - main [ref=f7e9]:
+      - generic [ref=f7e10]:
+        - article [ref=f7e11]:
+          - generic [ref=f7e12]: enunciado.txt
+          - generic [ref=f7e14]:
+            - generic [ref=f7e15]:
+              - generic [ref=f7e16]: ANDAR 1
+              - generic [ref=f7e17]: Kame House
+            - navigation "Você está em" [ref=f7e18]:
+              - link "A Torre" [ref=f7e19] [cursor=pointer]:
+                - /url: /desafios
+              - text: »
+              - link "Andar 1" [ref=f7e20] [cursor=pointer]:
+                - /url: /desafios#andar-1
+              - text: »
+              - link "C" [ref=f7e21] [cursor=pointer]:
+                - /url: /desafios?sala=c
+            - heading "FizzBuzz" [level=1] [ref=f7e22]
+            - paragraph [ref=f7e23]:
+              - generic "Dificuldade 1 de 5" [ref=f7e24]:
+                - generic [aria-hidden] [ref=f7e26]:
+                  - generic [ref=f7e27]: ★
+                  - generic [ref=f7e28]: ★
+                  - generic [ref=f7e29]: ★
+                  - generic [ref=f7e30]: ★
+                  - generic [ref=f7e31]: ★
+              - text: · C / C++ / Rust / Python · 1000 ms · 64 MB · 2 testes públicos, 3 ocultos
+            - paragraph [ref=f7e32]:
+              - generic [ref=f7e33]: "#iniciante"
+              - generic [ref=f7e34]: "#loops"
+              - generic [ref=f7e35]: "#stdio"
+            - generic [ref=f7e36]:
+              - paragraph [ref=f7e37]:
+                - text: Pergunta de entrevista desde 2007, usada para ver se a pessoa consegue escrever um laço com
+                - code [ref=f7e38]: if
+                - text: .
+              - heading "Tarefa" [level=2] [ref=f7e39]
+              - paragraph [ref=f7e40]:
+                - text: Leia um inteiro
+                - code [ref=f7e41]: "N"
+                - text: da entrada padrão e imprima os números de
+                - code [ref=f7e42]: "1"
+                - text: até
+                - code [ref=f7e43]: "N"
+                - text: ", um por linha, trocando:"
+              - list [ref=f7e44]:
+                - listitem [ref=f7e45]:
+                  - text: múltiplos de 3 por
+                  - code [ref=f7e46]: Fizz
+                - listitem [ref=f7e47]:
+                  - text: múltiplos de 5 por
+                  - code [ref=f7e48]: Buzz
+                - listitem [ref=f7e49]:
+                  - text: múltiplos de 3 e 5 ao mesmo tempo por
+                  - code [ref=f7e50]: FizzBuzz
+              - heading "Entrada" [level=2] [ref=f7e51]
+              - paragraph [ref=f7e52]:
+                - text: Uma linha com o inteiro
+                - generic [ref=f7e53]:
+                  - generic [ref=f7e54]:
+                    - math [ref=f7e56]:
+                      - generic [ref=f7e57]: "N"
+                    - generic [ref=f7e61]: "N"
+                  - text: ","
+                - text: com
+                - generic [ref=f7e62]:
+                  - generic [ref=f7e63]:
+                    - math [ref=f7e65]:
+                      - generic [ref=f7e67]:
+                        - generic [ref=f7e68]: "1"
+                        - generic [ref=f7e69]: ≤
+                        - generic [ref=f7e70]: "N"
+                        - generic [ref=f7e71]: ≤
+                        - generic [ref=f7e72]:
+                          - generic [ref=f7e73]: "10"
+                          - generic [ref=f7e74]: "5"
+                    - generic [aria-hidden] [ref=f7e75]:
+                      - generic [ref=f7e76]: 1 ≤
+                      - generic [ref=f7e77]: N ≤
+                      - generic [ref=f7e78]:
+                        - text: "1"
+                        - generic [ref=f7e79]:
+                          - text: "0"
+                          - generic [ref=f7e80]: "5"
+                  - text: .
+              - heading "Saída" [level=2] [ref=f7e85]
+              - paragraph [ref=f7e86]:
+                - generic [ref=f7e87]:
+                  - math [ref=f7e89]:
+                    - generic [ref=f7e90]: "N"
+                  - generic [ref=f7e94]: "N"
+                - text: linhas, conforme as regras acima.
+              - heading "Exemplo" [level=2] [ref=f7e95]
+              - paragraph [ref=f7e96]: "Entrada:"
+              - code [ref=f7e98]: "5"
+              - paragraph [ref=f7e99]: "Saída:"
+              - code [ref=f7e101]: 1 2 Fizz 4 Buzz
+            - group [ref=f7e102]:
+              - generic "Exemplos (2)" [ref=f7e103] [cursor=pointer]
+              - generic [ref=f7e104]:
+                - generic [ref=f7e105]:
+                  - generic [ref=f7e106]: Exemplo 1
+                  - generic [ref=f7e107]: 01-ate-15
+                - generic [ref=f7e108]: input
+                - generic [ref=f7e109]: "15"
+                - generic [ref=f7e110]: output esperado
+                - generic [ref=f7e111]: 1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz
+              - generic [ref=f7e112]:
+                - generic [ref=f7e113]:
+                  - generic [ref=f7e114]: Exemplo 2
+                  - generic [ref=f7e115]: 02-um
+                - generic [ref=f7e116]: input
+                - generic [ref=f7e117]: "1"
+                - generic [ref=f7e118]: output esperado
+                - generic [ref=f7e119]: "1"
+            - group [ref=f7e120]:
+              - generic "Recordes (ninguém ainda)" [ref=f7e121] [cursor=pointer]
+            - group [ref=f7e122]:
+              - generic "Comentários (0)" [ref=f7e123] [cursor=pointer]
+        - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f7e124]
+        - generic [ref=f7e125]:
+          - generic [ref=f7e126]:
+            - toolbar "Ações do editor" [ref=f7e127]:
+              - generic [ref=f7e128]:
+                - text: Linguagem
+                - combobox "Linguagem" [ref=f7e129]:
+                  - option "C" [selected]
+                  - option "C++"
+                  - option "Rust"
+                  - option "Python"
+              - button "▶ Executar" [ref=f7e130] [cursor=pointer]
+              - button "Testar" [ref=f7e131] [cursor=pointer]
+              - button "Enviar" [ref=f7e132] [cursor=pointer]
+              - button "Dicas" [ref=f7e133] [cursor=pointer]
+              - generic [ref=f7e134] [cursor=pointer]:
+                - checkbox "Vim" [checked] [ref=f7e135]
+                - text: Vim
+            - status [ref=f7e138]:
+              - generic [ref=f7e141]: 1,1
+              - generic [ref=f7e142]: C
+            - toolbar "Comandos do editor" [ref=f7e143]:
+              - button ":w Salvar" [ref=f7e144] [cursor=pointer]:
+                - generic [ref=f7e145]: :w
+                - generic [ref=f7e146]: Salvar
+              - button ":run Executar" [ref=f7e147] [cursor=pointer]:
+                - generic [ref=f7e148]: :run
+                - generic [ref=f7e149]: Executar
+              - button ":test Testar" [ref=f7e150] [cursor=pointer]:
+                - generic [ref=f7e151]: :test
+                - generic [ref=f7e152]: Testar
+              - button ":submit Enviar" [ref=f7e153] [cursor=pointer]:
+                - generic [ref=f7e154]: :submit
+                - generic [ref=f7e155]: Enviar
+              - button ":stdin Entrada" [ref=f7e156] [cursor=pointer]:
+                - generic [ref=f7e157]: :stdin
+                - generic [ref=f7e158]: Entrada
+              - button ":hint Dica" [ref=f7e159] [cursor=pointer]:
+                - generic [ref=f7e160]: :hint
+                - generic [ref=f7e161]: Dica
+              - button ":out Saída" [ref=f7e162] [cursor=pointer]:
+                - generic [ref=f7e163]: :out
+                - generic [ref=f7e164]: Saída
+              - button ":q Sair" [ref=f7e165] [cursor=pointer]:
+                - generic [ref=f7e166]: :q
+                - generic [ref=f7e167]: Sair
+          - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=f7e168]
+          - generic [ref=f7e169]:
+            - tablist "Painel de saída" [ref=f7e170]:
+              - tab "Saída" [selected] [ref=f7e171] [cursor=pointer]
+              - tab "Dicas 0/3" [ref=f7e172] [cursor=pointer]
+              - tab "Solução" [ref=f7e173] [cursor=pointer]
+            - tabpanel "Saída" [ref=f7e174]:
+              - generic [ref=f7e175]:
+                - generic [ref=f7e176]:
+                  - text: Entrada (stdin)
+                  - generic [ref=f7e177]: Ctrl+Enter executa · Esc volta ao editor
+                - textbox "Entrada (stdin) Ctrl+Enter executa · Esc volta ao editor" [ref=f7e178]: "15"
+                - paragraph [ref=f7e181]:
+                  - generic [ref=f7e182]: :run
+                  - text: executa com a entrada acima ·
+                  - generic [ref=f7e183]: :test
+                  - text: roda os testes públicos ·
+                  - generic [ref=f7e184]: :submit
+                  - text: envia _
+    - text: $
+  - contentinfo [ref=f7e185]:
+    - separator [ref=f7e186]
+    - generic "Webring" [ref=f7e187]:
+      - link "◄ anterior" [ref=f7e188] [cursor=pointer]:
+        - /url: /sobre
+      - generic [ref=f7e189]: Webring dos crias
+      - link "aleatório" [ref=f7e192] [cursor=pointer]:
+        - /url: /aleatorio
+      - link "próximo ►" [ref=f7e193] [cursor=pointer]:
+        - /url: /desafios
+    - generic [ref=f7e194]:
+      - link [ref=f7e195] [cursor=pointer]:
+        - /url: /
+        - img "The Korin Tower" [ref=f7e196]
+      - link [ref=f7e197] [cursor=pointer]:
+        - /url: /guestbook
+        - img "Guest book" [ref=f7e198]
+      - generic "Netscape Now!" [ref=f7e199]:
+        - img "Netscape Now!" [ref=f7e200]
+      - generic "Made with Notepad" [ref=f7e201]:
+        - img "Made with Notepad" [ref=f7e202]
+      - generic "Best viewed 800x600" [ref=f7e203]:
+        - img "Best viewed 800x600" [ref=f7e204]
+      - link [ref=f7e205] [cursor=pointer]:
+        - /url: /aleatorio
+        - img "Web rings" [ref=f7e206]
+      - generic "Y2K Neocities" [ref=f7e207]:
+        - img "Y2K Neocities" [ref=f7e208]
+      - generic "Best viewed with open eyes" [ref=f7e209]:
+        - img "Best viewed with open eyes" [ref=f7e210]
+      - link "KI 9000+ carregado" [ref=f7e211] [cursor=pointer]:
+        - /url: /hall-da-fama
+        - generic [ref=f7e212]: KI 9000+
+        - generic [ref=f7e213]: carregado
+    - paragraph [ref=f7e214]:
+      - text: Atualizado em 25/11/2026 // Best viewed in Netscape Navigator 4.0 at 800x600 // © 1998–2026 The Korin Tower //
+      - link "linke para cá" [ref=f7e215] [cursor=pointer]:
+        - /url: /sobre#botao
+      - text: //
+      - link "▲ topo" [ref=f7e216] [cursor=pointer]:
+        - /url: "#conteudo"

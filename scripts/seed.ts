@@ -45,6 +45,21 @@ async function main() {
       console.warn(`⚠ no banco mas não em /challenges: ${orphans.map((o) => o.slug).join(", ")} (use --prune para remover)`);
     }
   }
+  // Categorias que saíram de categories.yml: com --prune somem, se ficaram vazias
+  // (um desafio criado no painel admin segura a categoria dele).
+  const goneCats = await prisma.category.findMany({
+    where: { id: { notIn: categories.map((c) => c.id) } },
+    select: { id: true, _count: { select: { challenges: true } } },
+  });
+  if (goneCats.length) {
+    const empty = goneCats.filter((c) => c._count.challenges === 0).map((c) => c.id);
+    if (prune && empty.length) {
+      await prisma.category.deleteMany({ where: { id: { in: empty } } });
+      console.log(`🗑  categorias removidas: ${empty.join(", ")}`);
+    } else if (!prune) {
+      console.warn(`⚠ categorias no banco mas não em categories.yml: ${goneCats.map((c) => c.id).join(", ")} (use --prune para remover as vazias)`);
+    }
+  }
   console.log(`\n${challenges.length} desafio(s), ${categories.length} categoria(s), ${tracks.length} trilha(s) importados.`);
 }
 

@@ -1,0 +1,101 @@
+- generic [active] [ref=e1]:
+  - link "Pular para o conteúdo" [ref=e2] [cursor=pointer]:
+    - /url: "#conteudo"
+  - region "Notificações":
+    - list
+  - banner [ref=e3]:
+    - link "The Korin Tower, página inicial":
+      - /url: /
+    - link "The Korin Tower, página inicial" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e6]: THE KORIN TOWER
+  - generic [ref=e8]:
+    - text: » » » » » » » » » » » »
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - heading "Sandbox" [level=1] [ref=e12]
+          - paragraph [ref=e15]: Sandbox para praticar
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - toolbar "Ações do compilador" [ref=e18]:
+              - generic [ref=e19]:
+                - text: Linguagem
+                - combobox "Linguagem" [ref=e20]:
+                  - option "C" [selected]
+                  - option "C++"
+                  - option "Rust"
+                  - option "Python"
+              - button "▶ Executar" [ref=e21] [cursor=pointer]
+              - button "Restaurar template" [ref=e22] [cursor=pointer]
+              - generic [ref=e23] [cursor=pointer]:
+                - checkbox "Vim" [checked] [ref=e24]
+                - text: Vim
+            - status [ref=e27]:
+              - generic [ref=e30]: 1,1
+              - generic [ref=e31]: C
+            - toolbar "Comandos do editor" [ref=e32]:
+              - button ":w Salvar" [ref=e33] [cursor=pointer]:
+                - generic [ref=e34]: :w
+                - generic [ref=e35]: Salvar
+              - button ":run Executar" [ref=e36] [cursor=pointer]:
+                - generic [ref=e37]: :run
+                - generic [ref=e38]: Executar
+              - button ":stdin Entrada" [ref=e39] [cursor=pointer]:
+                - generic [ref=e40]: :stdin
+                - generic [ref=e41]: Entrada
+              - button ":out Saída" [ref=e42] [cursor=pointer]:
+                - generic [ref=e43]: :out
+                - generic [ref=e44]: Saída
+              - button ":q Sair" [ref=e45] [cursor=pointer]:
+                - generic [ref=e46]: :q
+                - generic [ref=e47]: Sair
+          - separator "Arraste para redimensionar. Duplo clique volta ao padrão." [ref=e48]
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - text: Entrada (stdin)
+              - generic [ref=e51]: Ctrl+Enter executa · Esc volta ao editor
+            - textbox "Entrada (stdin) Ctrl+Enter executa · Esc volta ao editor" [ref=e52]
+            - paragraph [ref=e56]: :run compila e executa com a entrada acima _
+    - text: $
+  - contentinfo [ref=e57]:
+    - separator [ref=e58]
+    - generic "Webring" [ref=e59]:
+      - link "◄ anterior" [ref=e60] [cursor=pointer]:
+        - /url: /sobre
+      - generic [ref=e61]: Webring dos crias
+      - link "aleatório" [ref=e64] [cursor=pointer]:
+        - /url: /aleatorio
+      - link "próximo ►" [ref=e65] [cursor=pointer]:
+        - /url: /desafios
+    - generic [ref=e66]:
+      - link [ref=e67] [cursor=pointer]:
+        - /url: /
+        - img "The Korin Tower" [ref=e68]
+      - link [ref=e69] [cursor=pointer]:
+        - /url: /guestbook
+        - img "Guest book" [ref=e70]
+      - generic "Netscape Now!" [ref=e71]:
+        - img "Netscape Now!" [ref=e72]
+      - generic "Made with Notepad" [ref=e73]:
+        - img "Made with Notepad" [ref=e74]
+      - generic "Best viewed 800x600" [ref=e75]:
+        - img "Best viewed 800x600" [ref=e76]
+      - link [ref=e77] [cursor=pointer]:
+        - /url: /aleatorio
+        - img "Web rings" [ref=e78]
+      - generic "Y2K Neocities" [ref=e79]:
+        - img "Y2K Neocities" [ref=e80]
+      - generic "Best viewed with open eyes" [ref=e81]:
+        - img "Best viewed with open eyes" [ref=e82]
+      - link "KI 9000+ carregado" [ref=e83] [cursor=pointer]:
+        - /url: /hall-da-fama
+        - generic [ref=e84]: KI 9000+
+        - generic [ref=e85]: carregado
+    - paragraph [ref=e86]:
+      - text: Atualizado em 25/11/2026 // Best viewed in Netscape Navigator 4.0 at 800x600 // © 1998–2026 The Korin Tower //
+      - link "linke para cá" [ref=e87] [cursor=pointer]:
+        - /url: /sobre#botao
+      - text: //
+      - link "▲ topo" [ref=e88] [cursor=pointer]:
+        - /url: "#conteudo"

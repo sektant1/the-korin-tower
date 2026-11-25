@@ -345,7 +345,7 @@ commands.doctor = async () => {
       console.log(`${red("✘")} token inválido: ${e.message.split("\n")[0]}`);
     }
   }
-  const tools = [["gcc", "c"], ["g++", "cpp"], ["rustc", "rust"]];
+  const tools = [["gcc", "c"], ["g++", "cpp"], ["rustc", "rust"], [PYTHON, "python"]];
   const found = tools.filter(([bin]) => !spawnSync(bin, ["--version"], { stdio: "ignore" }).error);
   console.log(`${dim("·")} compiladores para korin test --local: ${found.length ? found.map(([b, l]) => `${b} (${l})`).join(", ") : dim("nenhum no PATH; use o servidor")}`);
 };
@@ -451,6 +451,9 @@ function stdioOnly(w) {
   if (w.ws.kind && w.ws.kind !== "stdio") fail(`desafio "${w.ws.kind}" roda no navegador: korin open`);
 }
 
+/** Python não roda no servidor (lá ele roda no navegador do jogador): na CLI é sempre o python3 local. */
+const isPython = (w) => w.ws.language === "python";
+
 async function runOnServer(w, mode, source, stdin) {
   const cfg = loadConfig();
   return api(cfg, "POST", "/api/run", { slug: w.ws.slug, language: w.ws.language, source, mode, stdin });
@@ -465,6 +468,11 @@ commands.run = async ({ flags, pos }) => {
     const first = listLocalTests(w.dir)[0];
     stdin = first?.input ?? "";
     if (first) console.log(dim(`stdin: tests/${first.name}.in (use -i arquivo ou um pipe para trocar)`));
+  }
+  if (isPython(w)) {
+    const r = spawnSync(PYTHON, [readSource(w, pos[0]).file], { input: stdin, encoding: "utf8", stdio: ["pipe", "inherit", "inherit"] });
+    if (r.error) fail(`não achei '${PYTHON}' no PATH: ${r.error.message}`);
+    return void (process.exitCode = r.status ?? 1);
   }
   const r = await runOnServer(w, "run", source, stdin);
   for (const wn of r.warnings ?? []) console.log(yellow("! " + wn));
@@ -483,7 +491,7 @@ commands.test = async ({ flags, pos }) => {
   const w = requireWorkspace();
   stdioOnly(w);
   const { file, source } = readSource(w, pos[0]);
-  if (flags.local) return testLocal(w, file);
+  if (flags.local || isPython(w)) return testLocal(w, file);
   const r = await runOnServer(w, "test", source);
   for (const wn of r.warnings ?? []) console.log(yellow("! " + wn));
   if (!printCompile(r.compile)) return void (process.exitCode = 1);
@@ -498,7 +506,16 @@ commands.submit = async ({ pos }) => {
   stdioOnly(w);
   const cfg = loadConfig();
   if (!cfg.token) console.log(yellow("! sem login: o resultado não é salvo nem pontua (korin login)"));
-  const { source } = readSource(w, pos[0]);
+  const { file, source } = readSource(w, pos[0]);
+  if (isPython(w)) {
+    // Como no site: baixa todos os testes (ocultos inclusive), julga aqui e manda só o veredito.
+    const { tests, driver } = await api(cfg, "GET", `/api/challenges/${encodeURIComponent(w.ws.slug)}/tests`);
+    const results = testLocal(w, file, tests, driver);
+    if (!results.every((t) => t.verdict === "AC")) return;
+    const v = await api(cfg, "POST", "/api/run", { slug: w.ws.slug, language: "python", source, mode: "submit", verdict: { allPassed: true, timesMs: results.map((t) => t.timeMs) } });
+    if (v.awarded === undefined) return;
+    return console.log(v.awarded > 0 ? green(bold(`CLEAR! +${v.awarded} pontos`)) : dim("já estava resolvido (ou você desistiu antes): sem pontos novos"));
+  }
   const r = await runOnServer(w, "submit", source);
   for (const wn of r.warnings ?? []) console.log(yellow("! " + wn));
   if (!printCompile(r.compile)) return void (process.exitCode = 1);
@@ -582,11 +599,15 @@ commands.update = async () => {
 
 // ---- testes locais (--local): compila com o que há na sua máquina ----------------------
 const EXE = platform() === "win32" ? "main.exe" : "main";
+const PYTHON = process.env.PYTHON || (platform() === "win32" ? "python" : "python3");
 const LOCAL_BUILD = {
   c: (f) => [["gcc", "-std=c17", "-O2", "-Wall", "-o", EXE, f, "-lm"]],
   cpp: (f) => [["g++", "-std=c++20", "-O2", "-Wall", "-o", EXE, f]],
   rust: (f) => [["rustc", "--edition", "2021", "-O", "-o", EXE, f]],
+  python: (f) => [[PYTHON, "-m", "py_compile", f]],
 };
+/** Python no site tem 3x o limite de C (src/lib/runner/code-runner.ts, TIME_FACTOR). */
+const TIME_FACTOR = { c: 1, cpp: 1, rust: 1, python: 3 };
 
 function normalize(s) {
   return s
@@ -597,11 +618,17 @@ function normalize(s) {
     .replace(/\n+$/, "");
 }
 
-function testLocal(w, file) {
+function testLocal(w, file, remoteTests, driver) {
   const build = LOCAL_BUILD[w.ws.language] ?? fail(`--local não sabe compilar ${w.ws.language}; use o servidor`);
   const out = path.join(w.dir, ".korin-build");
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
+  // Driver oculto do desafio (quando há): vai depois do seu código, como no site.
+  if (driver) {
+    const merged = path.join(out, path.basename(file));
+    writeFileSync(merged, readFileSync(file, "utf8").replace(/\n?$/, "\n") + driver);
+    file = merged;
+  }
   for (const cmd of build(path.relative(out, file))) {
     const r = spawnSync(cmd[0], cmd.slice(1), { cwd: out, encoding: "utf8" });
     if (r.error) fail(`não achei '${cmd[0]}' no PATH: ${r.error.message}`);
@@ -612,12 +639,13 @@ function testLocal(w, file) {
     }
     if (r.stderr.trim()) console.log(dim(r.stderr.trim()));
   }
-  const tests = listLocalTests(w.dir);
+  const tests = remoteTests ?? listLocalTests(w.dir);
   if (!tests.length) fail("sem testes em tests/ (rode korin pick de novo)");
-  const limit = w.ws.timeLimitMs ?? 2000;
+  const limit = (w.ws.timeLimitMs ?? 2000) * (TIME_FACTOR[w.ws.language] ?? 1);
+  const cmd = isPython(w) ? [PYTHON, path.resolve(file)] : [path.join(out, EXE)];
   const results = tests.map((t) => {
     const t0 = performance.now();
-    const r = spawnSync(path.join(out, EXE), [], { input: t.input, encoding: "utf8", timeout: limit * 3, maxBuffer: 1 << 20 });
+    const r = spawnSync(cmd[0], cmd.slice(1), { input: t.input, encoding: "utf8", timeout: limit * 3, maxBuffer: 1 << 24 });
     const timeMs = Math.round(performance.now() - t0);
     let verdict = "AC";
     let message;
@@ -626,13 +654,14 @@ function testLocal(w, file) {
     else if (r.status !== 0) (verdict = "RE"), (message = r.signal ? `morto por ${r.signal}` : `exit code ${r.status}`);
     else if (normalize(r.stdout ?? "") !== normalize(t.expected)) verdict = "WA";
     else if (timeMs > limit) (verdict = "TLE"), (message = `${timeMs} ms > ${limit} ms (sua máquina; o servidor pode diferir)`);
-    return { ...t, hidden: false, verdict, message, timeMs, stdout: r.stdout ?? "", stderr: r.stderr ?? "" };
+    return { ...t, hidden: t.hidden ?? false, verdict, message, timeMs, stdout: r.stdout ?? "", stderr: r.stderr ?? "" };
   });
   printTests(results);
   const all = results.every((r) => r.verdict === "AC");
   summarize(results, all);
-  console.log(dim(all ? "só os públicos, aqui na sua máquina. korin submit roda os ocultos no servidor." : ""));
+  if (!remoteTests) console.log(dim(all ? `só os públicos, aqui na sua máquina. korin submit roda ${isPython(w) ? "todos" : "os ocultos no servidor"}.` : ""));
   if (!all) process.exitCode = 1;
+  return results;
 }
 
 // ---- main ------------------------------------------------------------------------------
