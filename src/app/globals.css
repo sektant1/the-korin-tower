@@ -5704,6 +5704,11 @@ h4:hover > .h-anchor,
   margin: auto;
   overflow: auto;
 }
+/* .window98 põe display: flex, que venceria o display: none do <dialog> fechado do navegador
+   e deixaria a janela sempre visível, solta na página */
+.avatar-dialog:not([open]) {
+  display: none;
+}
 .avatar-dialog::backdrop {
   background: #0a0614c0;
 }
