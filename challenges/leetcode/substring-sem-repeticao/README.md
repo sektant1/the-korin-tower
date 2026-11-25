@@ -1,5 +1,5 @@
 ---
-title: 3. Maior Substring sem Repetição
+title: "Longest Substring Without Repeating Characters"
 difficulty: 2
 tags: [janela-deslizante, strings, dois-ponteiros, leetcode]
 languages: [c, cpp, rust]
@@ -7,12 +7,12 @@ timeLimitMs: 2000
 memoryLimitMb: 256
 order: 3
 hints:
-  - "Testar toda substring é $O(N^2)$ ou pior. Pense numa **janela** `[i, j)` que só cresce para a direita."
-  - "Guarde, para cada caractere, a **última posição** em que apareceu (um vetor de 128 ou 256 inteiros basta: a entrada é ASCII)."
+  - "Testar toda substring é $O(N^2)$ ou pior. Pense numa janela `[i, j)` que só cresce para a direita."
+  - "Guarde, para cada caractere, a última posição em que apareceu (um vetor de 128 ou 256 inteiros basta: a entrada é ASCII)."
   - "Ao avançar `j`, se `s[j]` apareceu em uma posição $\\ge i$, pule `i` para `ultima[s[j]] + 1`. A resposta é o maior `j - i + 1`."
 ---
 
-Dada uma string, encontre o comprimento da **maior substring** (trecho contíguo) **sem caracteres repetidos**.
+Dada uma string, encontre o comprimento da maior substring (trecho contíguo) sem caracteres repetidos.
 
 ## Entrada
 
@@ -43,7 +43,7 @@ Saída:
 2
 ```
 
-Em `abcabcbb` a resposta é `abc`; em `pwwkew` é `wke` (`pwke` é uma subsequência, não uma substring). Em `abba`, cuidado: ao chegar no último `a`, o início da janela já passou do primeiro `a`.
+Em `abcabcbb` a resposta é `abc`; em `pwwkew` é `wke` (`pwke` é uma subsequência, não uma substring). Em `abba`, quando você chega no último `a`, o início da janela já está depois do primeiro `a`.
 
 ---
 

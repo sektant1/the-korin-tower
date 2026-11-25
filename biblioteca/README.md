@@ -1,7 +1,7 @@
 # Biblioteca
 
 Posts da página `/biblioteca`: tutoriais, guias, referências e artigos, em Markdown.
-Os arquivos daqui **são** o conteúdo: não há seed nem banco. Fez commit e deploy, está no ar.
+Os arquivos daqui são o próprio conteúdo, sem seed nem banco. O post entra no ar no próximo deploy.
 
 - `*.md` em qualquer subpasta viram posts (exceto `README.md`, arquivos começando com `_` e a pasta `assets/`).
 - `series.yml` lista as séries.

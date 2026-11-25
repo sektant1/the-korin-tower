@@ -1,5 +1,5 @@
 ---
-title: "Coletor de Lixo: Mark & Sweep"
+title: "Mark and Sweep"
 difficulty: 5
 tags: [gc, grafos, memoria, dfs]
 languages: [c, cpp]
@@ -13,7 +13,7 @@ hints:
   - "Leia as referências para uma lista de adjacência compacta: um vetor com todas as referências e, para cada objeto, o início e o fim do trecho dele."
 ---
 
-Um coletor de lixo não sabe o que é inútil; ele sabe o que é **inalcançável**. Mark & Sweep, o primeiro de todos (McCarthy, 1960), parte das raízes e marca tudo que consegue tocar. O que não foi marcado é devolvido.
+Um garbage collector libera o que não é mais alcançável. O mark and sweep, criado por McCarthy em 1960 para o Lisp, parte das raízes e marca tudo que dá para alcançar seguindo referências. O que ficou sem marca é liberado.
 
 ## Tarefa
 
@@ -53,4 +53,4 @@ Saída:
 6
 ```
 
-`4` e `5` apontam um para o outro, mas ninguém vivo aponta para eles: é um ciclo morto. `6` está solto.
+`4` e `5` apontam um para o outro, mas nenhum objeto vivo aponta para eles, então o ciclo inteiro é coletado. `6` não tem ninguém apontando para ele.

@@ -1,5 +1,5 @@
 ---
-title: "Interpretador Brainf*ck"
+title: "Brainfuck Interpreter"
 difficulty: 5
 tags: [interpretador, turing, bytes, fita]
 languages: [c, cpp]
@@ -9,11 +9,11 @@ order: 4
 hints:
   - "Oito instruções e uma fita de 30000 bytes. O único cuidado de verdade é o par `[` `]`: pré-calcule para cada colchete o índice do par, com uma pilha, antes de executar."
   - "Células são `unsigned char`: `255 + 1` vira `0` sozinho em C. Não use `int` para a fita."
-  - "A entrada do programa (`,`) é o que vem **depois** da primeira linha. Leia o programa com `fgets` e o resto com `getchar()`; em `EOF`, grave `0`."
+  - "A entrada do programa (`,`) é o que vem depois da primeira linha. Leia o programa com `fgets` e o resto com `getchar()`; em `EOF`, grave `0`."
   - "Conte as instruções executadas e pare em $10^6$. Sem isso, `+[]` trava o seu juiz."
 ---
 
-A menor linguagem Turing-completa que existe: oito símbolos, uma fita, um ponteiro. Escrever o interpretador é um rito de passagem.
+Brainfuck é uma linguagem Turing-completa com oito símbolos, uma fita e um ponteiro. O interpretador cabe em poucas dezenas de linhas.
 
 ## A máquina
 

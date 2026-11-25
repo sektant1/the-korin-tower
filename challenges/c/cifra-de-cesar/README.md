@@ -1,5 +1,5 @@
 ---
-title: "Cifra de César"
+title: "Caesar Cipher"
 difficulty: 1
 tags: [iniciante, strings, ascii]
 languages: [c, cpp]
@@ -13,15 +13,13 @@ hints:
   - "Leia caractere a caractere com `getchar()` até `EOF`: qualquer coisa que não é letra passa igual, inclusive a quebra de linha."
 ---
 
-A cifra mais antiga do mundo: cada letra anda `K` posições no alfabeto. `A` com `K = 3` vira `D`; `Z` dá a volta e vira `C`.
+No Caesar cipher cada letra anda `K` posições no alfabeto. Com `K = 3`, `A` vira `D` e `Z` dá a volta e vira `C`.
 
 ## Tarefa
 
 Leia o deslocamento `K` e, depois, um texto de várias linhas. Imprima o texto cifrado.
 
-- Letras minúsculas continuam minúsculas; maiúsculas, maiúsculas.
-- Espaços, pontuação, dígitos e quebras de linha passam sem mudar.
-- `K` pode ser negativo: aí as letras andam para trás.
+Minúscula continua minúscula e maiúscula continua maiúscula. Espaços, pontuação, dígitos e quebras de linha saem como entraram. Se `K` for negativo, as letras andam para trás.
 
 ## Entrada
 

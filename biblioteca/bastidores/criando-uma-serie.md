@@ -10,13 +10,13 @@ date: 2026-11-12
 draft: true
 ---
 
-Uma série junta posts que devem ser lidos em ordem. Quem lê ganha a lista de partes, os botões de anterior e próxima, o progresso ("2/5 lidos") e um botão que leva direto à primeira parte não lida.
+Uma série junta posts que devem ser lidos em ordem. Quem lê vê a lista de partes, os botões de anterior e próxima, o progresso ("2/5 lidos") e um botão que leva direto à primeira parte não lida.
 
-Neste tutorial vamos montar uma série de exemplo, **Ponteiros na unha**, com três partes.
+O exemplo aqui é uma série de três partes chamada "Ponteiros na unha".
 
 ## 1. Declare a série no series.yml
 
-Toda série existe primeiro em `biblioteca/series.yml`. Abra o arquivo e acrescente um item:
+Toda série começa em `biblioteca/series.yml`. Acrescente um item no arquivo:
 
 ```yaml title="biblioteca/series.yml"
 - id: bastidores
@@ -25,7 +25,7 @@ Toda série existe primeiro em `biblioteca/series.yml`. Abra o arquivo e acresce
 
 - id: ponteiros-na-unha
   title: Ponteiros na unha
-  description: De endereço de memória a lista ligada genérica, em C.
+  description: De endereço de memória a linked list genérica, em C.
   scene: 6
 ```
 
@@ -37,7 +37,7 @@ Toda série existe primeiro em `biblioteca/series.yml`. Abra o arquivo e acresce
 | `scene` | não | Imagem do banner, de 1 a 8 (as mesmas dos andares). Sem ela, o site escolhe uma fixa a partir do `id`. |
 
 > [!NOTA] A ordem do arquivo é a ordem do site
-> As séries aparecem no índice na mesma ordem do `series.yml`, e o número do volume (VOL.01, VOL.02...) vem dessa posição. Quer destacar uma série nova? Coloque-a no topo.
+> As séries aparecem no índice na mesma ordem do `series.yml`, e o número do volume (VOL.01, VOL.02...) vem dessa posição. Para destacar uma série nova, coloque-a no topo.
 
 > [!CUIDADO] Não troque o id depois de publicar
 > O `id` está na URL da série e é como o navegador de cada leitor guarda o progresso. Para mudar o nome que aparece, mude só o `title`.
@@ -59,7 +59,7 @@ Todas as partes da série usam o cenário da série, a não ser que um post defi
 
 ## 2. Crie uma pasta para as partes
 
-Não é obrigatório, mas deixa o repositório organizado: uma pasta por série, um arquivo por parte.
+Não é obrigatório. É só para o repositório ficar organizado, com uma pasta por série e um arquivo por parte.
 
 ```text title="biblioteca/"
 biblioteca/
@@ -106,7 +106,7 @@ date: 2026-11-27
 
 ```yaml title="ponteiros-na-unha/lista-ligada-generica.md"
 ---
-title: Lista ligada genérica
+title: Generic linked list
 kind: tutorial
 series: ponteiros-na-unha
 part: 3
@@ -139,7 +139,7 @@ O `npm test` acusa os erros mais comuns com o nome do arquivo:
 
 ## 5. Publicando aos poucos
 
-Não precisa escrever a série inteira antes de publicar:
+Dá para publicar antes de terminar a série inteira:
 
 - Com `draft: true`, a parte fica visível só para admin.
 - Com uma `date` no futuro, a parte aparece sozinha no dia. No exemplo acima, as datas de 20/11, 27/11 e 04/12 lançam uma parte por semana sem você mexer em nada.
@@ -151,16 +151,12 @@ Quem lê só enxerga as partes já publicadas: com uma parte no ar, a série mos
 
 ## 6. Mudanças depois de publicar
 
-- **Reordenar**: troque os números de `part`. As URLs não mudam.
-- **Inserir uma parte no meio**: use um número intermediário (com `part: 15` entre `10` e `20`) ou renumere as seguintes.
-- **Tirar um post da série**: apague as linhas `series` e `part`. Ele continua no ar como post avulso.
-- **Encerrar a série**: apague o item do `series.yml` e as linhas `series`/`part` dos posts. Se sobrar algum post apontando para a série, o `npm test` avisa.
+Para reordenar, troque os números de `part`. As URLs não mudam.
 
-## Resumo
+Para inserir uma parte no meio, use um número intermediário (`part: 15` entre `10` e `20`) ou renumere as seguintes.
 
-1. Acrescente `id` e `title` (e, se quiser, `description` e `scene`) no `series.yml`.
-2. Em cada post, `series: <id>` e `part: <número>`.
-3. Rode `npm test`.
-4. Publique parte por parte com `draft` ou datas futuras.
+Para tirar um post da série, apague as linhas `series` e `part`. Ele continua no ar como post avulso.
 
-Para os outros campos do frontmatter, veja [Escrevendo um post](doc:escrevendo-um-post). Para o que dá para usar dentro do texto, a [referência do Markdown](doc:referencia-do-markdown).
+Para encerrar a série, apague o item do `series.yml` e as linhas `series`/`part` dos posts. Se sobrar algum post apontando para a série, o `npm test` avisa.
+
+Para os outros campos do frontmatter, veja [Escrevendo um post](doc:escrevendo-um-post). O que dá para usar dentro do texto está na [referência do Markdown](doc:referencia-do-markdown).

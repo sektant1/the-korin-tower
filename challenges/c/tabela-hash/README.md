@@ -1,5 +1,5 @@
 ---
-title: Tabela Hash do Zero
+title: "Hash Table"
 difficulty: 3
 tags: [hash, malloc, structs, estruturas-de-dados]
 languages: [c]
@@ -7,11 +7,11 @@ timeLimitMs: 2000
 memoryLimitMb: 128
 order: 5
 hints:
-  - "Comece com **encadeamento**: um vetor de `Entry*` (os baldes), e cada balde é uma lista ligada. Para achar o balde: `hash(chave) % capacidade`."
+  - "Comece com encadeamento: um vetor de `Entry*` (os baldes), e cada balde é uma linked list. Para achar o balde: `hash(chave) % capacidade`."
   - "Uma boa função de hash para strings é a FNV-1a: comece com `h = 1469598103934665603`, e para cada byte faça `h ^= byte; h *= 1099511628211;` (em `uint64_t`)."
   - "Se a capacidade for potência de 2, troque `% cap` por `& (cap - 1)`: mais rápido e dá o mesmo resultado."
-  - "Com 200 mil chaves e 16 baldes, cada lista teria 12 mil nós. **Redimensione**: quando `count > 0.75 * cap`, dobre a capacidade e reinsira todos os nós (sem `malloc` novo, só reencadeie)."
-  - "Remover de lista ligada sem caso especial para a cabeça: ande com um ponteiro para ponteiro (`Entry **pp = &baldes[i]`) e faça `*pp = (*pp)->next`."
+  - "Com 200 mil chaves e 16 baldes, cada lista teria 12 mil nós. Redimensione: quando `count > 0.75 * cap`, dobre a capacidade e reinsira todos os nós (sem `malloc` novo, só reencadeie)."
+  - "Remover de linked list sem caso especial para a cabeça: ande com um ponteiro para ponteiro (`Entry **pp = &baldes[i]`) e faça `*pp = (*pp)->next`."
 ---
 
 Implemente um dicionário `string → inteiro` em C puro, sem bibliotecas. O `main` que lê os comandos já está pronto no template; você escreve as funções `ht_*`.
@@ -66,4 +66,4 @@ nil
 
 ## Desempenho
 
-Os testes ocultos têm dezenas de milhares de chaves. Uma lista simples, $O(n)$ por busca, estoura o tempo: você precisa de $O(1)$ em média, e isso exige **redimensionar** a tabela.
+Os testes ocultos têm dezenas de milhares de chaves. Uma lista simples, $O(n)$ por busca, estoura o tempo: você precisa de $O(1)$ em média, e para isso a tabela tem que crescer (rehash) quando enche.

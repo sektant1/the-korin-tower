@@ -1,5 +1,5 @@
 ---
-title: Plasma Animado em GLSL
+title: "Plasma Effect"
 kind: shader
 difficulty: 2
 tags: [glsl, shader, demoscene, webgl]
@@ -12,9 +12,9 @@ hints:
   - "Transforme o valor `v` em cor com uma paleta de cossenos: `0.5 + 0.5 * cos(6.2831 * (v + vec3(0.0, 0.33, 0.67)))`."
 ---
 
-O efeito clássico das demos dos anos 90: um **plasma** colorido que se mexe sozinho.
+Faça um plasma colorido e animado, o efeito que aparecia em toda demo dos anos 90.
 
-Este desafio roda **direto no seu navegador**, num canvas WebGL2, no estilo Shadertoy. Escreva a função `mainImage`; o site cuida do resto. Use `:run` (ou o botão **Executar**) para recompilar.
+O desafio roda no navegador, num canvas WebGL2 no estilo Shadertoy. Você escreve a função `mainImage` e o site faz o resto. Use `:run` (ou o botão Executar) para recompilar.
 
 ## Uniforms disponíveis
 
@@ -27,7 +27,7 @@ Este desafio roda **direto no seu navegador**, num canvas WebGL2, no estilo Shad
 ## Requisitos
 
 1. As cores devem mudar com o tempo (`iTime`).
-2. O padrão deve variar no espaço com **ao menos três** ondas de seno somadas.
+2. O padrão deve variar no espaço com pelo menos três ondas de seno somadas.
 3. Bônus: o mouse distorce o plasma.
 
-Não existe teste de pixel-a-pixel aqui: `:submit` renderiza dois frames (em `t=0` e `t=3`) no seu navegador e confere que o efeito aparece — se estiver bonito, `:submit` fecha o desafio.
+Não há comparação pixel a pixel. O `:submit` renderiza dois frames no navegador (em `t=0` e `t=3`) e confere que o efeito aparece. Se aparecer, o desafio é dado como resolvido.

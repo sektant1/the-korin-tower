@@ -1,5 +1,5 @@
 ---
-title: 56. Fundir Intervalos
+title: "Merge Intervals"
 difficulty: 2
 tags: [ordenacao, intervalos, varredura, leetcode]
 languages: [c, cpp, rust]
@@ -7,12 +7,12 @@ timeLimitMs: 2000
 memoryLimitMb: 256
 order: 4
 hints:
-  - "**Ordene** os intervalos pelo início. Depois disso, um intervalo só pode se sobrepor ao que está sendo montado agora."
+  - "Ordene os intervalos pelo início. Depois disso, um intervalo só pode se sobrepor ao que está sendo montado agora."
   - "Mantenha o intervalo `atual`. Para cada próximo `[a, b]`: se `a <= atual.fim`, estenda `atual.fim = max(atual.fim, b)`; senão, imprima `atual` e recomece."
-  - "Intervalos que **encostam** (`[1,3]` e `[3,5]`) se fundem. E não esqueça de imprimir o último `atual` depois do laço."
+  - "Intervalos que encostam (`[1,3]` e `[3,5]`) se fundem. E não esqueça de imprimir o último `atual` depois do laço."
 ---
 
-Dada uma lista de intervalos fechados $[a_i, b_i]$, **funda** todos os que se sobrepõem (ou se tocam) e imprima o resultado em ordem crescente.
+Dada uma lista de intervalos fechados $[a_i, b_i]$, junte todos os que se sobrepõem (ou se tocam) e imprima o resultado em ordem crescente.
 
 ## Entrada
 

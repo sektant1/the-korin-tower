@@ -1,5 +1,5 @@
 ---
-title: 4. Mediana de Dois Vetores Ordenados
+title: "Median of Two Sorted Arrays"
 difficulty: 4
 tags: [busca-binaria, dois-ponteiros, leetcode]
 languages: [c, cpp, rust]
@@ -7,15 +7,15 @@ timeLimitMs: 2000
 memoryLimitMb: 256
 order: 7
 hints:
-  - "A solução $O(N + M)$ existe: avance dois ponteiros como no *merge* do merge sort até chegar no meio. Passa nos testes. Mas o desafio de verdade é a próxima dica."
-  - "Para $O(\\log \\min(N, M))$: faça busca binária em quantos elementos de $A$ ficam na **metade esquerda** (`i`); isso determina quantos de $B$ ficam (`j = (N + M + 1) / 2 - i`)."
+  - "A solução $O(N + M)$ existe: avance two pointers como no *merge* do merge sort até chegar no meio. Passa nos testes. Mas o desafio de verdade é a próxima dica."
+  - "Para $O(\\log \\min(N, M))$: faça binary search em quantos elementos de $A$ ficam na metade esquerda (`i`); isso determina quantos de $B$ ficam (`j = (N + M + 1) / 2 - i`)."
   - "O corte está certo quando `A[i-1] <= B[j]` e `B[j-1] <= A[i]`. Se `A[i-1] > B[j]`, `i` é grande demais; se `B[j-1] > A[i]`, é pequeno demais. Trate as bordas (`i = 0`, `i = N`) como $\\pm\\infty$."
-  - "Total ímpar: a mediana é o maior da metade esquerda. Total par: média entre o maior da esquerda e o menor da direita. Imprima com **uma casa decimal**."
+  - "Total ímpar: a mediana é o maior da metade esquerda. Total par: média entre o maior da esquerda e o menor da direita. Imprima com uma casa decimal."
 ---
 
-Dados dois vetores **já ordenados**, $A$ e $B$, encontre a **mediana** da união deles.
+Dados dois vetores já ordenados, $A$ e $B$, encontre a mediana da união deles.
 
-A solução linear é fácil. A graça está em fazer em $O(\log \min(N, M))$, como pede o enunciado original: isso vale uma estrela extra de dificuldade.
+Uma solução linear passa. O enunciado original pede $O(\log \min(N, M))$, e por isso a dificuldade deste é maior.
 
 ## Entrada
 
@@ -23,7 +23,7 @@ A primeira linha tem $N$ e $M$ ($0 \le N, M \le 5 \cdot 10^5$, $N + M \ge 1$). A
 
 ## Saída
 
-A mediana com **exatamente uma casa decimal** (`printf("%.1f")`).
+A mediana com exatamente uma casa decimal (`printf("%.1f")`).
 
 ## Exemplos
 

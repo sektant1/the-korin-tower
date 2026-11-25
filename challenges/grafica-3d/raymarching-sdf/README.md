@@ -1,5 +1,5 @@
 ---
-title: Ray Marching com SDF
+title: "Ray Marching"
 kind: shader
 difficulty: 4
 tags: [glsl, shader, raymarching, sdf, iluminacao, sombras]
@@ -13,17 +13,17 @@ hints:
   - "Sombra: marche do ponto atingido (um pouco acima, `pos + n * 0.01`) em direção à luz. Se bater em algo antes de chegar, está na sombra. Sombra suave: guarde `min(k * d / t)` ao longo do caminho."
 ---
 
-Ray tracing clássico calcula a interseção do raio com cada objeto por fórmula. **Ray marching** faz diferente: a cena é uma única função de distância com sinal (**SDF**), e o raio avança aos saltos, cada salto do tamanho da distância segura até a superfície mais próxima.
+No ray tracing tradicional a interseção do raio com cada objeto sai de uma fórmula. No ray marching a cena inteira é uma função de distância com sinal (SDF), e o raio anda em passos do tamanho da distância até a superfície mais próxima.
 
-Monte uma cena 3D, inteira dentro de um fragment shader, com:
+Monte uma cena 3D dentro de um fragment shader.
 
 ## Requisitos
 
-1. **Câmera** em perspectiva olhando para a cena.
-2. Pelo menos **uma esfera** sobre um **plano** (o chão), definidos como SDFs.
-3. **Normais** calculadas pelo gradiente da SDF.
-4. Iluminação **difusa** (Lambert) de uma luz direcional, mais uma luz ambiente fraca.
-5. **Sombras**: o chão escurece embaixo da esfera.
+1. Câmera em perspectiva olhando para a cena.
+2. Pelo menos uma esfera sobre um plano (o chão), os dois definidos como SDF.
+3. Normais calculadas pelo gradiente da SDF.
+4. Iluminação difusa (Lambert) de uma luz direcional, mais uma luz ambiente fraca.
+5. Sombra: o chão escurece embaixo da esfera.
 6. Algo animado com `iTime` (a esfera quica, a luz gira, a câmera orbita...).
 7. Bônus: sombra suave, chão quadriculado, *fog* pela distância, ou união suave (*smooth min*) de duas esferas.
 
@@ -31,4 +31,4 @@ Monte uma cena 3D, inteira dentro de um fragment shader, com:
 
 `iResolution` (`vec3`), `iTime` (`float`), `iMouse` (`vec4`).
 
-Sem teste de pixel-a-pixel: `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que a cena aparece. Quando a esfera estiver iluminada e fazendo sombra no chão, `:submit` fecha o desafio. Compare com o seu [Ray Tracer de Uma Esfera](/desafio/ray-tracer-esfera): mesma cena, outra técnica.
+Não há comparação pixel a pixel. O `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que a cena aparece. Com a esfera iluminada e fazendo sombra no chão, o desafio está resolvido. O [Sphere Ray Tracer](/desafio/ray-tracer-esfera) tem a mesma cena feita com a outra técnica, se quiser comparar.

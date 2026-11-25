@@ -1,5 +1,5 @@
 ---
-title: 347. Os K Mais Frequentes
+title: "Top K Frequent Elements"
 difficulty: 2
 tags: [hash, heap, ordenacao, contagem, leetcode]
 languages: [c, cpp, rust]
@@ -12,7 +12,7 @@ hints:
   - "Quer o $O(N \\log K)$ do enunciado original? Use um *min-heap* de tamanho $K$ (`std::priority_queue` com `std::greater`, ou `BinaryHeap<Reverse<_>>`)."
 ---
 
-Dado um vetor de inteiros e um $K$, imprima os $K$ valores **mais frequentes**.
+Dado um vetor de inteiros e um $K$, imprima os $K$ valores mais frequentes.
 
 ## Entrada
 
@@ -20,7 +20,7 @@ A primeira linha tem $N$ e $K$ ($1 \le K \le$ número de valores distintos $\le 
 
 ## Saída
 
-$K$ linhas, cada uma com `valor contagem`, da maior contagem para a menor. Em caso de empate na contagem, o **menor valor** vem primeiro.
+$K$ linhas, cada uma com `valor contagem`, da maior contagem para a menor. Em caso de empate na contagem, o menor valor vem primeiro.
 
 ## Exemplo
 
@@ -38,8 +38,8 @@ Saída:
 2 2
 ```
 
-`2` e `3` aparecem duas vezes cada; o desempate escolhe o menor.
+`2` e `3` aparecem duas vezes cada, e o desempate fica com o menor.
 
 ---
 
-> Versão stdin/stdout de [LeetCode #347 Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/). Aqui a saída é determinística graças ao critério de desempate.
+> Versão stdin/stdout de [LeetCode #347 Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/). O critério de desempate existe para a saída ser sempre a mesma.

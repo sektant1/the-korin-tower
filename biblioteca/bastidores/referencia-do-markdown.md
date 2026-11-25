@@ -15,7 +15,7 @@ O texto usa Markdown com as extensões do GitHub (tabelas, listas de tarefa, ~~r
 
 ## Títulos e sumário
 
-Use `##` para seções e `###` para subseções. Eles entram no **sumário** (ao lado do texto em telas largas, ou no botão "Sumário" no celular) e ganham uma âncora `#` ao passar o mouse, para linkar direto.
+Use `##` para seções e `###` para subseções. Eles entram no sumário (ao lado do texto em telas largas, ou no botão "Sumário" no celular) e ganham uma âncora `#` ao passar o mouse, para linkar direto.
 
 `####` funciona, mas não entra no sumário. Não use `#`: o título do post já vem do frontmatter.
 
@@ -31,7 +31,7 @@ Use `##` para seções e `###` para subseções. Eles entram no **sumário** (ao
 
 ## Código
 
-Blocos com a linguagem ganham cores, uma etiqueta e o botão **copiar**. Com `title="..."` aparece o nome do arquivo:
+Blocos com a linguagem têm destaque de sintaxe, uma etiqueta e o botão "copiar". Com `title="..."` aparece o nome do arquivo:
 
 ````md
 ```c title="ola.c"
@@ -119,7 +119,7 @@ Guarde em `biblioteca/assets/` e use o caminho relativo:
 ![Pilha de chamadas](./assets/pilha.png)
 ```
 
-PNG, JPG, GIF, WebP e SVG. Escreva sempre o texto alternativo: é o que leitor de tela lê.
+PNG, JPG, GIF, WebP e SVG. Escreva sempre o texto alternativo, porque é ele que o leitor de tela lê.
 
 ---
 

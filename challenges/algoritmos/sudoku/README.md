@@ -1,5 +1,5 @@
 ---
-title: "Sudoku por Força Bruta Esperta"
+title: "Sudoku Solver"
 difficulty: 5
 tags: [backtracking, bits, recursao]
 languages: [c, cpp]
@@ -9,11 +9,11 @@ order: 6
 hints:
   - "Backtracking: ache uma casa vazia, tente os dígitos válidos, recorra; se nenhum funciona, desfaça e volte. Sudokus comuns resolvem em milissegundos."
   - "Para checar \"dígito válido\" em O(1), guarde três vetores de máscaras de bits: `linha[9]`, `coluna[9]`, `bloco[9]`. O bloco da casa `(r, c)` é `(r/3)*3 + c/3`."
-  - "Os difíceis (como o do Arto Inkala) derrubam o backtracking ingênuo. Escolha sempre a casa vazia com **menos candidatos**: o número de ramos despenca."
+  - "Os difíceis (como o do Arto Inkala) derrubam o backtracking ingênuo. Escolha sempre a casa vazia com menos candidatos: o número de ramos despenca."
   - "Confira as pistas iniciais antes de começar: duas pistas iguais na mesma linha é `impossivel` imediato, e o backtracking não detecta isso sozinho."
 ---
 
-Nove linhas, nove colunas, nove blocos, cada um com os dígitos de 1 a 9 sem repetir. Resolver na mão leva uma tarde; resolver com backtracking leva milissegundos, se você podar certo.
+Cada linha, coluna e bloco 3x3 precisa ter os dígitos de 1 a 9 sem repetir. Backtracking resolve em milissegundos desde que você corte cedo os ramos inválidos.
 
 ## Tarefa
 

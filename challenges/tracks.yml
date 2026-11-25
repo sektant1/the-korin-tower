@@ -5,7 +5,7 @@
 # Toda trilha precisa de pelo menos um desafio stdio.
 - id: primeiros-passos-em-c
   title: Primeiros passos em C
-  description: Do FizzBuzz a uma tabela hash feita na mão. Loops, strings, bases, bits e ponteiros, um andar por vez.
+  description: Do FizzBuzz a uma hash table feita na mão. Loops, strings, bases, bits e ponteiros, um andar por vez.
   steps:
     - fizzbuzz
     - cifra-de-cesar

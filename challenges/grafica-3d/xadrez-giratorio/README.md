@@ -1,5 +1,5 @@
 ---
-title: Tabuleiro de Xadrez Giratório
+title: "Rotating Checkerboard"
 kind: shader
 difficulty: 1
 tags: [glsl, shader, coordenadas, rotacao, iniciante]
@@ -13,14 +13,14 @@ hints:
   - "Escureça as bordas (vinheta): `col *= 1.0 - 0.6 * dot(p, p);`."
 ---
 
-O "Hello, World" dos shaders: um tabuleiro de xadrez que **gira** e **pulsa**, ocupando a tela inteira.
+Desenhe um tabuleiro de xadrez que gira e pulsa, ocupando a tela inteira. É um bom primeiro shader.
 
-Este desafio roda no navegador (WebGL2, estilo Shadertoy). Você escreve `mainImage`, que recebe a coordenada do pixel e devolve a cor dele. O mesmo código roda **em paralelo** para cada pixel da tela.
+O desafio roda no navegador (WebGL2, estilo Shadertoy). Você escreve `mainImage`, que recebe a coordenada do pixel e devolve a cor dele. O mesmo código roda em paralelo para cada pixel.
 
 ## Requisitos
 
 1. Casas quadradas de verdade (não esticadas) em qualquer proporção de tela.
-2. O tabuleiro gira em torno do **centro** da tela, com velocidade constante (`iTime`).
+2. O tabuleiro gira em torno do centro da tela, com velocidade constante (`iTime`).
 3. O tamanho das casas pulsa com o tempo.
 4. Duas cores à sua escolha (não precisa ser preto e branco).
 5. Bônus: vinheta escurecendo as bordas, ou o mouse (`iMouse`) controlando o ângulo.
@@ -29,4 +29,4 @@ Este desafio roda no navegador (WebGL2, estilo Shadertoy). Você escreve `mainIm
 
 `iResolution` (`vec3`, pixels), `iTime` (`float`, segundos), `iMouse` (`vec4`).
 
-Sem teste de pixel-a-pixel: `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que o tabuleiro aparece. Quando estiver girando liso e com casas quadradas, `:submit` fecha o desafio.
+Não há comparação pixel a pixel. O `:submit` renderiza dois frames (em `t=0` e `t=3`) e confere que o tabuleiro aparece. Girando sem tremer e com casas quadradas, está resolvido.

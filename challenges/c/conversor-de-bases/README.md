@@ -1,5 +1,5 @@
 ---
-title: "Conversor de Bases"
+title: "Base Conversion"
 difficulty: 1
 tags: [iniciante, bases, aritmetica, strings]
 languages: [c, cpp]
@@ -13,7 +13,7 @@ hints:
   - "O zero é o único caso que não entra no laço: imprima `0` direto."
 ---
 
-Antes de entender bits, entenda bases. O mesmo número se escreve de muitos jeitos: `255` é `11111111` em base 2, `377` em base 8 e `FF` em base 16.
+O mesmo número muda de cara conforme a base: `255` é `11111111` em base 2, `377` em base 8 e `FF` em base 16.
 
 ## Tarefa
 

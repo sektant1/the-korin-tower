@@ -1,5 +1,5 @@
 ---
-title: "Regex de Bolso"
+title: "Regex Matcher"
 difficulty: 4
 tags: [regex, recursao, strings, kernighan]
 languages: [c, cpp]
@@ -12,7 +12,7 @@ hints:
   - "Olhe o segundo caractere do padrão antes do primeiro: se for `*`, o primeiro é o que se repete. `$` só vale no fim do padrão, e casa só com texto vazio."
 ---
 
-Antes de PCRE existia um casador de 30 linhas, escrito por Rob Pike, que já resolvia quase tudo. Hoje ele é seu.
+Rob Pike escreveu um regex matcher de umas 30 linhas para o livro *The Practice of Programming*. Este desafio usa o mesmo dialeto.
 
 ## O dialeto
 

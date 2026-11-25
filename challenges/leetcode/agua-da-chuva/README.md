@@ -1,5 +1,5 @@
 ---
-title: 42. Água da Chuva
+title: "Trapping Rain Water"
 difficulty: 3
 tags: [dois-ponteiros, vetor, prefixos, leetcode]
 languages: [c, cpp, rust]
@@ -9,11 +9,11 @@ order: 5
 hints:
   - "A água em cima da coluna $i$ é $\\min(\\text{maior à esquerda}, \\text{maior à direita}) - h_i$, se isso for positivo."
   - "Dá para pré-calcular dois vetores: `maxEsq[i]` e `maxDir[i]`. $O(N)$ tempo, $O(N)$ memória. Já passa."
-  - "Para $O(1)$ de memória: dois ponteiros, um em cada ponta, e dois máximos. Avance sempre o lado com a **menor** altura máxima: a água dele já está decidida."
+  - "Para $O(1)$ de memória: two pointers, um em cada ponta, e dois máximos. Avance sempre o lado com a menor altura máxima: a água dele já está decidida."
   - "O total pode passar de 32 bits ($2 \\cdot 10^5$ colunas $\\times 10^5$ de altura). Some em `long long`/`i64`."
 ---
 
-Um mapa de elevação é dado por $N$ colunas de largura 1 com alturas $h_i$. Choveu muito. **Quanta água** fica presa entre as colunas?
+Um mapa de elevação é dado por $N$ colunas de largura 1 com alturas $h_i$. Depois de chover, quanta água fica presa entre as colunas?
 
 ```
         #

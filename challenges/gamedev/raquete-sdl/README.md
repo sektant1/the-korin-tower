@@ -1,5 +1,5 @@
 ---
-title: Raquete no Teclado (SDL2)
+title: "Paddle Movement"
 kind: canvas
 difficulty: 2
 tags: [sdl2, input, game-loop, wasm]
@@ -12,15 +12,15 @@ hints:
   - "Prenda a raquete na tela: se `x < 0`, `x = 0`; se `x > LARGURA - raquete.w`, `x = LARGURA - raquete.w`."
 ---
 
-Segundo passo de todo jogo: **ler o jogador**. Aqui você usa a SDL2 pura, sem motor nenhum por cima.
+Aqui o foco é ler o teclado e mover algo com ele, usando SDL2 direto, sem engine.
 
-Este desafio roda **no seu navegador**: o C vira WebAssembly e a SDL2 desenha num canvas. Use `:run` para compilar. **Clique no canvas** para ele receber o teclado. `:submit` roda o programa por 3 segundos, fotografa o canvas e confere que algo foi desenhado.
+O desafio roda no navegador: o C vira WebAssembly e a SDL2 desenha num canvas. Use `:run` para compilar e clique no canvas para ele receber o teclado. O `:submit` roda o programa por 3 segundos, tira um print do canvas e confere que algo foi desenhado.
 
 ## Tarefa
 
 O template abre uma janela de 640×360 e desenha uma raquete parada no pé da tela. Faça:
 
-1. as setas `←` e `→` (ou `A` e `D`) moverem a raquete, com movimento **suave** enquanto a tecla estiver apertada;
+1. as setas `←` e `→` (ou `A` e `D`) moverem a raquete, com movimento contínuo enquanto a tecla estiver apertada;
 2. a velocidade não depender do FPS (use o tempo entre quadros);
 3. a raquete nunca sair da tela.
 
@@ -34,9 +34,9 @@ O template abre uma janela de 640×360 e desenha uma raquete parada no pé da te
 | `SDL_RenderFillRect(r, &rect)` | desenha um retângulo cheio |
 | `SDL_Delay(ms)` | espera; no navegador é o que devolve o controle à página |
 
-O `SDL_Delay(16)` do fim do laço é obrigatório aqui: sem ele a aba trava, porque o laço nunca deixa o navegador respirar.
+Não tire o `SDL_Delay(16)` do fim do laço. Sem ele o laço nunca devolve o controle ao navegador e a aba trava.
 
-## Para ir além
+## Extras
 
 - Acrescente uma bola e transforme isto num Breakout de um tijolo só.
 - Dê aceleração e atrito à raquete em vez de velocidade constante.

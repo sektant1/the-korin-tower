@@ -1,5 +1,5 @@
 ---
-title: "Máquina Virtual de Pilha"
+title: "Stack Machine"
 difficulty: 4
 tags: [vm, interpretador, bytecode, pilha]
 languages: [c, cpp]
@@ -9,11 +9,11 @@ order: 2
 hints:
   - "Leia todo o programa para um vetor de instruções antes de executar: os saltos precisam enxergar o programa inteiro."
   - "Um `switch` sobre o opcode e um `pc` (contador de programa) bastam. `jmp` troca o `pc`; todo o resto faz `pc++`."
-  - "Confira o tamanho da pilha **antes** de cada operação: `add` precisa de 2 valores, `print` de 1. Em erro, imprima a mensagem e pare na hora."
+  - "Confira o tamanho da pilha antes de cada operação: `add` precisa de 2 valores, `print` de 1. Em erro, imprima a mensagem e pare na hora."
   - "Divisão em C já trunca em direção a zero e `%` segue o sinal do dividendo: é exatamente o pedido. Use `long long` e, para somar sem UB, faça a conta em `unsigned long long`."
 ---
 
-Toda linguagem vira, em algum ponto, instruções simples executadas em sequência. A sua tarefa é a máquina que executa.
+Escreva o interpretador de uma stack machine (uma VM baseada em pilha), parecida com o que fica por baixo de muitas linguagens.
 
 ## A máquina
 

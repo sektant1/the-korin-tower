@@ -9,7 +9,7 @@ date: 2026-11-12
 draft: true
 ---
 
-Cada post da Biblioteca é um arquivo `.md` dentro da pasta `biblioteca/` do repositório. Não tem banco nem painel: o arquivo é o post. Fez commit e deploy, está no ar.
+Cada post da Biblioteca é um arquivo `.md` dentro da pasta `biblioteca/` do repositório. Não tem banco nem painel. O arquivo é o post, e ele entra no ar no próximo deploy.
 
 ## Onde fica o arquivo
 
@@ -56,15 +56,12 @@ draft: true                         # só admin vê
 | `kind` | O selo colorido e o filtro do índice. Sem ele, vira `artigo`. |
 | `tags` | Filtro por tag e o "leia também" no fim de cada post. |
 | `level` | Mostra a dificuldade com esferas, na mesma escala dos desafios. |
-| `challenges` | Gera a caixa **Pratique na torre** e, na página do desafio, um link de volta em "Leitura recomendada". |
+| `challenges` | Gera a caixa "Pratique na torre" e, na página do desafio, um link de volta em "Leitura recomendada". |
 | `updated` | Aparece como "atualizado em" e reordena o post para o topo da lista. |
 
 ### Os quatro tipos
 
-- **Tutorial**: passo a passo, do zero até funcionar. Quem lê vai fazer junto.
-- **Guia**: resolve um problema específico ("como depurar segfault com gdb").
-- **Referência**: consulta rápida, para ficar aberta numa aba: tabelas, flags, APIs.
-- **Artigo**: explicação, história, opinião.
+Tutorial é passo a passo, do zero até funcionar, para quem vai fazer junto. Guia resolve um problema específico, tipo "como depurar segfault com gdb". Referência é para consulta rápida, aquela página que fica aberta numa aba com tabelas, flags ou APIs. Artigo é o resto: explicação, história, opinião.
 
 ## Séries
 
@@ -73,18 +70,18 @@ Uma série é uma sequência de posts lidos em ordem. Declare a série uma vez e
 ```yaml title="biblioteca/series.yml"
 - id: ponteiros-na-unha
   title: Ponteiros na unha
-  description: De endereço de memória a lista ligada genérica.
+  description: De endereço de memória a linked list genérica.
 ```
 
-E em cada post da série, `series: ponteiros-na-unha` e `part: 1`, `part: 2`... O site cuida do resto: a lista de séries no índice, a página da série, o "parte 2 de 5", os botões de anterior/próxima e o progresso de leitura.
+E em cada post da série, `series: ponteiros-na-unha` e `part: 1`, `part: 2`... A lista de séries no índice, a página da série, o "parte 2 de 5", os botões de anterior/próxima e o progresso de leitura são gerados a partir disso.
 
 > [!NOTA]
 > A ordem das séries no índice é a ordem no `series.yml`. Série sem nenhum post publicado não aparece.
 
 ## Rascunho e agendamento
 
-- `draft: true`: o post só aparece para admin (e para todo mundo rodando `npm run dev`), com a faixa **RASCUNHO**.
-- `date` no futuro: o post fica escondido até o dia chegar (fuso de Brasília). É um agendamento sem precisar lembrar de publicar.
+- `draft: true`: o post só aparece para admin (e para todo mundo rodando `npm run dev`), com a faixa RASCUNHO.
+- `date` no futuro: o post fica escondido até o dia chegar (fuso de Brasília). Serve para agendar publicação.
 
 Nenhum dos dois entra no feed RSS.
 

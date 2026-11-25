@@ -1,5 +1,5 @@
 ---
-title: 1. Dois Números (Two Sum)
+title: "Two Sum"
 difficulty: 1
 tags: [hash, vetor, leetcode]
 languages: [c, cpp, rust]
@@ -8,13 +8,13 @@ memoryLimitMb: 256
 order: 1
 hints:
   - "Dois laços aninhados dão $O(N^2)$: com $N = 2 \\cdot 10^5$ são $4 \\cdot 10^{10}$ pares. Estoura o tempo."
-  - "Percorra o vetor uma vez. Para cada `x`, pergunte a uma **tabela hash** se `alvo - x` já apareceu; se não, guarde `x -> índice`."
-  - "Em C não há hash pronta: ordene uma cópia dos pares `(valor, índice)` e use dois ponteiros (um em cada ponta), ou escreva uma tabela com endereçamento aberto."
+  - "Percorra o vetor uma vez. Para cada `x`, pergunte a uma hash table se `alvo - x` já apareceu; se não, guarde `x -> índice`."
+  - "Em C não há hash pronta: ordene uma cópia dos pares `(valor, índice)` e use two pointers (um em cada ponta), ou escreva uma tabela com endereçamento aberto."
 ---
 
-O problema mais famoso das entrevistas, em versão stdin/stdout. Dado um vetor de inteiros e um alvo, encontre **os dois índices** cujos valores somam o alvo.
+Dado um vetor de inteiros e um alvo, encontre os dois índices cujos valores somam o alvo.
 
-É garantido que existe **exatamente uma** resposta, e você não pode usar o mesmo elemento duas vezes.
+Sempre existe exatamente uma resposta. Não vale usar o mesmo elemento duas vezes.
 
 ## Entrada
 
@@ -44,4 +44,4 @@ Porque $a_0 + a_1 = 2 + 7 = 9$.
 
 ---
 
-> Versão stdin/stdout de [LeetCode #1 Two Sum](https://leetcode.com/problems/two-sum/). Lá você implementa só a função; aqui, o programa inteiro.
+> Versão stdin/stdout de [LeetCode #1 Two Sum](https://leetcode.com/problems/two-sum/). Lá você implementa só a função. Aqui é o programa inteiro.

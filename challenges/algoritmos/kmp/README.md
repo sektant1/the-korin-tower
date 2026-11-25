@@ -1,5 +1,5 @@
 ---
-title: "Busca de Padrão (KMP)"
+title: "KMP"
 difficulty: 4
 tags: [strings, kmp, automato]
 languages: [c, cpp]
@@ -12,7 +12,7 @@ hints:
   - "Ao errar na posição `k` do padrão, não volte no texto: volte no padrão para `falha[k-1]` e compare de novo. Depois de um casamento completo, faça o mesmo para achar sobreposições."
 ---
 
-`strstr` acha a primeira ocorrência. Você vai achar todas, em tempo linear, mesmo quando o texto é feito para enganar.
+`strstr` só acha a primeira ocorrência. Aqui você precisa achar todas, em tempo linear. Alguns testes são montados para derrubar a busca ingênua.
 
 ## Tarefa
 

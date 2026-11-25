@@ -1,5 +1,5 @@
 ---
-title: Calculadora RPN (HP-12C)
+title: "RPN Calculator"
 difficulty: 2
 tags: [pilha, parsing, strings, stl]
 languages: [cpp, c]
@@ -14,7 +14,7 @@ hints:
   - "Em C e C++, `/` trunca em direção a zero e `%` tem o sinal do dividendo: `-7 2 /` dá `-3` e `-7 2 %` dá `-1`. É exatamente o que a saída espera."
 ---
 
-Antes das calculadoras com parênteses existia a **notação polonesa reversa**: os operandos vêm primeiro, o operador depois, e uma pilha resolve tudo. `3 4 + 2 *` é $(3 + 4) \times 2$.
+Em RPN (reverse Polish notation) os operandos vêm antes do operador, e uma pilha basta para avaliar a expressão. `3 4 + 2 *` é $(3 + 4) \times 2$. As calculadoras HP usavam isso.
 
 ## Tokens
 

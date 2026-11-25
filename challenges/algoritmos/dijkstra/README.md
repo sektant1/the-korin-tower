@@ -1,5 +1,5 @@
 ---
-title: "Dijkstra: Menor Caminho no Mapa"
+title: "Dijkstra"
 difficulty: 3
 tags: [grafos, heap, fila-de-prioridade, menor-caminho]
 languages: [cpp, c]
@@ -7,16 +7,16 @@ timeLimitMs: 2000
 memoryLimitMb: 256
 order: 1
 hints:
-  - "Guarde o grafo como **lista de adjacência**. Em C, o formato CSR é ótimo: conte o grau de cada vértice, faça a soma de prefixos e preencha um vetor único de arestas."
+  - "Guarde o grafo como lista de adjacência. Em C, o formato CSR é ótimo: conte o grau de cada vértice, faça a soma de prefixos e preencha um vetor único de arestas."
   - "Distâncias somam até $10^5 \\cdot 10^9 = 10^{14}$: use `long long`/`int64_t`. Comece com tudo em infinito, menos a origem, que vale 0."
-  - "Use uma fila de prioridade de pares `(distância, vértice)`. Em C++: `std::priority_queue` com `std::greater<>` para virar *min-heap*. Em C, escreva um heap binário num vetor."
-  - "Não precisa de *decrease-key*: empilhe de novo quando achar uma distância menor, e ao tirar da fila **ignore** o par se `d > dist[v]` (entrada velha)."
+  - "Use uma priority queue de pares `(distância, vértice)`. Em C++: `std::priority_queue` com `std::greater<>` para virar *min-heap*. Em C, escreva um binary heap num vetor."
+  - "Não precisa de *decrease-key*: empilhe de novo quando achar uma distância menor, e ao tirar da fila ignore o par se `d > dist[v]` (entrada velha)."
   - "Pesos podem ser 0, e o grafo pode ter laços e arestas paralelas. O algoritmo lida com isso sem caso especial."
 ---
 
-Dado um grafo **dirigido** com pesos não negativos, calcule a menor distância da origem $S$ até todos os vértices.
+Dado um grafo dirigido com pesos não negativos, calcule a menor distância da origem $S$ até todos os vértices.
 
-Com dezenas de milhares de vértices, o Dijkstra ingênuo $O(V^2)$ estoura o tempo. Use uma **fila de prioridade**: $O((V + E) \log V)$.
+Com dezenas de milhares de vértices, o Dijkstra ingênuo, $O(V^2)$, estoura o tempo. Com priority queue fica $O((V + E) \log V)$.
 
 ## Entrada
 
@@ -50,4 +50,4 @@ Saída:
 -1
 ```
 
-O caminho até o vértice 2 é $1 \to 3 \to 2$ (custo 3), mais barato que a aresta direta (custo 4). O vértice 5 tem aresta **saindo** para 1, mas nenhuma chegando, então é inalcançável.
+O caminho até o vértice 2 é $1 \to 3 \to 2$ (custo 3), mais barato que a aresta direta (custo 4). O vértice 5 tem uma aresta saindo para 1, mas nenhuma chegando nele, então não dá para alcançá-lo.

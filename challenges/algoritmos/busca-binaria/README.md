@@ -1,5 +1,5 @@
 ---
-title: "Busca Binária"
+title: "Binary Search"
 difficulty: 2
 tags: [busca, vetores, logaritmo]
 languages: [c, cpp]
@@ -12,11 +12,11 @@ hints:
   - "Com repetidos, pare de descartar quando `v[meio] >= x`: mantenha o invariante \"a resposta está em `[lo, hi)`\" e, no fim, confira se `v[lo] == x`."
 ---
 
-Um vetor ordenado é meio caminho andado: você acha qualquer valor olhando só $\log_2 N$ posições.
+Num vetor ordenado dá para achar qualquer valor olhando só $\log_2 N$ posições.
 
 ## Tarefa
 
-Dado um vetor ordenado (pode ter repetidos) e `Q` consultas, imprima, para cada valor consultado, o índice da **primeira** ocorrência dele no vetor, ou `-1` se não existir. Índices começam em 0.
+Dado um vetor ordenado (pode ter repetidos) e `Q` consultas, imprima, para cada valor consultado, o índice da primeira ocorrência dele no vetor, ou `-1` se não existir. Índices começam em 0.
 
 ## Entrada
 

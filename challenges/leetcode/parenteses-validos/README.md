@@ -1,5 +1,5 @@
 ---
-title: 20. Parênteses Válidos
+title: "Valid Parentheses"
 difficulty: 1
 tags: [pilha, strings, leetcode]
 languages: [c, cpp, rust]
@@ -7,12 +7,12 @@ timeLimitMs: 2000
 memoryLimitMb: 256
 order: 2
 hints:
-  - "Use uma **pilha**: abriu, empilha; fechou, o topo tem que ser o par correspondente, senão é inválido."
-  - "No fim, a pilha precisa estar **vazia**. `((` não é válido, mesmo sem nenhum erro de pareamento."
+  - "Use uma pilha: abriu, empilha; fechou, o topo tem que ser o par correspondente, senão é inválido."
+  - "No fim, a pilha precisa estar vazia. `((` não é válido, mesmo sem nenhum erro de pareamento."
   - "Um fecha com a pilha vazia (`)(`) também é inválido. Em C, um vetor de `char` do tamanho da linha serve de pilha."
 ---
 
-Dada uma string só com os caracteres `(`, `)`, `[`, `]`, `{` e `}`, decida se ela é **válida**:
+Dada uma string só com os caracteres `(`, `)`, `[`, `]`, `{` e `}`, diga se ela é válida. Uma string é válida quando:
 
 1. todo símbolo que abre é fechado pelo símbolo do mesmo tipo;
 2. os pares fecham na ordem certa (o último que abriu é o primeiro que fecha);

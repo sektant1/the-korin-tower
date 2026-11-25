@@ -1,5 +1,5 @@
 ---
-title: "Compressão RLE"
+title: "Run-Length Encoding"
 difficulty: 2
 tags: [strings, compressao, bytes]
 languages: [c, cpp]
@@ -12,7 +12,7 @@ hints:
   - "Uma linha vazia vira uma linha vazia. Não imprima `0`."
 ---
 
-Run-length encoding é a compressão mais simples que existe: `aaaabbc` vira `4a2b1c`. Foi assim que o formato PCX e os faxes economizavam bytes.
+Run-length encoding (RLE) troca cada sequência de caracteres repetidos pela contagem seguida do caractere: `aaaabbc` vira `4a2b1c`. O formato PCX e o fax usavam isso para economizar bytes.
 
 ## Tarefa
 

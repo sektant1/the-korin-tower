@@ -1,5 +1,5 @@
 ---
-title: "Código de Huffman"
+title: "Huffman Coding"
 difficulty: 5
 tags: [compressao, heap, arvore, guloso]
 languages: [c, cpp]
@@ -13,11 +13,11 @@ hints:
   - "Texto com um único símbolo distinto não tem junção nenhuma: por convenção, cada ocorrência custa 1 bit."
 ---
 
-ZIP, PNG, JPEG, MP3: todos terminam com Huffman. A ideia de 1952 é simples e ótima: símbolos frequentes ganham códigos curtos, raros ganham códigos longos, e nenhum código é prefixo de outro.
+ZIP, PNG, JPEG e MP3 usam Huffman coding (1952) em alguma etapa. Símbolos frequentes recebem códigos curtos, símbolos raros recebem códigos longos, e nenhum código é prefixo de outro.
 
 ## Tarefa
 
-Dado um texto, calcule quantos bits ele ocupa codificado com um código de Huffman ótimo. Não importa como você desempata: o total é o mesmo para qualquer código ótimo.
+Dado um texto, calcule quantos bits ele ocupa codificado com um Huffman code ótimo. Não importa como você desempata: o total é o mesmo para qualquer código ótimo.
 
 Se o texto tem um único símbolo distinto, cada ocorrência custa 1 bit.
 
