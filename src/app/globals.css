@@ -7202,3 +7202,193 @@ h4:hover > .h-anchor,
   color: inherit;
   text-shadow: none;
 }
+
+/* ---------- UI/UX v2: título, HUD, loja, pausa ---------- */
+
+/* título: heróis, Play em destaque, menus em grade */
+.ss-title-screen {
+  gap: 12px;
+}
+.ss-heroes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 104px;
+  margin-bottom: -18px;
+}
+.ss-heroes span {
+  filter: drop-shadow(0 4px 0 #0008);
+  animation: ss-hero-bob 1.6s ease-in-out infinite alternate;
+}
+.ss-heroes span.mid {
+  animation-delay: -0.8s;
+  filter: drop-shadow(0 0 14px #ffd21f88);
+}
+@keyframes ss-hero-bob {
+  to {
+    transform: translateY(-4px);
+  }
+}
+.ss-heroes .ss-portrait {
+  background: none;
+}
+.btn98.ss-play {
+  width: min(320px, 100%);
+  padding: 10px 0;
+  font-size: 1.35em;
+  letter-spacing: 1px;
+  color: #1a1000;
+  background: linear-gradient(#ffe14a, #ff9a1f);
+  border-color: #fff6b0 #b05a00 #b05a00 #fff6b0;
+  animation: ss-play-glow 1.4s ease-in-out infinite alternate;
+}
+.btn98.ss-play:hover,
+.btn98.ss-play:focus-visible {
+  background: linear-gradient(#fff07a, #ffb03a);
+}
+@keyframes ss-play-glow {
+  from {
+    box-shadow: 0 0 0 #ffd21f00;
+  }
+  to {
+    box-shadow: 0 0 22px #ffd21faa;
+  }
+}
+.ss-menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: min(420px, 100%);
+}
+.ss-menu-grid .btn98 {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+}
+.ss-menu-grid .btn98 small {
+  padding: 0 5px;
+  font-size: 0.8em;
+  color: #ffd21f;
+  background: #0006;
+  border-radius: 6px;
+}
+.ss-dot {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000;
+  background: #5fd13a;
+  border: 2px solid #000;
+  border-radius: 9px;
+  animation: ss-dot-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes ss-dot-pulse {
+  to {
+    transform: scale(1.15);
+  }
+}
+.ss-menu-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.btn98.ss-small {
+  padding: 3px 10px;
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+.ss-keys-inline {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  color: #9ab0c8;
+}
+.ss-keys-inline li {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.ss-keys kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 1px 5px;
+  font: bold 11px system-ui, sans-serif;
+  color: #fff;
+  text-align: center;
+  background: #1b3450;
+  border: 1px solid #3a5a7a;
+  border-bottom-width: 3px;
+  border-radius: 4px;
+}
+
+/* HUD: avisos no topo, em pílulas, sem cobrir o herói */
+.ss-hud .ss-notices {
+  top: 66px;
+  left: 50%;
+  right: auto;
+  width: min(560px, 70%);
+  transform: translateX(-50%);
+  gap: 4px;
+}
+.ss-hud .ss-notices p {
+  padding: 3px 12px;
+  font-size: clamp(9px, 1.2vw, 12px);
+  background: #0d1b2acc;
+  border: 2px solid #000;
+  border-radius: 12px;
+}
+.ss-hud .ss-notices p.big {
+  font-size: clamp(11px, 1.6vw, 15px);
+  color: #ffd21f;
+  border-color: #ffd21f;
+  box-shadow: 0 0 14px #ffd21f66;
+}
+.ss-hud .ss-stats {
+  padding: 4px 8px;
+  background: #0d1b2a99;
+  border-radius: 6px;
+}
+/* loja: dá para comprar? quanto falta? */
+.ss-shop-card.ss-afford {
+  border-color: #5fd13a;
+  box-shadow: 0 0 0 2px #000, 0 0 12px #5fd13a44;
+}
+.ss-shop-card.ss-afford small {
+  color: #7aff7a;
+}
+.ss-shop-card.ss-cant small {
+  color: #ff6a7a;
+}
+.ss-shop-card .ss-need {
+  font-size: var(--fs-xs);
+  font-style: normal;
+  color: #8aa0b8;
+}
+.ss-shop-card.ss-done small {
+  color: #7af0ff;
+}
+
+/* pausa: atributos que não mudaram ficam apagados */
+.ss-statgrid li.zero {
+  opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-heroes span,
+  .btn98.ss-play,
+  .ss-dot {
+    animation: none !important;
+  }
+}

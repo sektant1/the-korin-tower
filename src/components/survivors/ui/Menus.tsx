@@ -24,33 +24,46 @@ const Back = ({ back, focus }: { back: () => void; focus?: boolean }) => (
 );
 
 export function Title({ save, go, onExit, muted, toggleMute }: { save: SaveData | null; go: (s: MenuScreen) => void; onExit: () => void; muted: boolean; toggleMute: () => void }) {
+  // o que tem de novo para fazer: treinos que cabem no bolso, conquistas feitas
+  const canBuy = save ? SHOP.filter((d) => (save.shop[d.id] ?? 0) < d.max && save.zeni >= shopPrice(d, save.shop[d.id] ?? 0, save.bought)).length : 0;
+  const heroes = (save?.chars ?? ["goku"]).slice(0, 3) as CharId[];
   return (
-    <div className="ss-panel ss-menu">
+    <div className="ss-panel ss-menu ss-title-screen">
+      <div className="ss-heroes" aria-hidden>
+        {heroes.map((c, i) => (
+          <span key={c} className={i === 1 ? "mid" : ""}>
+            <SpritePreview sprite={CHARACTERS[c].sprite} color={CHARACTERS[c].color} size={i === 1 ? 104 : 84} />
+          </span>
+        ))}
+      </div>
       <h2 className="ss-title ss-logo">SAIYAN SURVIVORS</h2>
       <p className="ss-sub">Survive 15 minutes of the horde, then defeat the saga&apos;s boss.</p>
-      <div className="ss-buttons ss-col">
-        <button type="button" className="btn98 ss-primary" onClick={() => go("chars")} autoFocus>
-          Play
-        </button>
+      <button type="button" className="btn98 ss-primary ss-play" onClick={() => go("chars")} autoFocus>
+        Play
+      </button>
+      <div className="ss-menu-grid">
         <button type="button" className="btn98" onClick={() => go("shop")}>
-          Korin Tower (upgrades)
+          Korin Tower
+          {canBuy > 0 && <span className="ss-dot" title={`${canBuy} upgrades you can afford`}>{canBuy}</span>}
         </button>
         <button type="button" className="btn98" onClick={() => go("codex")}>
           Encyclopedia
         </button>
         <button type="button" className="btn98" onClick={() => go("achievements")}>
-          Achievements
+          Achievements{save ? <small>{save.achievements.length}/{ACHIEVEMENTS.length}</small> : null}
         </button>
         <button type="button" className="btn98" onClick={() => go("bestiary")}>
           Bestiary
         </button>
-        <button type="button" className="btn98" onClick={() => go("credits")}>
+      </div>
+      <div className="ss-menu-row">
+        <button type="button" className="btn98 ss-small" onClick={toggleMute} aria-pressed={!muted}>
+          {muted ? "🔇" : "🔊"} Sound (M)
+        </button>
+        <button type="button" className="btn98 ss-small" onClick={() => go("credits")}>
           Credits
         </button>
-        <button type="button" className="btn98" onClick={toggleMute}>
-          Sound: {muted ? "off" : "on"} (M)
-        </button>
-        <button type="button" className="btn98" onClick={onExit}>
+        <button type="button" className="btn98 ss-small" onClick={onExit}>
           Quit
         </button>
       </div>
@@ -80,19 +93,20 @@ export function Title({ save, go, onExit, muted, toggleMute }: { save: SaveData 
       )}
       <ul className="ss-keys ss-keys-inline">
         <li>
-          <b>WASD / arrows</b> move
+          <kbd>WASD</kbd>
+          <kbd>↑↓←→</kbd> move
         </li>
         <li>
-          <b>Space</b> transform
+          <kbd>Space</kbd> transform
         </li>
         <li>
-          <b>1-4</b> pick card
+          <kbd>1</kbd>–<kbd>4</kbd> pick card
         </li>
         <li>
-          <b>R</b> reroll · <b>X</b> skip · <b>B</b> banish · <b>T</b> lock
+          <kbd>R</kbd> reroll <kbd>X</kbd> skip <kbd>B</kbd> banish <kbd>T</kbd> lock
         </li>
         <li>
-          <b>Esc</b> pause
+          <kbd>Esc</kbd> pause
         </li>
       </ul>
     </div>
@@ -200,7 +214,7 @@ export function Shop({ save, buy, refund, back }: { save: SaveData; buy: (id: Sh
           const done = lv >= d.max;
           const price = shopPrice(d, lv, save.bought);
           return (
-            <button key={d.id} type="button" className={`ss-card ss-shop-card ${done ? "ss-done" : ""}`} disabled={done || save.zeni < price} onClick={() => buy(d.id)} autoFocus={i === 0}>
+            <button key={d.id} type="button" className={`ss-card ss-shop-card ${done ? "ss-done" : save.zeni >= price ? "ss-afford" : "ss-cant"}`} disabled={done || save.zeni < price} onClick={() => buy(d.id)} autoFocus={i === 0}>
               <b>{d.name}</b>
               <span>{d.desc}</span>
               <span className="ss-pips">
@@ -208,7 +222,8 @@ export function Shop({ save, buy, refund, back }: { save: SaveData; buy: (id: Sh
                   <i key={k} className={k < lv ? "on" : ""} />
                 ))}
               </span>
-              <small>{done ? "MAXED" : `Ƶ ${fmt(price)}`}</small>
+              <small>{done ? "✓ MAXED" : `Ƶ ${fmt(price)}`}</small>
+              {!done && save.zeni < price && <em className="ss-need">need Ƶ {fmt(price - save.zeni)} more</em>}
             </button>
           );
         })}

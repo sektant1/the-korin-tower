@@ -83,7 +83,7 @@ export function HudView({ hud }: { hud: Hud }) {
           </div>
         </div>
       )}
-      <div className="ss-cstats">
+      <div className="ss-stats">
         <span title="Kills">☠ {fmt(hud.kills)}</span>
         <span title="Zeni">Ƶ {fmt(hud.zeni)}</span>
         <span title="Dragon Balls" className="ss-balls">
@@ -111,9 +111,12 @@ export function HudView({ hud }: { hud: Hud }) {
                   : "Ki"}
         </span>
       </div>
+      {/* avisos: os 3 mais novos, embaixo do relógio, longe do herói */}
       <div className="ss-notices">
-        {hud.notices.map((n, i) => (
-          <p key={`${i}:${n}`}>{n}</p>
+        {hud.notices.slice(-3).map((n, i) => (
+          <p key={`${hud.notices.length - 3 + i}:${n}`} className={/^(EVOLUTION|UNION|SET COMPLETE)/.test(n) ? "big" : ""}>
+            {n}
+          </p>
         ))}
       </div>
     </div>
@@ -620,7 +623,7 @@ export function Pause({ w, resume, quit, muted, toggleMute }: { w: World; resume
         </ul>
         <ul className="ss-statgrid">
           {stats.map(([k, v]) => (
-            <li key={k}>
+            <li key={k} className={/^[+]?0(%|\/s|\.0\/s)?$|^0% /.test(v) ? "zero" : ""}>
               <span>{k}</span>
               <b>{v}</b>
             </li>
