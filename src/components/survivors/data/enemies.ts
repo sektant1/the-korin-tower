@@ -166,8 +166,8 @@ export const ENEMY_LIST: EnemyDef[] = [
   E({ id: "caixote", name: "Capsule Corp Crate", tier: "crate", hp: 1, speed: 0, damage: 0, radius: 12, xp: 0, color: "#c89a5a", knockbackResist: 1 }),
   // cenário: tanque de combustível; explode quando destruído e fere a horda em volta
   E({ id: "barril", name: "Fuel Tank", tier: "crate", hp: 1, speed: 0, damage: 0, radius: 11, xp: 0, color: "#d83a2a", knockbackResist: 1 }),
-  // evento: ladrão que foge com Zeni; derrotá-lo solta uma Cápsula e uma bolsa de Zeni
-  E({ id: "ladrao", name: "Pilaf's Thief Bot", tier: "brute", hp: 240, speed: 150, damage: 0, radius: 13, xp: 25, color: "#ffd21f", knockbackResist: 0.85, sprite: "roboSentinela", behavior: "flee" }),
+  // evento: ladrão que foge com Zeni (30 s; só corre quando o herói chega perto); derrotá-lo solta uma Cápsula e uma bolsa de Zeni
+  E({ id: "ladrao", name: "Pilaf's Thief Bot", tier: "brute", hp: 180, speed: 122, damage: 0, radius: 13, xp: 25, color: "#ffd21f", knockbackResist: 0.85, sprite: "roboSentinela", behavior: "flee" }),
 ];
 
 export const ENEMY_INDEX: Record<string, number> = Object.fromEntries(ENEMY_LIST.map((d, i) => [d.id, i]));

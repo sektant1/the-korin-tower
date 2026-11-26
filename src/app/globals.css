@@ -6648,6 +6648,9 @@ h4:hover > .h-anchor,
 .ss-shield {
   color: #7ae8ff;
 }
+.ss-shield.empty {
+  color: #5a7a8a;
+}
 .ss-rage {
   color: #ff5a4a;
   animation: ss-rage-pulse 0.5s ease-in-out infinite alternate;

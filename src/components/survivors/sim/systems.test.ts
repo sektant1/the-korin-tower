@@ -31,6 +31,7 @@ import {
   step,
   STEP,
   transform,
+  addPickup,
   eat,
   hurtPlayer,
   startRage,
@@ -561,4 +562,14 @@ test("o chefe ganha HP com o nível do herói", () => {
   const i = spawnEnemy(a, "freeza", 0, -300),
     j = spawnEnemy(b, "freeza", 0, -300);
   assert.ok(b.emax[j] > a.emax[i] * 2.5);
+});
+
+test("com o chão cheio de itens, a Cápsula de elite ainda aparece", () => {
+  const w = createWorld(59);
+  for (let k = 0; k < 80; k++) addPickup(w, "carne", 1000 + k, 0, 1);
+  assert.ok(w.pickups.every((p) => p.alive));
+  addPickup(w, "capsula", 10, 10, 0);
+  assert.ok(w.pickups.some((p) => p.kind === "capsula"));
+  for (let k = 0; k < 80; k++) addPickup(w, "carne", 2000 + k, 0, 1);
+  assert.ok(w.pickups.some((p) => p.kind === "capsula"));
 });

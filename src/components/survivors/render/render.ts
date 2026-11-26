@@ -62,6 +62,26 @@ const PICKUP_GLYPH: Record<string, string> = { scouter: "S", luz: "☀", ki: "K"
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+/** Bolsinha de Zeni (drop e marcador do ladrão). */
+function zeniBag(ctx: Ctx, x: number, y: number) {
+  ctx.fillStyle = "#000";
+  ctx.beginPath();
+  ctx.arc(x, y + 2, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(x - 4, y - 8, 8, 6);
+  ctx.fillStyle = "#c89a3a";
+  ctx.beginPath();
+  ctx.arc(x, y + 2, 7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillRect(x - 3, y - 7, 6, 4);
+  ctx.fillStyle = "#7a5a1a";
+  ctx.fillRect(x - 4, y - 3, 8, 2);
+  ctx.fillStyle = "#ffd21f";
+  ctx.fillRect(x - 1, y - 1, 2, 7);
+  ctx.fillRect(x - 3, y, 6, 2);
+  ctx.fillRect(x - 3, y + 3, 6, 2);
+}
+
 // rastro do herói (imagens residuais quando transformado) e ritmo da poeira
 const trail: { x: number; y: number; t: number }[] = [];
 let trailAt = 0,
@@ -306,19 +326,7 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
       ctx.globalAlpha = 0.6;
       ctx.drawImage(o, it.x - o.width / 2, it.y - o.height / 2 + bob);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = "#000";
-      ctx.beginPath();
-      ctx.arc(it.x, it.y + 2 + bob, 8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#c89a3a";
-      ctx.beginPath();
-      ctx.arc(it.x, it.y + 2 + bob, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillRect(it.x - 3, it.y - 7 + bob, 6, 4);
-      ctx.fillStyle = "#ffd21f";
-      ctx.font = "bold 8px monospace";
-      ctx.textAlign = "center";
-      ctx.fillText("Ƶ", it.x, it.y + 5 + bob);
+      zeniBag(ctx, it.x, it.y + bob);
     } else {
       const big = it.kind === "genki" || it.kind === "furia" || it.kind === "barreira";
       const o = orb(PICKUP_COLOR[it.kind], big ? 8 : 6);
@@ -500,10 +508,7 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
       ctx.globalAlpha = 0.5 + Math.sin(w.t * 10) * 0.2;
       ctx.drawImage(g, x - g.width / 2, y - g.height / 2 - def.radius * 0.6);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = "#ffd21f";
-      ctx.font = "bold 12px monospace";
-      ctx.textAlign = "center";
-      ctx.fillText("Ƶ", x, y - def.radius * 2.8 + Math.sin(w.t * 6) * 2);
+      zeniBag(ctx, x, y - def.radius * 2.9 + Math.sin(w.t * 6) * 2);
     }
     // elites e chefe: aura pulsando atrás do sprite
     if (def.tier === "elite" || def.tier === "boss") {
@@ -931,7 +936,9 @@ function arrow(ctx: Ctx, view: View, a: number, color: string, size: number) {
 
 /** Radar do Dragão no canto inferior direito: aponta as esferas que faltam. */
 function radar(ctx: Ctx, w: World, view: View, camX: number, camY: number) {
-  if (!w.balls.length) return;
+  let thief = -1;
+  for (let i = 0; i < MAX_ENEMIES && thief < 0; i++) if (w.ealive[i] && ENEMY_LIST[w.ekind[i]].behavior === "flee") thief = i;
+  if (!w.balls.length && thief < 0) return;
   const R = 54;
   const cx = view.w - R - 18,
     cy = view.h - R - 18;
@@ -982,6 +989,16 @@ function radar(ctx: Ctx, w: World, view: View, camX: number, camY: number) {
     ctx.beginPath();
     ctx.arc(cx + dx * k, cy + dy * k, 4, 0, Math.PI * 2);
     ctx.fill();
+  }
+  // ladrão: quadradinho dourado piscando
+  if (thief >= 0) {
+    const dx = w.ex[thief] - camX,
+      dy = w.ey[thief] - camY;
+    const d = Math.hypot(dx, dy);
+    const k = Math.min(R - 6, d / 20) / (d || 1);
+    ctx.globalAlpha = Math.floor(w.t * 6) % 2 ? 1 : 0.4;
+    ctx.fillStyle = "#fff6a0";
+    ctx.fillRect(cx + dx * k - 3, cy + dy * k - 3, 6, 6);
   }
   ctx.globalAlpha = 1;
   // esferas coletadas, acima do radar

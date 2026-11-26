@@ -1411,7 +1411,8 @@ export function dropMult(w: World) {
   return w.stats.luck * (1 + 0.15 * (w.shop.achados ?? 0));
 }
 
-function crateDrop(w: World, x: number, y: number) {
+function crateDrop(w: World, x: number, y: number, extra = true) {
+  if (extra && w.rng.chance(0.12 * (w.shop.achados ?? 0))) crateDrop(w, x + 16, y, false);
   const r = w.rng.next();
   if (r < 0.14) addPickup(w, "senzu", x, y, 1);
   else if (r < 0.32) addPickup(w, "carne", x, y, 1);
@@ -1487,6 +1488,7 @@ export function eat(w: World, frac: number) {
   p.hp = Math.min(w.stats.maxHp, p.hp + w.stats.maxHp * frac * w.stats.foodHeal);
   w.foodEaten++;
   w.events.push("senzu");
+  fx(w, Fx.Pickup, p.x, p.y - 10, 0, "#ff9a5a");
 }
 
 /** Bônus de dano das passivas de personagem e dos pergaminhos que dependem da run. */
@@ -1623,8 +1625,20 @@ export function dropGem(w: World, x: number, y: number, v: number) {
 }
 
 export function addPickup(w: World, kind: PickupKind, x: number, y: number, value: number) {
-  const p = w.pickups.find((q) => !q.alive);
-  if (!p) return;
+  let p = w.pickups.find((q) => !q.alive);
+  if (!p) {
+    // cheio (itens não somem): troca o item comum mais longe do herói; Cápsula nunca sai
+    let fd = -1;
+    for (const q of w.pickups) {
+      if (q.kind === "capsula") continue;
+      const d = (q.x - w.player.x) ** 2 + (q.y - w.player.y) ** 2;
+      if (d > fd) {
+        fd = d;
+        p = q;
+      }
+    }
+    if (!p) return;
+  }
   p.alive = true;
   p.kind = kind;
   p.x = x;

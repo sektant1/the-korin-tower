@@ -156,6 +156,7 @@ function spawner(w: World, dt: number) {
   }
   // tanques de combustível: um trio entre o herói e a horda (atire neles para explodir a horda)
   if (w.t >= w.nextBarrel) {
+    if (w.nextBarrel === 45) notice(w, "Fuel tanks! Blow them up near the horde.");
     w.nextBarrel = w.t + 40;
     const a = w.rng.range(0, Math.PI * 2),
       d = w.rng.range(200, 340);
@@ -242,7 +243,7 @@ function updateEnemies(w: World, dt: number) {
     }
     // ladrão: corre para longe do herói e some depois de 25 s (ou se ficar muito longe)
     if (def.behavior === "flee") {
-      if (w.t - w.eborn[i] > 25 || d2 > far2 * 1.6) {
+      if (w.t - w.eborn[i] > 30 || d2 > far2 * 1.6) {
         removeEnemy(w, i);
         notice(w, "The thief got away...");
         continue;
@@ -256,7 +257,9 @@ function updateEnemies(w: World, dt: number) {
         uy = -dy / d;
       const vx = ux * Math.cos(wob) - uy * Math.sin(wob),
         vy = ux * Math.sin(wob) + uy * Math.cos(wob);
-      const v = stunned ? 0 : def.speed * (w.eflash[i] > 0 ? 0.6 : 1);
+      // perto: foge a toda; longe: só se afasta devagar, provocando
+      const scared = d < 380 ? 1 : 0.45;
+      const v = stunned ? 0 : def.speed * scared * (w.eflash[i] > 0 ? 0.6 : 1);
       w.ex[i] += (vx * v + w.evx[i]) * dt;
       w.ey[i] += (vy * v + w.evy[i]) * dt;
       w.evx[i] *= Math.exp(-8 * dt);

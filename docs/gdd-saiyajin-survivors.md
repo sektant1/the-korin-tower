@@ -460,7 +460,7 @@ Totais: 28 técnicas base com evolução, 10 uniões, 9 exclusivas, 36 passivas,
 
 **Interações no mapa:**
 - Tanque de combustível (`barril`, a cada 40 s, trio perto do herói): explode ao ser atingido, fere a horda num raio de 120 px e estoura os tanques vizinhos em cadeia. O herói colado nele também leva um pouco de dano.
-- Ladrão (`ladrao`, aos 2:30, 6:30, 10:30 e 13:30): foge em ziguezague e some em 25 s. Derrotado, solta uma Cápsula de 3 prêmios, uma bolsa e às vezes um orbe de escudo.
+- Ladrão (`ladrao`, aos 2:30, 6:30, 10:30 e 13:30): foge em ziguezague e some em 30 s. Só corre a toda (122 px/s, menos que o herói) quando o herói está a menos de 380 px; longe, só se afasta devagar. Aparece no radar como um quadrado dourado. No teste de perseguição (`scripts/survivors/thief.ts`), o bot o pegou em 8 de 8 runs. Derrotado, solta uma Cápsula de 3 prêmios, uma bolsa e às vezes um orbe de escudo.
 
 **Cartas:** 4 passivas (Barreira Androide, Armadura com Espinhos, Katana do Yajirobe, Apetite Saiyajin), 2 conjuntos (Muralha de Ferro, Almoço do Yajirobe), 2 pactos (Corpo Imortal, Contrato do Assassino) e 3 itens (Explosão Kaioken, Escudo de Ki, Fragmento de Genki Dama).
 
@@ -476,3 +476,10 @@ Totais: 28 técnicas base com evolução, 10 uniões, 9 exclusivas, 36 passivas,
 - O HP do chefe cresce 4% por nível do herói acima do 20.
 
 Medição com o bot e a loja cheia: antes ele chegava ao nível 178–213 aos 15 min e matava o chefe em cerca de 15 s. Agora chega ao nível 100–130, a luta leva de 35 a 80 s em modo deus, e o bot mortal costuma morrer na luta. Sem loja nada mudou: o bot morre por volta de 3:10.
+
+Revisão do §23:
+- Itens no chão não somem. Quando a reserva (64) enche, o item comum mais longe dá lugar ao novo; uma Cápsula nunca é trocada. Antes, uma Cápsula de elite podia simplesmente não aparecer.
+- O Caçador de Tesouros também vale no caixote: 12% de chance de um segundo item por nível.
+- O escudo no HUD mostra só as cargas e fica apagado quando está vazio. A pausa mostra até quanto ele recarrega.
+- A tela de fim de run mostra ladrões pegos, golpes bloqueados, carnes comidas e a melhor cadeia de tanques, quando houver.
+- Aviso no primeiro trio de tanques; brilho ao comer; "Thief" no bestiário.

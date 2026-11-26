@@ -94,9 +94,8 @@ export function HudView({ hud }: { hud: Hud }) {
         {hud.revives > 0 && <span title="Extra lives">♥ {hud.revives}</span>}
         {hud.immortal > 0 && hud.immortal < 1e6 && <span>✦ {Math.ceil(hud.immortal)}s</span>}
         {(hud.shield > 0 || hud.shieldMax > 0) && (
-          <span title="Ki Shield charges (each blocks a hit)" className="ss-shield">
+          <span title={`Ki Shield: ${hud.shield} charge(s), each blocks a whole hit. Recharges up to ${hud.shieldMax}.`} className={`ss-shield ${hud.shield < 1 ? "empty" : ""}`}>
             ◇ {hud.shield}
-            {hud.shieldMax > 0 ? `/${hud.shieldMax}` : ""}
           </span>
         )}
         {hud.rage > 0 && (
@@ -556,7 +555,7 @@ export function Pause({ w, resume, quit, muted, toggleMute }: { w: World; resume
     ["Crit", `${Math.round(s.crit * 100)}% ×${s.critMult.toFixed(2)}`],
     ["Move speed", pct(s.moveSpeed)],
     ["Dodge", `${Math.round(s.dodge * 100)}%`],
-    ["Ki Shield", `${w.player.shield}/${s.barrier}`],
+    ["Ki Shield", s.barrier > 0 || w.player.shield > 0 ? `${w.player.shield} (recharges to ${s.barrier})` : "0"],
     ["Thorns", `${Math.round(s.thorns)}`],
     ["Vs elites/bosses", `+${Math.round(s.bossDmg * 100)}%`],
     ["Food healing", pct(s.foodHeal)],
@@ -668,6 +667,14 @@ export function Over({ w, r, reward, news, again, menu }: { w: World; r: RunSumm
     ["Kills", fmt(r.kills)],
     ["Zeni earned", `Ƶ ${fmt(reward)}`],
   ];
+  // extras da run: só aparecem se aconteceram
+  const extras: [string, number][] = [
+    ["Thieves caught", r.thieves],
+    ["Hits blocked", r.shieldBlocks],
+    ["Meat eaten", r.food],
+    ["Best tank chain", r.bestChain],
+  ];
+  for (const [k, v] of extras) if (v > 0) tiles.push([k, fmt(v)]);
   return (
     <div className="ss-panel ss-wide">
       <h2 className="ss-title">{r.won ? "SAGA CLEARED!" : "GAME OVER"}</h2>

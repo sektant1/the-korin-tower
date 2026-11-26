@@ -271,7 +271,7 @@ export function Achievements({ save, back }: { save: SaveData; back: () => void 
 }
 
 const TIER_NAME: Record<string, string> = { boss: "Boss", elite: "Elite", brute: "Brute", grunt: "Grunt" };
-const BEHAVIOR_NAME: Record<string, string> = { ranged: "Shooter", exploder: "Kamikaze", charger: "Charger" };
+const BEHAVIOR_NAME: Record<string, string> = { ranged: "Shooter", exploder: "Kamikaze", charger: "Charger", flee: "Thief" };
 
 export function Bestiary({ save, back }: { save: SaveData; back: () => void }) {
   const list = ENEMY_LIST.filter((e) => e.tier !== "crate");
@@ -357,7 +357,7 @@ const DROPS: [string, string, string][] = [
   ["Scouter (S) / Solar Flare (☀) / Ki (K)", "#5aff5a", "Pulls every orb / blinds enemies for 5s / fills half the ki meter."],
   ["Capsule Corp Crate", "#c89a5a", "Breaks into a random drop."],
   ["Fuel Tank", "#d83a2a", "Shoot it: explodes and blasts the horde around it (and other tanks). Don't stand next to it."],
-  ["Thief Bot", "#ffd21f", "Runs away with Zeni at 2:30, 6:30, 10:30 and 13:30. Catch it in 25s for a Capsule and a Zeni bag."],
+  ["Thief Bot", "#ffd21f", "Runs away with Zeni at 2:30, 6:30, 10:30 and 13:30. It only sprints when you get close. Catch it within 30s for a Capsule and a Zeni bag."],
 ];
 
 export function Codex({ save, back }: { save: SaveData; back: () => void }) {
