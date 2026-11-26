@@ -7,11 +7,11 @@ import { ITEMS, PACTS, SETS } from "../data/cards";
 import { CHARACTERS } from "../data/characters";
 import { PASSIVES } from "../data/passives";
 import { SCROLLS } from "../data/scrolls";
-import { TECHNIQUES, UNIONS } from "../data/techniques";
+import { TECHNIQUES, UNIONS, techParams, type TechDef, type TechParams } from "../data/techniques";
 import { WISHES } from "../data/wishes";
 import { MAX_SLOTS, UNION_LEVEL, offerName, offerText, type Offer, type World } from "../sim/core";
 import { fmtTime, type Hud, type SlotView } from "./hud";
-import { ICON, KIND_ICON, fmt } from "./icons";
+import { ICON, KIND_ICON, KIND_LABEL, fmt } from "./icons";
 
 /* ---------- peças ---------- */
 
@@ -83,7 +83,7 @@ export function HudView({ hud }: { hud: Hud }) {
           </div>
         </div>
       )}
-      <div className="ss-stats">
+      <div className="ss-cstats">
         <span title="Kills">☠ {fmt(hud.kills)}</span>
         <span title="Zeni">Ƶ {fmt(hud.zeni)}</span>
         <span title="Dragon Balls" className="ss-balls">
@@ -164,23 +164,100 @@ function hints(o: Offer, w: World): { icon: string; text: string; strong?: boole
   return out;
 }
 
+/* ---------- números das cartas ---------- */
+
+type StatKey = keyof TechParams;
+const STAT_ROWS: { key: StatKey; label: string; fmt: (v: number) => string; lowerIsBetter?: boolean }[] = [
+  { key: "damage", label: "Damage", fmt: (v) => fmt(v) },
+  { key: "cooldown", label: "Cooldown", fmt: (v) => `${+v.toFixed(2)}s`, lowerIsBetter: true },
+  { key: "amount", label: "Amount", fmt: (v) => String(v) },
+  { key: "area", label: "Area", fmt: (v) => `${Math.round(v * 100)}%` },
+  { key: "duration", label: "Duration", fmt: (v) => `${+v.toFixed(2)}s` },
+  { key: "pierce", label: "Pierce", fmt: (v) => (v >= 999 ? "∞" : String(v)) },
+  { key: "speed", label: "Speed", fmt: (v) => String(+v.toFixed(1)) },
+  { key: "hitCd", label: "Hit every", fmt: (v) => `${+v.toFixed(2)}s`, lowerIsBetter: true },
+  { key: "knockback", label: "Knockback", fmt: (v) => fmt(v) },
+];
+
+/** Uma técnica nova: os números que mais dizem sobre ela. */
+function techSummary(def: TechDef) {
+  const p = def.base;
+  const keys: StatKey[] = ["damage"];
+  if (p.cooldown > 0) keys.push("cooldown");
+  if (p.amount > 1) keys.push("amount");
+  return STAT_ROWS.filter((r) => keys.includes(r.key));
+}
+
+/** O que muda de um nível para outro (só o que muda). */
+function techDiff(def: TechDef, from: number, to: number) {
+  const a = techParams(def, from),
+    b = techParams(def, to);
+  return STAT_ROWS.filter((r) => Math.abs(a[r.key] - b[r.key]) > 1e-9).map((r) => ({ ...r, before: a[r.key], after: b[r.key] }));
+}
+
+/** Efeito acumulado de uma passiva no nível `n`: multiplica os números da descrição. */
+function passiveAt(desc: string, n: number) {
+  return desc.replace(/([+-])(\d+(?:\.\d+)?)/g, (_, sign: string, num: string) => `${sign}${+(Number(num) * n).toFixed(2)}`);
+}
+
+function StatLine({ label, before, after, show, better }: { label: string; before?: string; after: string; show?: boolean; better?: boolean }) {
+  return (
+    <span className="ss-cstat">
+      <span>{label}</span>
+      <span>
+        {show && before !== undefined && <s>{before}</s>}
+        {show && before !== undefined && <span className="arw">→</span>}
+        <b className={show ? (better ? "up" : "down") : ""}>{after}</b>
+      </span>
+    </span>
+  );
+}
+
 /** Corpo da carta, por tipo. */
 function CardBody({ o, w }: { o: Offer; w: World }): ReactNode {
-  const color = offerColor(o);
-  if (o.type === "tech" || o.type === "passive") {
-    const def = o.type === "tech" ? TECHNIQUES[o.id] : PASSIVES[o.id];
-    const owned = o.type === "tech" ? w.techs.find((t) => t.id === o.id)?.level ?? 0 : w.passives.find((p) => p.id === o.id)?.level ?? 0;
-    const isNew = o.level === 1;
+  if (o.type === "tech") {
+    const def = TECHNIQUES[o.id];
+    const owned = w.techs.find((t) => t.id === o.id)?.level ?? 0;
+    if (!owned) {
+      const p = def.base;
+      return (
+        <>
+          <span className="ss-card-desc">{def.desc}</span>
+          <span className="ss-cstats">
+            {techSummary(def).map((r) => (
+              <StatLine key={r.key} label={r.label} after={r.fmt(p[r.key])} />
+            ))}
+          </span>
+        </>
+      );
+    }
+    const diff = techDiff(def, owned, o.level);
     return (
       <>
-        <Pips max={def.max} have={owned} next={o.level} color={color} />
-        {o.type === "tech" ? (
-          <>
-            {!isNew && <span className="ss-card-up">{offerText(o)}</span>}
-            <span className="ss-card-desc">{TECHNIQUES[o.id].desc}</span>
-          </>
-        ) : (
-          <span className="ss-card-up">{PASSIVES[o.id].desc}</span>
+        <span className="ss-card-up">{offerText(o)}</span>
+        <span className="ss-cstats">
+          {diff.map((r) => (
+            <StatLine key={r.key} label={r.label} before={r.fmt(r.before)} after={r.fmt(r.after)} show better={r.lowerIsBetter ? r.after < r.before : r.after > r.before} />
+          ))}
+        </span>
+      </>
+    );
+  }
+  if (o.type === "passive") {
+    const def = PASSIVES[o.id];
+    const owned = w.passives.find((p) => p.id === o.id)?.level ?? 0;
+    return (
+      <>
+        <span className="ss-card-up">{def.desc}</span>
+        {owned > 0 && (
+          <span className="ss-cstats ss-cstats-total">
+            <span className="ss-stat-cap">Total</span>
+            <span className="ss-total">
+              <s>{passiveAt(def.desc, owned)}</s>
+              <span className="arw">↓</span>
+              <b>{passiveAt(def.desc, o.level)}</b>
+            </span>
+          </span>
         )}
       </>
     );
@@ -191,23 +268,54 @@ function CardBody({ o, w }: { o: Offer; w: World }): ReactNode {
     return (
       <>
         <span className="ss-recipe">
-          <span style={{ color: TECHNIQUES[a].color }}>{TECHNIQUES[a].name}</span> + <span style={{ color: TECHNIQUES[b].color }}>{TECHNIQUES[b].name}</span>
+          <span className="ss-recipe-part" style={{ color: TECHNIQUES[a].color, borderColor: TECHNIQUES[a].color }}>
+            {KIND_ICON[TECHNIQUES[a].kind]} {TECHNIQUES[a].name}
+          </span>
+          <span className="arw">+</span>
+          <span className="ss-recipe-part" style={{ color: TECHNIQUES[b].color, borderColor: TECHNIQUES[b].color }}>
+            {KIND_ICON[TECHNIQUES[b].kind]} {TECHNIQUES[b].name}
+          </span>
         </span>
         <span className="ss-card-desc">{d.desc}</span>
-        <span className="ss-card-up">Frees a slot</span>
+        <span className="ss-cstats">
+          {techSummary(d).map((r) => (
+            <StatLine key={r.key} label={r.label} after={r.fmt(d.base[r.key])} />
+          ))}
+        </span>
+        <span className="ss-card-up ss-free">Frees a slot</span>
       </>
     );
   }
   if (o.type === "pact") {
     const p = PACTS[o.id];
     return (
-      <>
-        <span className="ss-gain">▲ {p.gain}</span>
-        <span className="ss-cost">▼ {p.cost}</span>
-      </>
+      <span className="ss-pact-body">
+        <span className="ss-gain">
+          <b>▲</b> {p.gain}
+        </span>
+        <span className="ss-cost">
+          <b>▼</b> {p.cost}
+        </span>
+        <small>Once per run</small>
+      </span>
     );
   }
-  return <span className="ss-card-desc">{offerText(o)}</span>;
+  return <span className="ss-card-desc ss-card-desc-lg">{offerText(o)}</span>;
+}
+
+/** Linha embaixo do nome: tipo de golpe, nível atual → próximo. */
+function cardSub(o: Offer, w: World) {
+  if (o.type === "tech" || o.type === "union") {
+    const d = TECHNIQUES[o.id];
+    const target = d.extra?.target === "facing" ? " · where you face" : d.extra?.target === "densest" ? " · biggest crowd" : d.extra?.target === "strongest" ? " · toughest foe" : d.extra?.homing ? " · homing" : "";
+    return `${KIND_LABEL[d.kind]}${target}`;
+  }
+  if (o.type === "passive") {
+    const owned = w.passives.find((p) => p.id === o.id)?.level ?? 0;
+    return owned ? `LV ${owned} → ${o.level} of ${PASSIVES[o.id].max}` : `Max LV ${PASSIVES[o.id].max}`;
+  }
+  if (o.type === "pact") return "Cursed card";
+  return "Use now";
 }
 
 function badge(o: Offer, w: World) {
@@ -281,18 +389,31 @@ export function LevelUp({
           const color = offerColor(o);
           const bd = badge(o, w);
           const gold = o.type === "tech" && o.gold;
+          const owned = o.type === "tech" ? w.techs.find((t) => t.id === o.id)?.level ?? 0 : o.type === "passive" ? w.passives.find((p) => p.id === o.id)?.level ?? 0 : 0;
+          const max = o.type === "tech" ? TECHNIQUES[o.id].max : o.type === "passive" ? PASSIVES[o.id].max : 0;
+          const next = o.type === "tech" || o.type === "passive" ? o.level : 0;
           return (
-            <button key={`${i}:${offerName(o)}`} type="button" className={`ss-card ss-card2 ${gold ? "ss-gold" : ""} ${CARD_CLASS[o.type] ?? ""}`} style={{ borderColor: color }} onClick={() => pick(i)} autoFocus={i === 0}>
+            <button
+              key={`${i}:${offerName(o)}`}
+              type="button"
+              className={`ss-card ss-card2 ss-card-${o.type} ${gold ? "ss-gold" : ""} ${bd?.cls === "evo" ? "ss-card-evo" : ""} ${CARD_CLASS[o.type] ?? ""}`}
+              style={{ borderColor: color, ["--card" as string]: color, animationDelay: `${i * 60}ms` }}
+              onClick={() => pick(i)}
+              autoFocus={i === 0}
+            >
               <span className="ss-card-type" style={{ background: color }}>
-                {TYPE_LABEL[o.type]}
+                <span>{TYPE_LABEL[o.type]}</span>
+                {max > 1 && <span className="ss-card-lv">{owned ? `LV ${owned}→${next}` : "NEW"}</span>}
               </span>
-              <span className="ss-card-key">{i + 1}</span>
+              <kbd className="ss-card-key">{i + 1}</kbd>
               {isLocked(o) && <span className="ss-card-lock">{ICON.lock}</span>}
               <span className="ss-card-icon" style={{ color, borderColor: color }}>
                 {offerIcon(o)}
               </span>
-              <b>{offerName(o)}</b>
-              {bd && <span className={`ss-badge ${bd.cls}`}>{bd.text}</span>}
+              <b className="ss-card-name">{offerName(o)}</b>
+              <span className="ss-card-sub">{cardSub(o, w)}</span>
+              {max > 1 && <Pips max={max} have={owned} next={next} color={color} />}
+              {bd && bd.cls !== "new" && <span className={`ss-badge ${bd.cls}`}>{bd.text}</span>}
               <CardBody o={o} w={w} />
               {hs.length > 0 && (
                 <span className="ss-card-hints">

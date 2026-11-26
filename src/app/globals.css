@@ -6901,3 +6901,304 @@ h4:hover > .h-anchor,
 .ss-codex li > small.ss-cost {
   color: #ff6a7a;
 }
+
+/* cartas v3: números reais, entrada animada, brilho na cor da carta */
+.ss-levelup .ss-cards {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  align-items: stretch;
+  gap: 14px;
+}
+.ss-card2 {
+  --card: #7ad7ff;
+  gap: 6px;
+  padding: 34px 12px 12px;
+  background:
+    radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--card) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, #16293f, #0e1c2c);
+  box-shadow:
+    0 0 0 2px #000,
+    0 6px 0 #000;
+  animation: ss-card-in 0.28s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  transition:
+    transform 0.1s,
+    box-shadow 0.15s;
+}
+@keyframes ss-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+}
+.ss-card2:hover,
+.ss-card2:focus-visible {
+  transform: translateY(-5px);
+  background:
+    radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--card) 34%, transparent), transparent 75%),
+    linear-gradient(180deg, #1b3450, #12243a);
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 0 4px var(--card),
+    0 0 26px color-mix(in srgb, var(--card) 55%, transparent),
+    0 10px 0 #000;
+}
+.ss-card2:active {
+  transform: translateY(-1px) scale(0.98);
+}
+.ss-card-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  text-align: left;
+}
+.ss-card-lv {
+  padding: 0 4px;
+  color: #fff;
+  background: #000a;
+  border-radius: 2px;
+  letter-spacing: 0;
+}
+.ss-card2 .ss-card-key {
+  top: 30px;
+  left: 8px;
+  min-width: 18px;
+  padding: 2px 4px;
+  font-family: var(--font-pixel-stack);
+  font-size: var(--fs-px-1);
+  color: #cfe0f0;
+  background: #0008;
+  border: 1px solid #ffffff33;
+  border-bottom-width: 3px;
+  border-radius: 3px;
+}
+.ss-card2 .ss-card-lock {
+  top: 30px;
+  right: 8px;
+}
+.ss-card2 .ss-card-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 26px;
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--card) 35%, #000), #000c 70%);
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--card) 60%, transparent),
+    0 0 10px currentColor inset;
+}
+.ss-card2:hover .ss-card-icon,
+.ss-card2:focus-visible .ss-card-icon {
+  animation: ss-icon-pop 0.6s ease-in-out infinite alternate;
+}
+@keyframes ss-icon-pop {
+  to {
+    transform: scale(1.08) rotate(-4deg);
+  }
+}
+.ss-card2 .ss-card-name {
+  min-height: 2.6em;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-px-2);
+  line-height: 1.35;
+  text-shadow: 2px 2px 0 #000;
+}
+.ss-card-sub {
+  margin-top: -4px;
+  font-size: var(--fs-xs);
+  color: color-mix(in srgb, var(--card) 70%, #fff);
+  letter-spacing: 0.3px;
+}
+.ss-card2 .ss-pips2 i {
+  width: 12px;
+  height: 6px;
+  border: 1px solid #000;
+}
+.ss-card2 .ss-card-desc {
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  color: #c2d2e4;
+}
+.ss-card2 .ss-card-desc-lg {
+  font-size: var(--fs-sm);
+  color: #e8f0f8;
+}
+.ss-card2 .ss-card-up {
+  font-size: var(--fs-sm);
+  line-height: 1.3;
+}
+/* tabela de números: antes → depois */
+.ss-cstats {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 6px 8px;
+  background: #0007;
+  border: 1px solid #ffffff14;
+  border-radius: 6px;
+}
+.ss-cstat {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  color: #8aa0b8;
+}
+.ss-cstat > span:last-child {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.ss-cstat s,
+.ss-total s {
+  color: #6a7f96;
+  text-decoration: none;
+}
+.ss-cstat .arw,
+.ss-total .arw {
+  font-style: normal;
+  color: #5a6f86;
+}
+.ss-cstat b {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  color: #fff;
+}
+.ss-cstat b.up {
+  color: #7aff9a;
+}
+.ss-cstat b.down {
+  color: #ffb05a;
+}
+.ss-cstats-total {
+  justify-items: center;
+  text-align: center;
+}
+.ss-cstat-cap {
+  font-family: var(--font-pixel-stack);
+  font-size: var(--fs-px-1);
+  color: #6a7f96;
+  text-transform: uppercase;
+}
+.ss-total {
+  display: grid;
+  gap: 1px;
+  font-size: var(--fs-xs);
+}
+.ss-total b {
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  color: #7aff9a;
+}
+/* união: as duas técnicas da receita */
+.ss-recipe {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+.ss-recipe .arw {
+  font-style: normal;
+  color: #fff;
+}
+.ss-recipe-part {
+  padding: 1px 6px;
+  font-size: var(--fs-xs);
+  background: #0008;
+  border: 1px solid;
+  border-radius: 10px;
+}
+.ss-free {
+  color: #7af0ff;
+}
+/* pacto: ganho e custo em blocos */
+.ss-pact-body {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+}
+.ss-pact-body > span {
+  padding: 6px 8px;
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  border-radius: 6px;
+}
+.ss-pact-body .ss-gain {
+  background: #0a3a1a99;
+  border: 1px solid #2f8a3a;
+}
+.ss-pact-body .ss-cost {
+  background: #3a0a1499;
+  border: 1px solid #8a2a3a;
+}
+.ss-pact-body small {
+  text-align: center;
+  color: #ff6a7a;
+}
+.ss-card2.ss-pact .ss-card-icon {
+  animation: ss-pact-throb 1.4s ease-in-out infinite;
+}
+@keyframes ss-pact-throb {
+  50% {
+    box-shadow:
+      0 0 26px #ff2a4a,
+      0 0 10px currentColor inset;
+  }
+}
+/* pode evoluir / união: brilho correndo pela carta */
+.ss-card2.ss-card-evo::after,
+.ss-card2.ss-union::after,
+.ss-card2.ss-gold::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, #ffffff30 50%, transparent 60%);
+  background-size: 250% 100%;
+  animation: ss-shine 2.2s linear infinite;
+}
+@keyframes ss-shine {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+.ss-card2 .ss-card-hints {
+  text-align: left;
+}
+.ss-card2 .ss-card-hints em {
+  line-height: 1.3;
+}
+/* banir: a carta vira alvo */
+.ss-banish .ss-card2:hover,
+.ss-banish .ss-card2:focus-visible {
+  box-shadow:
+    0 0 0 2px #000,
+    0 0 0 4px #ff2a4a,
+    0 0 26px #ff2a4a88;
+}
+@media (max-width: 640px) {
+  .ss-levelup .ss-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .ss-card2 {
+    padding: 30px 8px 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ss-card2,
+  .ss-card2 .ss-card-icon,
+  .ss-card2::after {
+    animation: none !important;
+  }
+}
+.ss-pact-body > span > b {
+  font-family: system-ui, sans-serif;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-shadow: none;
+}

@@ -24,6 +24,29 @@ export const KIND_ICON: Record<TechKind, string> = {
   trail: "≈",
 };
 
+/** Nome curto do comportamento, mostrado embaixo do nome da técnica na carta. */
+export const KIND_LABEL: Record<TechKind, string> = {
+  beam: "Beam",
+  bolt: "Projectile",
+  fan: "Spread",
+  lance: "Piercing ray",
+  disc: "Boomerang",
+  flash: "Stun flash",
+  aura: "Aura",
+  bomb: "Bomb",
+  blast: "Explosions",
+  slash: "Melee slash",
+  ghost: "Seeker",
+  punch: "Melee punch",
+  orbit: "Orbit",
+  nova: "Shockwave",
+  converge: "Encircle",
+  barrage: "Barrage",
+  chain: "Chain",
+  vortex: "Whirlwind",
+  trail: "Trail",
+};
+
 export const ICON = {
   passive: "✚",
   union: "⊕",
