@@ -134,6 +134,32 @@ export function crate(): Canvas {
   });
 }
 
+/** Tanque de combustível vermelho (explode quando destruído). */
+export function barrel(): Canvas {
+  return memo("barrel", () => {
+    const [c, g] = canvas(22, 28);
+    g.fillStyle = "#000";
+    g.fillRect(1, 0, 20, 28);
+    g.fillStyle = "#d83a2a";
+    g.fillRect(2, 1, 18, 26);
+    g.fillStyle = "#ff6a4a";
+    g.fillRect(4, 2, 4, 24);
+    g.fillStyle = "#7a1a10";
+    g.fillRect(2, 7, 18, 2);
+    g.fillRect(2, 19, 18, 2);
+    g.fillStyle = "#ffd21f";
+    g.beginPath();
+    g.moveTo(11, 10);
+    g.lineTo(15, 17);
+    g.lineTo(7, 17);
+    g.closePath();
+    g.fill();
+    g.fillStyle = "#000";
+    g.fillRect(10, 12, 2, 3);
+    return c;
+  });
+}
+
 /** Disco placeholder com contorno e brilho (inimigos e herói sem sprite). */
 export function disc(color: string, r: number, flash = false): Canvas {
   return memo(`disc:${color}:${r}:${flash}`, () => {

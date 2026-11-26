@@ -5,7 +5,7 @@ import type { Stats } from "./stats";
 
 /* ---------- conjuntos: ter todas as passivas do conjunto liga um bônus ---------- */
 
-export type SetId = "kaioh" | "saiyajin" | "kame" | "divino" | "cacador" | "sombrio" | "ginyu" | "elite" | "grou" | "fitaVermelha" | "casaBuu" | "bandido";
+export type SetId = "kaioh" | "saiyajin" | "kame" | "divino" | "cacador" | "sombrio" | "ginyu" | "elite" | "grou" | "fitaVermelha" | "casaBuu" | "bandido" | "muralha" | "yajirobe";
 
 export interface SetDef {
   id: SetId;
@@ -66,11 +66,20 @@ export const SETS: SetDef[] = [
       s.dodge += 0.08;
       s.duration += 0.1;
     } },
+  { id: "muralha", name: "Iron Wall", parts: ["barreiraAndroide", "espinhos", "armadura"], desc: "+1 Ki Shield charge, +15 thorns, +2 armor", color: "#7ae8ff", apply: (s) => {
+      s.barrier += 1;
+      s.thorns += 15;
+      s.armor += 2;
+    } },
+  { id: "yajirobe", name: "Yajirobe's Lunch Break", parts: ["katana", "apetite"], desc: "+20% damage to elites and bosses, +50% food healing", color: "#ff9a5a", apply: (s) => {
+      s.bossDmg += 0.2;
+      s.foodHeal += 0.5;
+    } },
 ];
 
 /* ---------- pactos: muito poder com um custo, uma vez por run ---------- */
 
-export type PactId = "freeza" | "oozaru" | "dabura" | "majin" | "shenlongNegro" | "gero" | "sacrificio" | "babidi" | "broly" | "velhoKaioshin" | "cell";
+export type PactId = "freeza" | "oozaru" | "dabura" | "majin" | "shenlongNegro" | "gero" | "sacrificio" | "babidi" | "broly" | "velhoKaioshin" | "cell" | "zamasu" | "hit";
 
 export interface PactDef {
   id: PactId;
@@ -120,12 +129,24 @@ export const PACTS: Record<PactId, PactDef> = {
       s.growth -= 0.2;
       s.luck -= 0.2;
     } },
+  zamasu: { id: "zamasu", name: "Immortal Body", gain: "+2 Ki Shield charges, +1 HP/s regen.", cost: "-15% damage, +20% Curse.", apply: (s) => {
+      s.barrier += 2;
+      s.recovery += 1;
+      s.might -= 0.15;
+      s.curse += 0.2;
+    } },
+  hit: { id: "hit", name: "Assassin's Contract", gain: "+40% damage to elites and bosses, +10% crit chance.", cost: "-25% pickup range, -10% max HP.", apply: (s) => {
+      s.bossDmg += 0.4;
+      s.crit += 0.1;
+      s.magnet *= 0.75;
+      s.maxHp *= 0.9;
+    } },
 };
 export const PACT_IDS = Object.keys(PACTS) as PactId[];
 
 /* ---------- itens: cartas de uso imediato ---------- */
 
-export type ItemId = "ki" | "capsula" | "ima" | "radar" | "agua" | "bomba" | "treino" | "dende" | "baba" | "salaUmDia";
+export type ItemId = "ki" | "capsula" | "ima" | "radar" | "agua" | "bomba" | "treino" | "dende" | "baba" | "salaUmDia" | "furia" | "escudo" | "genki";
 
 export const ITEMS: Record<ItemId, { name: string; desc: string; color: string }> = {
   ki: { name: "Ki Surge", desc: "Fills your ki meter.", color: "#5ad7ff" },
@@ -138,4 +159,7 @@ export const ITEMS: Record<ItemId, { name: string; desc: string; color: string }
   dende: { name: "Dende's Healing", desc: "Fully restores your HP.", color: "#5aff9a" },
   baba: { name: "Fortuneteller Baba's Ball", desc: "+2 rerolls, +1 banish, +1 lock.", color: "#b07aff" },
   salaUmDia: { name: "A Day in the Time Chamber", desc: "A random technique of yours gains 1 level.", color: "#e8e8ff" },
+  furia: { name: "Kaioken Burst", desc: "+40% damage and +15% move speed for 20s.", color: "#ff3b3b" },
+  escudo: { name: "Ki Shield", desc: "+2 Ki Shield charges right now (each blocks one hit).", color: "#7ae8ff" },
+  genki: { name: "Spirit Bomb Fragment", desc: "A Spirit Bomb hits every enemy on screen.", color: "#9ad8ff" },
 };

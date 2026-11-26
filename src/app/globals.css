@@ -6645,6 +6645,23 @@ h4:hover > .h-anchor,
 .ss-nm-tag {
   color: #ff3a5a;
 }
+.ss-shield {
+  color: #7ae8ff;
+}
+.ss-rage {
+  color: #ff5a4a;
+  animation: ss-rage-pulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes ss-rage-pulse {
+  to {
+    color: #ffd21f;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ss-rage {
+    animation: none;
+  }
+}
 
 /* cartas v2 */
 .ss-card2 {

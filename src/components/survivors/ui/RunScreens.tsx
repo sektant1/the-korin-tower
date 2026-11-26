@@ -93,6 +93,17 @@ export function HudView({ hud }: { hud: Hud }) {
         </span>
         {hud.revives > 0 && <span title="Extra lives">♥ {hud.revives}</span>}
         {hud.immortal > 0 && hud.immortal < 1e6 && <span>✦ {Math.ceil(hud.immortal)}s</span>}
+        {(hud.shield > 0 || hud.shieldMax > 0) && (
+          <span title="Ki Shield charges (each blocks a hit)" className="ss-shield">
+            ◇ {hud.shield}
+            {hud.shieldMax > 0 ? `/${hud.shieldMax}` : ""}
+          </span>
+        )}
+        {hud.rage > 0 && (
+          <span title="Kaioken Burst" className="ss-rage">
+            ! {Math.ceil(hud.rage)}s
+          </span>
+        )}
         {hud.nightmare && <span className="ss-nm-tag">☠ NIGHTMARE</span>}
       </div>
       <div className={`ss-ki ${hud.formReady ? "ss-ki-ready" : ""} ${hud.form ? "ss-ki-active" : ""}`}>
@@ -545,6 +556,10 @@ export function Pause({ w, resume, quit, muted, toggleMute }: { w: World; resume
     ["Crit", `${Math.round(s.crit * 100)}% ×${s.critMult.toFixed(2)}`],
     ["Move speed", pct(s.moveSpeed)],
     ["Dodge", `${Math.round(s.dodge * 100)}%`],
+    ["Ki Shield", `${w.player.shield}/${s.barrier}`],
+    ["Thorns", `${Math.round(s.thorns)}`],
+    ["Vs elites/bosses", `+${Math.round(s.bossDmg * 100)}%`],
+    ["Food healing", pct(s.foodHeal)],
     ["Luck", pct(s.luck)],
     ["XP", pct(s.growth)],
     ["Zeni", pct(s.greed)],
@@ -623,7 +638,7 @@ export function Pause({ w, resume, quit, muted, toggleMute }: { w: World; resume
         </ul>
         <ul className="ss-statgrid">
           {stats.map(([k, v]) => (
-            <li key={k} className={/^[+]?0(%|\/s|\.0\/s)?$|^0% /.test(v) ? "zero" : ""}>
+            <li key={k} className={/^[+]?0(%|\/s|\.0\/s|\/0)?$|^0% /.test(v) ? "zero" : ""}>
               <span>{k}</span>
               <b>{v}</b>
             </li>

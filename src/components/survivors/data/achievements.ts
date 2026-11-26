@@ -28,6 +28,10 @@ export interface RunSummary {
   unions: string[];
   pacts: string[];
   sets: string[];
+  thieves: number;
+  shieldBlocks: number;
+  food: number;
+  bestChain: number;
 }
 
 export interface AchievementDef {
@@ -86,5 +90,10 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   A({ id: "pacto3", name: "Demon Soul", desc: "Clear a saga with 3 Pacts.", zeni: 1000, check: (r) => r.won && r.pacts.length >= 3 }),
   A({ id: "conjunto", name: "Collector", desc: "Complete a passive Set.", zeni: 200, check: (r) => r.sets.length > 0 }),
   A({ id: "doisConjuntos", name: "Full Wardrobe", desc: "Complete 2 Sets in one run.", zeni: 500, check: (r) => r.sets.length >= 2 }),
+  A({ id: "ladrao", name: "Stop, Thief!", desc: "Catch a thief before it escapes.", zeni: 150, check: (r) => r.thieves > 0 }),
+  A({ id: "ladroes", name: "Pilaf's Nightmare", desc: "Catch 3 thieves in one run.", zeni: 500, check: (r) => r.thieves >= 3 }),
+  A({ id: "reacao", name: "Chain Reaction", desc: "Defeat 25 enemies with a single Fuel Tank blast.", zeni: 300, check: (r) => r.bestChain >= 25 }),
+  A({ id: "escudo", name: "Impenetrable", desc: "Block 25 hits with the Ki Shield in one run.", zeni: 300, check: (r) => r.shieldBlocks >= 25 }),
+  A({ id: "gourmet", name: "Bottomless Stomach", desc: "Eat 15 Roast Meats in one run.", zeni: 250, check: (r) => r.food >= 15 }),
   A({ id: "celljr", name: "Cell Jr. Babysitter", desc: "Defeat 500 Cell Jr. (across runs).", zeni: 300, check: (_, s) => (s.bestiary.celljr ?? 0) >= 500 }),
 ];

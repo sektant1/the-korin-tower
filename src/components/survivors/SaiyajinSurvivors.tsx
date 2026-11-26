@@ -47,6 +47,10 @@ function summary(w: World): RunSummary {
     unions: [...w.unions],
     pacts: [...w.pacts],
     sets: [...w.setsDone],
+    thieves: w.thievesCaught,
+    shieldBlocks: w.shieldBlocks,
+    food: w.foodEaten,
+    bestChain: w.bestChain,
   };
 }
 
@@ -123,7 +127,12 @@ export function SaiyajinSurvivors({ onExit }: { onExit: () => void }) {
       setOffers([]);
       setBanishMode(false);
       setLockMode(false);
-      setScreen("playing");
+      // Largada (loja): a run pode começar já na tela de nível
+      const w0 = worldRef.current;
+      if (w0.phase === "levelup") {
+        setOffers([...w0.offers]);
+        setScreen("levelup");
+      } else setScreen("playing");
     },
     [setScreen],
   );

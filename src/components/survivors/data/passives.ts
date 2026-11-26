@@ -31,6 +31,10 @@ export type PassiveId =
   | "chocolate"
   | "chipGero"
   | "torreKorin"
+  | "barreiraAndroide"
+  | "espinhos"
+  | "katana"
+  | "apetite"
   | "instintoLuta"
   | "principe"
   | "poderOculto"
@@ -149,6 +153,19 @@ export const PASSIVES: Record<PassiveId, PassiveDef> = {
   torreKorin: P({ id: "torreKorin", name: "Korin Tower Climb", desc: "+8% duration, +5% move speed", max: 5, color: "#c8b0ff", apply: (s, n) => {
       s.duration += 0.08 * n;
       s.moveSpeed += 0.05 * n;
+    } }),
+  barreiraAndroide: P({ id: "barreiraAndroide", name: "Android Energy Barrier", desc: "+1 Ki Shield charge (blocks a hit, recharges)", max: 3, color: "#7ae8ff", apply: (s, n) => void (s.barrier += n) }),
+  espinhos: P({ id: "espinhos", name: "Spiked Battle Armor", desc: "+6 thorns (damage back to whoever hits you), +1 armor", max: 5, color: "#c0a070", apply: (s, n) => {
+      s.thorns += 6 * n;
+      s.armor += n;
+    } }),
+  katana: P({ id: "katana", name: "Yajirobe's Katana", desc: "+10% damage to elites and bosses, +3% crit chance", max: 5, color: "#d8d8e8", apply: (s, n) => {
+      s.bossDmg += 0.1 * n;
+      s.crit += 0.03 * n;
+    } }),
+  apetite: P({ id: "apetite", name: "Saiyan Appetite", desc: "+30% healing from food, +6% max HP", max: 5, color: "#ff9a5a", apply: (s, n) => {
+      s.foodHeal += 0.3 * n;
+      s.maxHp *= 1 + 0.06 * n;
     } }),
   // exclusivas de personagem
   instintoLuta: P({ id: "instintoLuta", owner: "goku", name: "Fighting Spirit", desc: "+6% damage, +5% move speed", max: 3, color: "#ff8a1f", apply: (s, n) => {

@@ -40,6 +40,9 @@ export interface Hud {
   immortal: number;
   scrolls: { name: string; color: string }[];
   nightmare: boolean;
+  shield: number;
+  shieldMax: number;
+  rage: number;
 }
 
 export function readHud(w: World): Hud {
@@ -72,6 +75,9 @@ export function readHud(w: World): Hud {
     immortal: w.immortal,
     scrolls: w.scrolls.map((id) => ({ name: SCROLLS[id].name, color: SCROLLS[id].color })),
     nightmare: w.nightmare,
+    shield: w.player.shield,
+    shieldMax: w.stats.barrier,
+    rage: w.player.rage,
   };
 }
 

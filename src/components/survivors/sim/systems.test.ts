@@ -31,8 +31,12 @@ import {
   step,
   STEP,
   transform,
+  eat,
+  hurtPlayer,
+  startRage,
   type World,
 } from "./world";
+import { SHIELD_REGEN } from "../data/stats";
 
 function settle(w: World) {
   for (let k = 0; k < 50 && w.phase !== "playing" && w.phase !== "dead" && w.phase !== "won"; k++) {
@@ -453,4 +457,108 @@ test("Imagem Residual deixa zonas para trás e fere quem pisa", () => {
   run(w, 6);
   assert.ok(w.zones.some((z) => z.alive && z.kind === "pool"));
   assert.ok(w.techDamage[0] > 0);
+});
+
+/* ---------- §23: drops, interações, atributos novos ---------- */
+
+test("Escudo de Ki anula um golpe e recarrega", () => {
+  const w = createWorld(50, { shop: { escudo: 1 } });
+  assert.equal(w.player.shield, 1);
+  const hp = w.player.hp;
+  assert.equal(hurtPlayer(w, 30), true);
+  assert.equal(w.player.hp, hp);
+  assert.equal(w.player.shield, 0);
+  assert.equal(w.shieldBlocks, 1);
+  w.player.invuln = 0;
+  hurtPlayer(w, 30);
+  assert.ok(w.player.hp < hp);
+  w.immortal = 1e9;
+  w.techs = [];
+  run(w, SHIELD_REGEN + 1);
+  assert.equal(w.player.shield, 1);
+});
+
+test("Espinhos ferem quem encosta no herói", () => {
+  const w = createWorld(51, { shop: { espinhos: 3 } });
+  w.techs = [];
+  const i = spawnEnemy(w, "brutamontes", w.player.x + 5, w.player.y);
+  const hp = w.ehp[i];
+  w.player.invuln = 0;
+  step(w, { mx: 0, my: 0 });
+  assert.ok(w.ehp[i] < hp || !w.ealive[i]);
+});
+
+test("tanque de combustível explode e derruba a horda em volta", () => {
+  const w = createWorld(52);
+  w.techs = [];
+  const b = spawnEnemy(w, "barril", 300, 0);
+  for (let k = 0; k < 8; k++) spawnEnemy(w, "soldado", 300 + Math.cos(k) * 50, Math.sin(k) * 50);
+  w.grid.clear();
+  for (let i = 0; i < MAX_ENEMIES; i++) if (w.ealive[i]) w.grid.insert(i, w.ex[i], w.ey[i]);
+  const kills = w.player.kills;
+  hurt(w, b, 5, 0, 0, 0, -1);
+  assert.equal(w.player.kills - kills, 8);
+  assert.equal(w.bestChain, 8);
+});
+
+test("ladrão foge, e derrotado solta Cápsula e bolsa de Zeni", () => {
+  const w = createWorld(53);
+  god(w);
+  w.techs = [];
+  const i = spawnEnemy(w, "ladrao", w.player.x + 100, w.player.y);
+  const d0 = Math.hypot(w.ex[i] - w.player.x, w.ey[i] - w.player.y);
+  run(w, 1);
+  assert.ok(Math.hypot(w.ex[i] - w.player.x, w.ey[i] - w.player.y) > d0);
+  hurt(w, i, 1e6, 0, 0, 0, -1);
+  assert.equal(w.thievesCaught, 1);
+  assert.ok(w.pickups.some((p) => p.alive && p.kind === "capsula"));
+  assert.ok(w.pickups.some((p) => p.alive && p.kind === "bolsa"));
+});
+
+test("Largada abre a run com níveis para escolher", () => {
+  const w = createWorld(54, { shop: { inicio: 2 } });
+  assert.equal(w.phase, "levelup");
+  assert.equal(w.player.level, 3);
+  assert.ok(w.offers.length >= 3);
+  settle(w);
+  assert.equal(w.phase, "playing");
+});
+
+test("comida cura mais com Apetite; Kaioken temporário sobe o dano e acaba", () => {
+  const a = createWorld(55),
+    b = createWorld(55, { shop: { apetite: 3 } });
+  for (const w of [a, b]) {
+    w.player.hp = 1;
+    eat(w, 0.12);
+  }
+  assert.ok(b.player.hp > a.player.hp);
+  const w = createWorld(56);
+  god(w);
+  const m = w.stats.might;
+  startRage(w, 2);
+  assert.ok(w.stats.might > m * 1.3);
+  run(w, 3);
+  assert.ok(Math.abs(w.stats.might - m) < 1e-9);
+});
+
+test("dano extra em elites e chefes só vale para eles", () => {
+  const w = createWorld(57, { shop: { gigante: 5 } });
+  w.stats.crit = 0;
+  const e = spawnEnemy(w, "recoome", 400, 0),
+    g = spawnEnemy(w, "soldado", -400, 0);
+  w.ehp[g] = w.emax[g] = 1e6;
+  const he = w.ehp[e],
+    hg = w.ehp[g];
+  hurt(w, e, 10, 0, 0, 0, -1);
+  hurt(w, g, 10, 0, 0, 0, -1);
+  assert.ok(he - w.ehp[e] > (hg - w.ehp[g]) * 1.25);
+});
+
+test("o chefe ganha HP com o nível do herói", () => {
+  const a = createWorld(58),
+    b = createWorld(58);
+  b.player.level = 70;
+  const i = spawnEnemy(a, "freeza", 0, -300),
+    j = spawnEnemy(b, "freeza", 0, -300);
+  assert.ok(b.emax[j] > a.emax[i] * 2.5);
 });

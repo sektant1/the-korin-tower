@@ -346,6 +346,20 @@ export function Credits({ back }: { back: () => void }) {
 type CodexTab = "techniques" | "passives" | "cards" | "scrolls";
 
 /** Encyclopedia: técnicas com receita de evolução, uniões, passivas, conjuntos, pactos, itens e pergaminhos. */
+/** O que cai no chão e o que acontece no mapa (Enciclopédia). */
+const DROPS: [string, string, string][] = [
+  ["Senzu Bean", "#5fd13a", "Heals 30% HP. Rare from enemies, common in crates."],
+  ["Roast Meat", "#ff9a5a", "Heals 12% HP (more with Saiyan Appetite and Chi-Chi's Cooking). Brutes drop it often."],
+  ["Kaioken Orb (!)", "#ff3b3b", "+40% damage and +15% move speed for 10s."],
+  ["Ki Shield Orb (◇)", "#7ae8ff", "+1 Ki Shield charge: blocks a whole hit."],
+  ["Spirit Bomb Orb (✺)", "#9ad8ff", "Hits every enemy on screen."],
+  ["Zeni / Zeni Bag", "#ffd21f", "Zeni to spend at Korin Tower. Bags come from elites, crates and thieves."],
+  ["Scouter (S) / Solar Flare (☀) / Ki (K)", "#5aff5a", "Pulls every orb / blinds enemies for 5s / fills half the ki meter."],
+  ["Capsule Corp Crate", "#c89a5a", "Breaks into a random drop."],
+  ["Fuel Tank", "#d83a2a", "Shoot it: explodes and blasts the horde around it (and other tanks). Don't stand next to it."],
+  ["Thief Bot", "#ffd21f", "Runs away with Zeni at 2:30, 6:30, 10:30 and 13:30. Catch it in 25s for a Capsule and a Zeni bag."],
+];
+
 export function Codex({ save, back }: { save: SaveData; back: () => void }) {
   const [tab, setTab] = useState<CodexTab>("techniques");
   const all = Object.values(TECHNIQUES);
@@ -473,6 +487,15 @@ export function Codex({ save, back }: { save: SaveData; back: () => void }) {
                   {ICON.item} {it.name}
                 </b>
                 <span>{it.desc}</span>
+              </li>
+            ))}
+          </ul>
+          <h3 className="ss-h3">Drops and map events</h3>
+          <ul className="ss-list ss-codex">
+            {DROPS.map(([name, color, desc]) => (
+              <li key={name}>
+                <b style={{ color }}>{name}</b>
+                <span>{desc}</span>
               </li>
             ))}
           </ul>

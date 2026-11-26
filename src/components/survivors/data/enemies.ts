@@ -9,7 +9,8 @@ export type PatternKind = "snipe" | "volley" | "spiral" | "deathball" | "summon"
 export type Behavior =
   | "ranged" // mantém distância e atira
   | "exploder" // corre até o herói, para, pisca e explode
-  | "charger"; // de tempos em tempos avisa e investe em linha reta
+  | "charger" // de tempos em tempos avisa e investe em linha reta
+  | "flee"; // foge do herói e some depois de um tempo (ladrão: solta tesouro se morrer)
 
 export interface EnemyDef {
   id: string;
@@ -163,6 +164,10 @@ export const ENEMY_LIST: EnemyDef[] = [
 
   // cenário: caixote destrutível (solta itens)
   E({ id: "caixote", name: "Capsule Corp Crate", tier: "crate", hp: 1, speed: 0, damage: 0, radius: 12, xp: 0, color: "#c89a5a", knockbackResist: 1 }),
+  // cenário: tanque de combustível; explode quando destruído e fere a horda em volta
+  E({ id: "barril", name: "Fuel Tank", tier: "crate", hp: 1, speed: 0, damage: 0, radius: 11, xp: 0, color: "#d83a2a", knockbackResist: 1 }),
+  // evento: ladrão que foge com Zeni; derrotá-lo solta uma Cápsula e uma bolsa de Zeni
+  E({ id: "ladrao", name: "Pilaf's Thief Bot", tier: "brute", hp: 240, speed: 150, damage: 0, radius: 13, xp: 25, color: "#ffd21f", knockbackResist: 0.85, sprite: "roboSentinela", behavior: "flee" }),
 ];
 
 export const ENEMY_INDEX: Record<string, number> = Object.fromEntries(ENEMY_LIST.map((d, i) => [d.id, i]));
@@ -245,16 +250,16 @@ export type Role = "a" | "b" | "c" | "d" | "e" | "f";
 
 /** Curva de densidade comum a todas as sagas; os papéis viram ids pela `roster` da saga. */
 const WAVE_TEMPLATE: { minute: number; target: number; roles: Role[] }[] = [
-  { minute: 0, target: 25, roles: ["a"] },
-  { minute: 1, target: 60, roles: ["a", "a", "b"] },
-  { minute: 2, target: 100, roles: ["a", "b"] },
-  { minute: 3, target: 145, roles: ["a", "b", "c", "e"] },
-  { minute: 4, target: 205, roles: ["b", "b", "c", "f"] },
-  { minute: 5, target: 270, roles: ["a", "b", "c", "d", "e", "f"] },
-  { minute: 7, target: 370, roles: ["d", "b", "c", "c", "e", "f"] },
-  { minute: 9, target: 450, roles: ["b", "c", "d", "e", "f", "f"] },
-  { minute: 11, target: 540, roles: ["a", "b", "c", "d", "e", "e", "f"] },
-  { minute: 13, target: 630, roles: ["d", "b", "c", "c", "e", "f", "f"] },
+  { minute: 0, target: 28, roles: ["a"] },
+  { minute: 1, target: 68, roles: ["a", "a", "b"] },
+  { minute: 2, target: 115, roles: ["a", "b"] },
+  { minute: 3, target: 165, roles: ["a", "b", "c", "e"] },
+  { minute: 4, target: 230, roles: ["b", "b", "c", "f"] },
+  { minute: 5, target: 300, roles: ["a", "b", "c", "d", "e", "f"] },
+  { minute: 7, target: 410, roles: ["d", "b", "c", "c", "e", "f"] },
+  { minute: 9, target: 500, roles: ["b", "c", "d", "e", "f", "f"] },
+  { minute: 11, target: 590, roles: ["a", "b", "c", "d", "e", "e", "f"] },
+  { minute: 13, target: 660, roles: ["d", "b", "c", "c", "e", "f", "f"] },
 ];
 
 export function sagaWaves(saga: SagaDef): WaveDef[] {
@@ -264,7 +269,7 @@ export function sagaWaves(saga: SagaDef): WaveDef[] {
 export const SAGA_LENGTH = 15 * 60; // s até o chefe
 
 /** HP dos inimigos cresce com o tempo para acompanhar o poder do herói (e acelera no fim). */
-export const hpScale = (t: number) => 1 + (t / 60) * 0.2 + (t / 60) ** 2 * 0.006;
+export const hpScale = (t: number) => 1 + (t / 60) * 0.22 + (t / 60) ** 2 * 0.011;
 
 export const ELITE_EVERY = 75; // s (em dupla a partir das 7:00)
 export const RING_AT = [300, 480, 660]; // enxames que fecham um anel em volta do jogador

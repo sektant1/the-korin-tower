@@ -20,6 +20,10 @@ export interface Stats {
   curse: number; // maldição: inimigos mais fortes e numerosos, mais XP (1 = normal)
   dodge: number; // chance de esquivar um golpe
   knockback: number; // multiplicador do empurrão
+  thorns: number; // dano devolvido a quem encosta no herói
+  bossDmg: number; // dano extra em elites e chefes (0.1 = +10%)
+  barrier: number; // cargas do Escudo de Ki: cada uma anula um golpe; volta uma a cada SHIELD_REGEN s
+  foodHeal: number; // multiplicador da cura de comida (Carne Assada)
 }
 
 export const BASE_STATS: Stats = {
@@ -43,6 +47,12 @@ export const BASE_STATS: Stats = {
   curse: 1,
   dodge: 0,
   knockback: 1,
+  thorns: 0,
+  bossDmg: 0,
+  barrier: 0,
+  foodHeal: 1,
 };
+
+export const SHIELD_REGEN = 14; // s para recuperar uma carga do Escudo de Ki
 
 export const PLAYER_SPEED = 130; // px/s com moveSpeed 1

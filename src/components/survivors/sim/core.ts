@@ -5,7 +5,7 @@ import { CHARACTERS, FORM_LEVELS, type CharId } from "../data/characters";
 import { ENEMY_INDEX, ENEMY_LIST, SAGAS, SAGA_LENGTH, hpScale, sagaWaves, type EnemyDef, type SagaId, type WaveDef } from "../data/enemies";
 import { PASSIVES, type PassiveId } from "../data/passives";
 import { applyShop, type ShopId } from "../data/shop";
-import { BASE_STATS, type Stats } from "../data/stats";
+import { BASE_STATS, SHIELD_REGEN, type Stats } from "../data/stats";
 import { BASE_TECHS, TECHNIQUES, UNIONS, techParams, type TechId, type TechParams } from "../data/techniques";
 import { PACTS, PACT_IDS, SETS, ITEMS, type ItemId, type PactId, type SetId } from "../data/cards";
 import { SCROLLS, SCROLL_IDS, type ScrollId } from "../data/scrolls";
@@ -75,7 +75,8 @@ export interface Zone {
   color: string;
 }
 
-export type PickupKind = "senzu" | "capsula" | "zeni" | "scouter" | "luz" | "ki";
+/** carne: cura; furia: Kaioken temporário; barreira: +1 carga de escudo; genki: Genki Dama na tela; bolsa: muito Zeni. */
+export type PickupKind = "senzu" | "capsula" | "zeni" | "scouter" | "luz" | "ki" | "carne" | "furia" | "barreira" | "genki" | "bolsa";
 export interface Pickup {
   alive: boolean;
   kind: PickupKind;
@@ -200,6 +201,9 @@ export interface World {
     kills: number;
     zeni: number;
     calm: number; // s sem levar golpe (Kaioken x20)
+    shield: number; // cargas do Escudo de Ki agora
+    shieldT: number; // s até recuperar uma carga
+    rage: number; // s restantes do Kaioken temporário (item/drop)
   };
   stats: Stats;
   techs: TechSlot[];
@@ -344,15 +348,27 @@ export interface World {
   dmgBy: Record<string, number>; // dano recebido por origem (balanceamento)
   killsBy: Uint32Array;
   evolved: TechId[];
+  // eventos do mapa e contadores da run (conquistas)
+  nextBarrel: number;
+  thievesDone: number;
+  thievesCaught: number;
+  shieldBlocks: number;
+  foodEaten: number;
+  bestChain: number; // mais inimigos derrubados por uma explosão de tanque
 }
+
+/** Quando aparece um ladrão (foge com Zeni; derrotá-lo solta tesouro). */
+export const THIEF_AT = [150, 390, 630, 810];
 
 /* ---------- criação ---------- */
 
 export function xpForLevel(level: number) {
   // começo rápido (+7 por nível até o 20), depois +13 até o 40 e +16 depois, com um degrau em cada faixa
   if (level < 20) return 5 + (level - 1) * 7;
-  if (level < 40) return 240 + (level - 20) * 13;
-  return 560 + (level - 40) * 16;
+  if (level < 40) return 240 + (level - 20) * 15;
+  const k = level - 40;
+  return 600 + k * 30 + k * k * 1.2; // depois do 40 cada nível pesa bem mais
+
 }
 
 export function newWorld(seed: number, opts: RunOptions = {}): World {
@@ -371,7 +387,7 @@ export function newWorld(seed: number, opts: RunOptions = {}): World {
     shop,
     view: opts.view ?? { w: 1280, h: 720 },
     nightmare: !!opts.nightmare,
-    player: { x: 0, y: 0, px: 0, py: 0, hp: 0, faceX: 1, faceY: 0, moving: false, invuln: 0, hurt: 99, level: 1, xp: 0, xpNext: xpForLevel(1), kills: 0, zeni: 0, calm: 0 },
+    player: { x: 0, y: 0, px: 0, py: 0, hp: 0, faceX: 1, faceY: 0, moving: false, invuln: 0, hurt: 99, level: 1, xp: 0, xpNext: xpForLevel(1), kills: 0, zeni: 0, calm: 0, shield: 0, shieldT: 0, rage: 0 },
     stats: { ...BASE_STATS },
     techs: [],
     passives: [],
@@ -506,10 +522,28 @@ export function newWorld(seed: number, opts: RunOptions = {}): World {
     dmgBy: {},
     killsBy: new Uint32Array(ENEMY_LIST.length),
     evolved: [],
+    nextBarrel: 45,
+    thievesDone: 0,
+    thievesCaught: 0,
+    shieldBlocks: 0,
+    foodEaten: 0,
+    bestChain: 0,
   };
   recomputeStats(w);
   w.player.hp = w.stats.maxHp;
+  w.player.shield = w.stats.barrier;
   addTech(w, CHARACTERS[char].start);
+  // Largada (loja): a run começa com níveis para escolher
+  const head = shop.inicio ?? 0;
+  if (head > 0) {
+    for (let k = 0; k < head; k++) {
+      w.player.level++;
+      w.pendingLevels++;
+    }
+    w.player.xpNext = xpForLevel(w.player.level);
+    w.phase = "levelup";
+    rollOffers(w);
+  }
   return w;
 }
 
@@ -539,6 +573,10 @@ export function recomputeStats(w: World) {
   if (w.nightmare) s.curse += 0.5;
   s.growth += w.growthBonus;
   s.dodge = Math.min(0.6, s.dodge);
+  if (w.player.rage > 0) {
+    s.might *= 1.4;
+    s.moveSpeed *= 1.15;
+  }
   if (w.form > 0) {
     s.might *= FORM_MIGHT[w.form];
     s.moveSpeed *= 1.2;
@@ -661,6 +699,8 @@ function itemsAvailable(w: World): ItemId[] {
   if (w.balls.length < 7 || w.balls.some((b) => !b.taken)) out.push("radar");
   if (w.player.hp < w.stats.maxHp * 0.7) out.push("dende");
   if (w.techs.some((t) => t.level < TECHNIQUES[t.id].max)) out.push("salaUmDia");
+  out.push("furia", "genki");
+  if (w.player.shield < w.stats.barrier + 2) out.push("escudo");
   if (w.form > 0 || w.transformCd > 0) out.shift(); // ki não serve agora
   return out;
 }
@@ -901,6 +941,15 @@ function applyItem(w: World, id: ItemId) {
       }
       break;
     }
+    case "furia":
+      startRage(w, 20);
+      break;
+    case "escudo":
+      addShield(w, 2);
+      break;
+    case "genki":
+      spiritBomb(w);
+      break;
     case "radar": {
       // a esfera pendente (ou a próxima) aparece a uns passos do herói
       let b = w.balls.find((q) => !q.taken);
@@ -1204,7 +1253,8 @@ export function spawnEnemy(w: World, id: string, x: number, y: number) {
   w.ey[i] = w.epy[i] = y;
   w.evx[i] = w.evy[i] = 0;
   const mult = enemyMult(w);
-  const hp = d.tier === "boss" ? d.hp * mult : d.tier === "crate" ? 1 : d.hp * hpScale(w.t) * mult * w.stats.curse;
+  // o chefe acompanha o herói: cada nível acima do 20 soma 4% de HP
+  const hp = d.tier === "boss" ? d.hp * mult * bossLevelScale(w) : d.tier === "crate" ? 1 : d.hp * hpScale(w.t) * mult * w.stats.curse;
   w.ehp[i] = w.emax[i] = hp;
   w.eflash[i] = 0;
   w.estun[i] = 0;
@@ -1223,6 +1273,10 @@ export function spawnEnemy(w: World, id: string, x: number, y: number) {
   return i;
 }
 
+export function bossLevelScale(w: World) {
+  return 1 + 0.04 * Math.max(0, w.player.level - 20);
+}
+
 /** Multiplicador de HP e dano dos inimigos (saga e Modo Pesadelo). */
 export function enemyMult(w: World) {
   return SAGAS[w.saga].mult * (w.nightmare ? 1.5 : 1);
@@ -1230,7 +1284,7 @@ export function enemyMult(w: World) {
 
 /** Dano dos inimigos cresce devagar com o tempo. */
 export function enemyDamage(w: World, base: number) {
-  return base * enemyMult(w) * (1 + Math.max(0, w.t / 60 - 3) * 0.08) * (1 + (w.stats.curse - 1) * 0.5);
+  return base * enemyMult(w) * (1 + Math.max(0, w.t / 60 - 2) * 0.1) * (1 + (w.stats.curse - 1) * 0.5);
 }
 
 export function fx(w: World, kind: Fx, x: number, y: number, a = 0, color = "#ffffff") {
@@ -1290,7 +1344,8 @@ export function killEnemy(w: World, i: number, slot: number) {
   removeEnemy(w, i);
   fx(w, Fx.Death, x, y, w.ekind[i] + (w.player.x < x ? 0.5 : 0), def.color);
   if (def.tier === "crate") {
-    crateDrop(w, x, y);
+    if (def.id === "barril") barrelBlast(w, x, y);
+    else crateDrop(w, x, y);
     return;
   }
   w.player.kills++;
@@ -1318,8 +1373,19 @@ export function killEnemy(w: World, i: number, slot: number) {
     addPickup(w, "capsula", x, y, 5);
     return;
   }
+  if (def.id === "ladrao") {
+    w.thievesCaught++;
+    addPickup(w, "capsula", x, y, 3);
+    addPickup(w, "bolsa", x + 18, y, 6 + w.rng.int(6));
+    if (w.rng.chance(0.5 * dropMult(w))) addPickup(w, "barreira", x - 18, y, 1);
+    w.events.push("gold");
+    notice(w, "Thief caught! It dropped its loot.");
+    return;
+  }
   if (def.tier === "elite") {
     addPickup(w, "capsula", x, y, 0);
+    if (w.rng.chance(0.35 * dropMult(w))) addPickup(w, "bolsa", x + 16, y, 3 + w.rng.int(4));
+    if (w.rng.chance(0.25 * dropMult(w))) addPickup(w, w.rng.pick(["carne", "furia", "barreira", "genki"] as PickupKind[]), x - 16, y, 1);
     fx(w, Fx.Explosion, x, y, 70, def.color);
     w.shake = Math.max(w.shake, 0.4);
     w.hitstop = Math.max(w.hitstop, 0.06);
@@ -1329,18 +1395,98 @@ export function killEnemy(w: World, i: number, slot: number) {
   }
   w.events.push("kill");
   gainKi(w, def.tier === "brute" ? 0.012 : 0.004);
-  const luck = w.stats.luck;
-  if (w.rng.chance(0.004 * luck)) addPickup(w, "senzu", x, y, 1);
-  else if (w.rng.chance(0.025 * luck)) addPickup(w, "zeni", x, y, 1 + w.rng.int(5));
+  const luck = dropMult(w);
+  if (def.tier === "brute") {
+    if (w.rng.chance(0.05 * luck)) addPickup(w, "carne", x, y, 1);
+    else if (w.rng.chance(0.012 * luck)) addPickup(w, "furia", x, y, 1);
+    return;
+  }
+  if (w.rng.chance(0.0025 * luck)) addPickup(w, "senzu", x, y, 1);
+  else if (w.rng.chance(0.004 * luck)) addPickup(w, "carne", x, y, 1);
+  else if (w.rng.chance(0.022 * luck)) addPickup(w, "zeni", x, y, 1 + w.rng.int(5));
+}
+
+/** Sorte e Caçador de Tesouros (loja) aumentam a chance de item. */
+export function dropMult(w: World) {
+  return w.stats.luck * (1 + 0.15 * (w.shop.achados ?? 0));
 }
 
 function crateDrop(w: World, x: number, y: number) {
   const r = w.rng.next();
-  if (r < 0.3) addPickup(w, "senzu", x, y, 1);
-  else if (r < 0.6) addPickup(w, "zeni", x, y, 5 + w.rng.int(10));
-  else if (r < 0.72) addPickup(w, "scouter", x, y, 1);
-  else if (r < 0.84) addPickup(w, "luz", x, y, 1);
+  if (r < 0.14) addPickup(w, "senzu", x, y, 1);
+  else if (r < 0.32) addPickup(w, "carne", x, y, 1);
+  else if (r < 0.5) addPickup(w, "zeni", x, y, 5 + w.rng.int(10));
+  else if (r < 0.58) addPickup(w, "bolsa", x, y, 2 + w.rng.int(3));
+  else if (r < 0.66) addPickup(w, "scouter", x, y, 1);
+  else if (r < 0.74) addPickup(w, "luz", x, y, 1);
+  else if (r < 0.82) addPickup(w, "furia", x, y, 1);
+  else if (r < 0.9) addPickup(w, "barreira", x, y, 1);
+  else if (r < 0.95) addPickup(w, "genki", x, y, 1);
   else addPickup(w, "ki", x, y, 1);
+}
+
+/** Tanque de combustível destruído: explode, fere a horda em volta e pode estourar outros tanques. */
+function barrelBlast(w: World, x: number, y: number) {
+  const r = 120;
+  const before = w.player.kills;
+  fx(w, Fx.Explosion, x, y, r, "#ff7a1a");
+  w.shake = Math.max(w.shake, 0.35);
+  w.events.push("boom");
+  const dmg = (60 + 6 * w.player.level) * hpScale(w.t) * 0.5;
+  w.grid.query(x, y, r + 34, (j) => {
+    if (!w.ealive[j]) return;
+    const dx = w.ex[j] - x,
+      dy = w.ey[j] - y;
+    if (dx * dx + dy * dy < r * r) hurt(w, j, dmg, dx, dy, 500, -1);
+  });
+  // o herói perto demais também sente (pouco)
+  const pdx = w.player.x - x,
+    pdy = w.player.y - y;
+  if (pdx * pdx + pdy * pdy < (r * 0.6) ** 2) hurtPlayer(w, 8 * enemyMult(w), "tanque");
+  w.bestChain = Math.max(w.bestChain, w.player.kills - before);
+}
+
+/** Kaioken temporário: +40% dano, +15% velocidade. */
+export function startRage(w: World, secs: number) {
+  const was = w.player.rage > 0;
+  w.player.rage = Math.max(w.player.rage, secs);
+  if (!was) recomputeStats(w);
+  w.flash = 0.25;
+  w.flashColor = "#ff3b3b";
+  w.events.push("transform");
+  notice(w, `Kaioken Burst! +40% damage for ${secs}s`);
+}
+
+/** Cargas do Escudo de Ki: podem passar do máximo em até 2 (itens e drops). */
+export function addShield(w: World, n: number) {
+  w.player.shield = Math.min(w.stats.barrier + 2, w.player.shield + n);
+  fx(w, Fx.Ring, w.player.x, w.player.y, 40, "#7ae8ff");
+  notice(w, `Ki Shield: ${w.player.shield} charge${w.player.shield === 1 ? "" : "s"}`);
+}
+
+/** Genki Dama: dano grande em tudo que está na tela. */
+export function spiritBomb(w: World) {
+  const dmg = (90 + 12 * w.player.level) * Math.max(1, hpScale(w.t) * 0.6);
+  for (let i = 0; i < MAX_ENEMIES; i++) {
+    if (!w.ealive[i] || !onScreen(w, i)) continue;
+    const tier = enemyDef(w, i).tier;
+    if (tier === "crate") continue;
+    hurt(w, i, tier === "boss" ? dmg * 3 : dmg, w.ex[i] - w.player.x, w.ey[i] - w.player.y, 300, -1);
+  }
+  fx(w, Fx.Ring, w.player.x, w.player.y, 360, "#9ad8ff");
+  w.flash = 0.5;
+  w.flashColor = "#bfe8ff";
+  w.shake = 0.5;
+  w.events.push("blast");
+  notice(w, "Spirit Bomb!");
+}
+
+/** Comida: cura uma fração do HP máximo (Apetite Saiyajin aumenta). */
+export function eat(w: World, frac: number) {
+  const p = w.player;
+  p.hp = Math.min(w.stats.maxHp, p.hp + w.stats.maxHp * frac * w.stats.foodHeal);
+  w.foodEaten++;
+  w.events.push("senzu");
 }
 
 /** Bônus de dano das passivas de personagem e dos pergaminhos que dependem da run. */
@@ -1360,7 +1506,8 @@ export function hurt(w: World, i: number, dmg: number, kx: number, ky: number, k
   if (!w.ealive[i]) return;
   const def = enemyDef(w, i);
   const crit = w.rng.chance(w.stats.crit + critBonus);
-  const amount = dmg * w.stats.might * charMight(w) * (crit ? w.stats.critMult : 1);
+  const big = def.tier === "elite" || def.tier === "boss";
+  const amount = dmg * w.stats.might * charMight(w) * (crit ? w.stats.critMult : 1) * (big ? 1 + w.stats.bossDmg : 1);
   w.ehp[i] -= amount;
   if (slot >= 0) w.techDamage[slot] += amount;
   w.eflash[i] = 0.12;
@@ -1401,15 +1548,25 @@ function addNumber(w: World, x: number, y: number, v: number, crit: boolean) {
 }
 
 /** O herói leva um golpe (toque ou tiro). */
-export function hurtPlayer(w: World, dmg: number, src = "toque") {
+export function hurtPlayer(w: World, dmg: number, src = "toque"): boolean {
   const p = w.player;
-  if (p.invuln > 0 || w.immortal > 0) return;
+  if (p.invuln > 0 || w.immortal > 0) return false;
   if (w.stats.dodge > 0 && w.rng.chance(w.stats.dodge)) {
     p.invuln = 0.3;
     w.dodges++;
     fx(w, Fx.Dodge, p.x, p.y - 20);
     w.events.push("dodge");
-    return;
+    return true;
+  }
+  if (p.shield >= 1) {
+    // Escudo de Ki: a carga absorve o golpe inteiro
+    p.shield--;
+    if (p.shieldT <= 0) p.shieldT = SHIELD_REGEN;
+    p.invuln = 0.5;
+    w.shieldBlocks++;
+    fx(w, Fx.Ring, p.x, p.y, 34, "#7ae8ff");
+    w.events.push("dodge");
+    return true;
   }
   const taken = Math.max(1, dmg - w.stats.armor);
   p.hp -= taken;
@@ -1431,6 +1588,7 @@ export function hurtPlayer(w: World, dmg: number, src = "toque") {
       if (dx * dx + dy * dy < r * r) hurt(w, j, 30 + 2 * p.level, dx, dy, 400, -1);
     });
   }
+  return true;
 }
 
 /* ---------- orbs e itens ---------- */

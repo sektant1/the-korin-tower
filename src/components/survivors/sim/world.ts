@@ -2,11 +2,16 @@
 // os golpes do herói em techs.ts e os ataques inimigos em boss.ts. O renderizador só lê o World;
 // a interface (React) só chama as funções exportadas aqui.
 import { ELITE_EVERY, RING_AT, SAGAS, STAMPEDE_AT, enemyById, hpScale } from "../data/enemies";
-import { PLAYER_SPEED } from "../data/stats";
+import { PLAYER_SPEED, SHIELD_REGEN } from "../data/stats";
 import { updateBullets, updateEnemyAttacks, updateHazards } from "./boss";
 import {
   BALL_TIMES,
+  THIEF_AT,
   Fx,
+  addShield,
+  eat,
+  spiritBomb,
+  startRage,
   SCROLL_TIMES,
   enemyDamage,
   explodeAt,
@@ -149,6 +154,25 @@ function spawner(w: World, dt: number) {
       d = w.rng.range(220, 420);
     spawnEnemy(w, "caixote", w.player.x + Math.cos(a) * d, w.player.y + Math.sin(a) * d);
   }
+  // tanques de combustível: um trio entre o herói e a horda (atire neles para explodir a horda)
+  if (w.t >= w.nextBarrel) {
+    w.nextBarrel = w.t + 40;
+    const a = w.rng.range(0, Math.PI * 2),
+      d = w.rng.range(200, 340);
+    const cx = w.player.x + Math.cos(a) * d,
+      cy = w.player.y + Math.sin(a) * d;
+    for (let k = 0; k < 3; k++) spawnEnemy(w, "barril", cx + w.rng.range(-50, 50), cy + w.rng.range(-50, 50));
+  }
+  // ladrão: foge com Zeni; derrote-o antes que suma
+  if (w.thievesDone < THIEF_AT.length && w.t >= THIEF_AT[w.thievesDone]) {
+    w.thievesDone++;
+    const a = w.rng.range(0, Math.PI * 2);
+    const i = spawnEnemy(w, "ladrao", w.player.x + Math.cos(a) * 240, w.player.y + Math.sin(a) * 240);
+    if (i >= 0) {
+      w.events.push("warn");
+      notice(w, "A thief is running off with Zeni! Catch it!");
+    }
+  }
   // Esferas do Dragão: uma de cada vez, longe do herói
   if (w.balls.length < 7 && w.t >= BALL_TIMES[w.balls.length]) {
     const a = w.rng.range(0, Math.PI * 2),
@@ -213,7 +237,30 @@ function updateEnemies(w: World, dt: number) {
       w.ey[i] += (Math.sin(w.eang[i]) * v + w.evy[i]) * dt;
       w.evx[i] *= Math.exp(-8 * dt);
       w.evy[i] *= Math.exp(-8 * dt);
-      if (w.estun[i] <= 0 && d2 < (def.radius + PLAYER_R) ** 2) hurtPlayer(w, enemyDamage(w, def.damage));
+      if (w.estun[i] <= 0 && d2 < (def.radius + PLAYER_R) ** 2 && hurtPlayer(w, enemyDamage(w, def.damage))) thorns(w, i);
+      continue;
+    }
+    // ladrão: corre para longe do herói e some depois de 25 s (ou se ficar muito longe)
+    if (def.behavior === "flee") {
+      if (w.t - w.eborn[i] > 25 || d2 > far2 * 1.6) {
+        removeEnemy(w, i);
+        notice(w, "The thief got away...");
+        continue;
+      }
+      const d = Math.sqrt(d2) || 1;
+      const stunned = w.estun[i] > 0;
+      if (stunned) w.estun[i] -= dt;
+      // foge em ziguezague (o ângulo oscila) para não ser só uma linha reta
+      const wob = Math.sin(w.t * 2 + i) * 0.7;
+      const ux = -dx / d,
+        uy = -dy / d;
+      const vx = ux * Math.cos(wob) - uy * Math.sin(wob),
+        vy = ux * Math.sin(wob) + uy * Math.cos(wob);
+      const v = stunned ? 0 : def.speed * (w.eflash[i] > 0 ? 0.6 : 1);
+      w.ex[i] += (vx * v + w.evx[i]) * dt;
+      w.ey[i] += (vy * v + w.evy[i]) * dt;
+      w.evx[i] *= Math.exp(-8 * dt);
+      w.evy[i] *= Math.exp(-8 * dt);
       continue;
     }
     // muito longe (o herói fugiu): reaparece do outro lado da tela, como no gênero
@@ -307,8 +354,15 @@ function updateEnemies(w: World, dt: number) {
     w.evy[i] *= decay;
 
     // toque no herói
-    if (!stunned && d < r + PLAYER_R && beh !== "exploder") hurtPlayer(w, enemyDamage(w, def.damage), w.edash[i] > 0 ? "investida" : def.tier);
+    if (!stunned && d < r + PLAYER_R && beh !== "exploder" && hurtPlayer(w, enemyDamage(w, def.damage), w.edash[i] > 0 ? "investida" : def.tier)) thorns(w, i);
   }
+}
+
+/** Espinhos: quem encosta no herói leva dano de volta (cresce com o nível). */
+function thorns(w: World, i: number) {
+  const t = w.stats.thorns;
+  if (t <= 0 || !w.ealive[i]) return;
+  hurt(w, i, t * (1 + w.player.level * 0.03), w.ex[i] - w.player.x, w.ey[i] - w.player.y, 260, -1);
 }
 
 function updatePlayer(w: World, input: Input, dt: number) {
@@ -345,6 +399,21 @@ function updatePlayer(w: World, input: Input, dt: number) {
   p.hurt += dt;
   p.calm += dt;
   if (w.immortal > 0) w.immortal -= dt;
+  if (p.rage > 0) {
+    p.rage -= dt;
+    if (p.rage <= 0) {
+      p.rage = 0;
+      recomputeStats(w);
+    }
+  }
+  // Escudo de Ki: recupera uma carga a cada SHIELD_REGEN s até o máximo
+  if (p.shield < w.stats.barrier) {
+    p.shieldT -= dt;
+    if (p.shieldT <= 0) {
+      p.shield++;
+      p.shieldT = p.shield < w.stats.barrier ? SHIELD_REGEN : 0;
+    }
+  } else p.shieldT = 0;
   let regen = w.stats.recovery;
   if (hasScroll(w, "espirito") && p.hp < w.stats.maxHp * 0.35) regen += 2;
   if (regen > 0) p.hp = Math.min(w.stats.maxHp, p.hp + regen * dt);
@@ -385,6 +454,25 @@ function updateGems(w: World, dt: number) {
         w.events.push("senzu");
         notice(w, "Senzu Bean!");
         break;
+      case "carne":
+        eat(w, 0.12);
+        break;
+      case "furia":
+        startRage(w, 10);
+        break;
+      case "barreira":
+        addShield(w, 1);
+        break;
+      case "genki":
+        spiritBomb(w);
+        break;
+      case "bolsa": {
+        const z = Math.round(it.value * 25 * w.stats.greed);
+        p.zeni += z;
+        w.events.push("gold");
+        notice(w, `Zeni bag: +${z} Zeni`);
+        break;
+      }
       case "zeni":
         p.zeni += Math.round(it.value * 10 * w.stats.greed);
         break;

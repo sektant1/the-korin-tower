@@ -6,7 +6,7 @@ import { ENEMY_LIST } from "../data/enemies";
 import { TECHNIQUES } from "../data/techniques";
 import { MAX_BULLETS, MAX_ENEMIES, MAX_GEMS, MAX_PROJ, PLAYER_R, type World } from "../sim/core";
 import { forEachOrbit } from "../sim/techs";
-import { crate, disc, dragonBall, ghost, glow, orb, shadow } from "./art";
+import { barrel, crate, disc, dragonBall, ghost, glow, orb, shadow } from "./art";
 import { consumeFx, drawFx, dust, flame } from "./fx";
 import { drawSprite, hasSprite } from "./sprites";
 
@@ -57,7 +57,8 @@ export function loadBackground(ctx: Ctx, src: string) {
 
 const GEM_COLORS = ["#3a86e8", "#2fbf6a", "#ff3355"];
 const gemTier = (v: number) => (v < 5 ? 0 : v < 25 ? 1 : 2);
-const PICKUP_COLOR = { senzu: "#5fd13a", zeni: "#ffd21f", capsula: "#3a86e8", scouter: "#5aff5a", luz: "#fffbd0", ki: "#5ad7ff" } as const;
+const PICKUP_COLOR = { senzu: "#5fd13a", zeni: "#ffd21f", capsula: "#3a86e8", scouter: "#5aff5a", luz: "#fffbd0", ki: "#5ad7ff", carne: "#ff9a5a", furia: "#ff3b3b", barreira: "#7ae8ff", genki: "#9ad8ff", bolsa: "#ffd21f" } as const;
+const PICKUP_GLYPH: Record<string, string> = { scouter: "S", luz: "☀", ki: "K", furia: "!", barreira: "◇", genki: "✺" };
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
@@ -284,13 +285,48 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
       ctx.font = "bold 7px monospace";
       ctx.textAlign = "center";
       ctx.fillText("CC", it.x, it.y + 3 + bob);
+    } else if (it.kind === "carne") {
+      // coxa de carne: osso + pedaço
+      ctx.fillStyle = "#000";
+      ctx.fillRect(it.x - 8, it.y - 2 + bob, 6, 4);
+      ctx.fillStyle = "#f0e8d8";
+      ctx.fillRect(it.x - 7, it.y - 1 + bob, 5, 2);
+      ctx.fillStyle = "#000";
+      ctx.beginPath();
+      ctx.ellipse(it.x + 2, it.y + bob, 7, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#b8502a";
+      ctx.beginPath();
+      ctx.ellipse(it.x + 2, it.y + bob, 6, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#e88a4a";
+      ctx.fillRect(it.x, it.y - 3 + bob, 3, 2);
+    } else if (it.kind === "bolsa") {
+      const o = orb("#ffd21f", 10);
+      ctx.globalAlpha = 0.6;
+      ctx.drawImage(o, it.x - o.width / 2, it.y - o.height / 2 + bob);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#000";
+      ctx.beginPath();
+      ctx.arc(it.x, it.y + 2 + bob, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#c89a3a";
+      ctx.beginPath();
+      ctx.arc(it.x, it.y + 2 + bob, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(it.x - 3, it.y - 7 + bob, 6, 4);
+      ctx.fillStyle = "#ffd21f";
+      ctx.font = "bold 8px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("Ƶ", it.x, it.y + 5 + bob);
     } else {
-      const o = orb(PICKUP_COLOR[it.kind], 6);
+      const big = it.kind === "genki" || it.kind === "furia" || it.kind === "barreira";
+      const o = orb(PICKUP_COLOR[it.kind], big ? 8 : 6);
       ctx.drawImage(o, it.x - o.width / 2, it.y - o.height / 2 + bob);
       ctx.fillStyle = "#000";
       ctx.font = "bold 8px monospace";
       ctx.textAlign = "center";
-      ctx.fillText(it.kind === "scouter" ? "S" : it.kind === "luz" ? "☀" : "K", it.x, it.y + 3 + bob);
+      ctx.fillText(PICKUP_GLYPH[it.kind] ?? "?", it.x, it.y + 3 + bob);
     }
   }
 
@@ -422,7 +458,7 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
     if (!visible(x, y)) continue;
     const def = ENEMY_LIST[w.ekind[i]];
     if (def.tier === "crate") {
-      const c = crate();
+      const c = def.id === "barril" ? barrel() : crate();
       ctx.drawImage(c, x - c.width / 2, y - c.height / 2);
       continue;
     }
@@ -457,6 +493,17 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
       ctx.arc(x, y, 64 * (1 - fuse / 0.7) + 8, 0, Math.PI * 2);
       ctx.stroke();
       ctx.globalAlpha = 1;
+    }
+    // ladrão: brilho dourado e um Ƶ em cima, para ser caçado
+    if (def.behavior === "flee") {
+      const g = glow("#ffd21f", def.radius * 1.8);
+      ctx.globalAlpha = 0.5 + Math.sin(w.t * 10) * 0.2;
+      ctx.drawImage(g, x - g.width / 2, y - g.height / 2 - def.radius * 0.6);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#ffd21f";
+      ctx.font = "bold 12px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("Ƶ", x, y - def.radius * 2.8 + Math.sin(w.t * 6) * 2);
     }
     // elites e chefe: aura pulsando atrás do sprite
     if (def.tier === "elite" || def.tier === "boss") {
@@ -520,8 +567,25 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
     ctx.drawImage(g, camX - g.width / 2, camY - g.height / 2 - 8);
     ctx.globalAlpha = 1;
   }
+  if (p.rage > 0) {
+    const g = glow("#ff2a2a", 30);
+    ctx.globalAlpha = 0.45 + Math.sin(w.t * 20) * 0.15;
+    ctx.drawImage(g, camX - g.width / 2, camY - g.height / 2 - 8);
+    ctx.globalAlpha = 1;
+  }
   const sh = shadow(28);
   ctx.drawImage(sh, camX - sh.width / 2, camY + PLAYER_R * 0.7 - sh.height / 2);
+  // Escudo de Ki: uma bolha azul; mais cargas, mais forte
+  if (p.shield >= 1) {
+    ctx.save();
+    ctx.globalAlpha = 0.18 + 0.06 * Math.min(4, p.shield) + Math.sin(w.t * 4) * 0.05;
+    ctx.strokeStyle = "#7ae8ff";
+    ctx.lineWidth = 1.5 + Math.min(4, p.shield) * 0.5;
+    ctx.beginPath();
+    ctx.arc(camX, camY - 6, 22, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
   const heroKey = form && hasSprite(form.sprite) ? form.sprite : ch.sprite;
   // rastro: imagens residuais quando transformado (ou com o Instinto Superior)
   if (w.t - trailAt > 0.05) {

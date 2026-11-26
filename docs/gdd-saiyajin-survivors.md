@@ -451,3 +451,28 @@ O jogo agora se chama **Saiyan Survivors** na tela, e todo o texto visível est�
 **Motor:** `extra.target` (`nearest`/`random`/`densest`/`strongest`/`facing`) substitui os testes por id do Final Flash e do Big Bang. `extra.homing` em `bolt` usa o modo de projétil 6 (orb teleguiado). O tipo `trail` reaproveita a zona `pool` com dano cheio e atordoamento. A conquista "Enciclopédia Saiyajin" conta as evoluções a partir dos dados.
 
 Totais: 28 técnicas base com evolução, 10 uniões, 9 exclusivas, 36 passivas, 12 conjuntos, 11 pactos, 10 itens. Com o bot e sem loja, a run ainda morre entre 3:10 e 3:30.
+
+## 23. Drops, interações, atributos, progressão e curva mais dura (26/11/2026)
+
+**Atributos novos** (`data/stats.ts`): `thorns` (dano devolvido a quem encosta, ×(1 + 3% por nível)), `bossDmg` (dano extra em elites e chefes), `barrier` (cargas do Escudo de Ki: cada uma anula um golpe inteiro e volta uma a cada 14 s) e `foodHeal` (multiplicador da cura de comida).
+
+**Drops novos** (`PickupKind`): Carne Assada (cura 12%), Orbe Kaioken (+40% dano, +15% velocidade por 10 s), Orbe de Escudo (+1 carga, até o máximo +2), Fragmento de Genki Dama (dano em toda a tela) e Bolsa de Zeni. Os comuns soltam menos Senzu (0,25%) e mais carne; os brutamontes soltam carne (5%) e Kaioken; as elites, além da Cápsula, podem soltar bolsa e um orbe. O caixote ganhou uma tabela nova com tudo isso.
+
+**Interações no mapa:**
+- Tanque de combustível (`barril`, a cada 40 s, trio perto do herói): explode ao ser atingido, fere a horda num raio de 120 px e estoura os tanques vizinhos em cadeia. O herói colado nele também leva um pouco de dano.
+- Ladrão (`ladrao`, aos 2:30, 6:30, 10:30 e 13:30): foge em ziguezague e some em 25 s. Derrotado, solta uma Cápsula de 3 prêmios, uma bolsa e às vezes um orbe de escudo.
+
+**Cartas:** 4 passivas (Barreira Androide, Armadura com Espinhos, Katana do Yajirobe, Apetite Saiyajin), 2 conjuntos (Muralha de Ferro, Almoço do Yajirobe), 2 pactos (Corpo Imortal, Contrato do Assassino) e 3 itens (Explosão Kaioken, Escudo de Ki, Fragmento de Genki Dama).
+
+**Torre Korin:** Tecnologia de Barreira (+1 carga), Luvas com Espinhos, Matador de Gigantes, Comida da Chi-Chi, Caçador de Tesouros (+15% de chance de drop por nível) e Largada (a run começa com até +3 níveis para escolher).
+
+**Conquistas:** Pare, Ladrão!; Pesadelo do Pilaf; Reação em Cadeia; Impenetrável; Estômago sem Fundo.
+
+**Curva mais dura:**
+- `hpScale` passou a 1 + 0,22·m + 0,011·m² (era 0,2 e 0,006). No minuto 15 isso dá cerca de 7× em vez de 5,35×.
+- A população das ondas subiu de 8% a 15%.
+- O dano dos inimigos começa a crescer aos 2:00, a +10% por minuto (antes começava aos 3:00, a +8%).
+- A XP depois do nível 40 vale 600 + 30k + 1,2k² (com k = nível − 40). Era linear, +16 por nível.
+- O HP do chefe cresce 4% por nível do herói acima do 20.
+
+Medição com o bot e a loja cheia: antes ele chegava ao nível 178–213 aos 15 min e matava o chefe em cerca de 15 s. Agora chega ao nível 100–130, a luta leva de 35 a 80 s em modo deus, e o bot mortal costuma morrer na luta. Sem loja nada mudou: o bot morre por volta de 3:10.

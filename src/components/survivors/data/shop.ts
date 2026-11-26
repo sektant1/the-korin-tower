@@ -21,7 +21,13 @@ export type ShopId =
   | "critico"
   | "potara"
   | "maldicao"
-  | "travar";
+  | "travar"
+  | "escudo"
+  | "espinhos"
+  | "gigante"
+  | "apetite"
+  | "inicio"
+  | "achados";
 
 export interface ShopDef {
   id: ShopId;
@@ -59,6 +65,12 @@ export const SHOP: ShopDef[] = [
       s.growth += 0.1 * n;
       s.greed += 0.1 * n;
     } }),
+  S({ id: "escudo", name: "Android Barrier Tech", desc: "+1 Ki Shield charge (blocks a hit, recharges)", max: 2, base: 2500, apply: (s, n) => void (s.barrier += n) }),
+  S({ id: "espinhos", name: "Spiked Gloves", desc: "+5 thorns", max: 3, base: 400, apply: (s, n) => void (s.thorns += 5 * n) }),
+  S({ id: "gigante", name: "Giant Slayer", desc: "+6% damage to elites and bosses", max: 5, base: 500, apply: (s, n) => void (s.bossDmg += 0.06 * n) }),
+  S({ id: "apetite", name: "Chi-Chi's Cooking", desc: "+20% healing from food", max: 3, base: 300, apply: (s, n) => void (s.foodHeal += 0.2 * n) }),
+  S({ id: "achados", name: "Treasure Hunter", desc: "+15% item drops from enemies and crates", max: 3, base: 700 }),
+  S({ id: "inicio", name: "Head Start", desc: "Start each run with +1 level-up", max: 3, base: 1500 }),
 ];
 
 /** Preço do próximo nível: sobe com o nível do item e com o total de compras já feitas. */
