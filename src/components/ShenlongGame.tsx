@@ -1,8 +1,8 @@
 "use client";
 // Easter egg: junte as 7 Esferas do Dragão (as bolinhas dos divisores) e o Shenlong libera
-// "Proteja a Esfera" (sphere-game/): Vegeta defende a Esfera do Dragão por 5 andares com chefes.
+// o Saiyajin Survivors (survivors/; GDD em docs/gdd-saiyajin-survivors.md).
 import { useEffect, useRef, useState } from "react";
-import { SphereDefense } from "./sphere-game/SphereDefense";
+import { SaiyajinSurvivors } from "./survivors/SaiyajinSurvivors";
 
 const EVENT = "korin:dragonball";
 
@@ -54,7 +54,8 @@ export function ShenlongGame() {
   }, [stage]);
   useEffect(() => {
     if (stage === "off") return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    // no jogo o Esc é a pausa (e a pausa tem o botão de sair); só a invocação fecha com Esc
+    const onKey = (e: KeyboardEvent) => stage === "summon" && e.key === "Escape" && close();
     const close = () => {
       setStage("off");
       got.clear();
@@ -75,19 +76,14 @@ export function ShenlongGame() {
     window.dispatchEvent(new CustomEvent(EVENT, { detail: 0 }));
   };
   return (
-    <div className="shenlong" role="dialog" aria-modal="true" aria-label="Proteja a Esfera">
+    <div className="shenlong" role="dialog" aria-modal="true" aria-label="Saiyan Survivors">
       {stage === "summon" ? (
         <div className="shenlong-summon">
-          <p className="shenlong-wish">AS 7 ESFERAS FORAM REUNIDAS</p>
-          <p className="t-sub">Diga o seu desejo...</p>
+          <p className="shenlong-wish">THE 7 DRAGON BALLS HAVE BEEN GATHERED</p>
+          <p className="t-sub">State your wish...</p>
         </div>
       ) : (
-        <>
-          <SphereDefense />
-          <button type="button" className="btn98 shenlong-close" onClick={close}>
-            × Sair (Esc)
-          </button>
-        </>
+        <SaiyajinSurvivors onExit={close} />
       )}
     </div>
   );

@@ -25,3 +25,6 @@ public/fonts/dbz.png
 
 # capturas e logs das ferramentas de teste no navegador
 .playwright-mcp/
+
+# assets brutos baixados (Saiyajin Survivors)
+/scratch/
