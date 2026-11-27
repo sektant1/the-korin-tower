@@ -1572,13 +1572,13 @@ a.tfloor-name:hover {
 
 /* cartas especiais: união, pacto, item, trava */
 .ss-card.ss-union {
-  background: linear-gradient(160deg, #0a2a3b, #13263b 60%);
+  background: linear-gradient(160deg, #24103b, #13263b 60%);
   box-shadow:
     0 0 0 2px #000,
-    0 0 20px #7af0ff88;
+    0 0 20px #b46aff88;
 }
 .ss-card.ss-union small {
-  color: #7af0ff;
+  color: #c89aff;
 }
 .ss-card.ss-pact {
   background: linear-gradient(160deg, #3b0a14, #1a0a10 70%);
@@ -1588,7 +1588,35 @@ a.tfloor-name:hover {
   color: #ff3a5a;
 }
 .ss-card.ss-item {
-  background: #132a24;
+  background: linear-gradient(160deg, #2e2008, #13263b 70%);
+}
+/* passiva: uma linha por alvo do efeito, com etiqueta (todas as técnicas / herói / inimigos) */
+.ss-scopes {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ss-scope-line {
+  display: block;
+}
+.ss-scope {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 4px;
+  font-style: normal;
+  font-size: 0.78em;
+  color: #000;
+  border-radius: 2px;
+  vertical-align: 1px;
+}
+.ss-scope-tech {
+  background: #3aa8ff;
+}
+.ss-scope-hero {
+  background: #e0e6ee;
+}
+.ss-scope-foe {
+  background: #ff3a4a;
 }
 .ss-card-lock {
   position: absolute;

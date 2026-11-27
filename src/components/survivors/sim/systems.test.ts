@@ -573,3 +573,19 @@ test("com o chão cheio de itens, a Cápsula de elite ainda aparece", () => {
   for (let k = 0; k < 80; k++) addPickup(w, "carne", 2000 + k, 0, 1);
   assert.ok(w.pickups.some((p) => p.kind === "capsula"));
 });
+
+test("Death Beam dispara uma rajada de 3 lasers finos em sequência", () => {
+  const w = createWorld(12);
+  god(w);
+  w.techs = [];
+  addTech(w, "raioMorte");
+  w.techs[0].timer = 0;
+  const times: number[] = [];
+  for (let k = 0; k < 30; k++) {
+    w.events.length = 0;
+    step(w, { mx: 0, my: 0 });
+    if (w.events.includes("beam")) times.push(k);
+  }
+  assert.equal(times.length, 3, `disparos em ${times.join(",")}`);
+  assert.ok(times[2] - times[0] >= 8, "os 3 lasers não saíram em sequência");
+});

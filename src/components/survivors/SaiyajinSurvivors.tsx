@@ -4,11 +4,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { drain, setMute, unlockAudio } from "./audio";
 import type { RunSummary } from "./data/achievements";
-import { ENEMY_LIST, SAGAS, type SagaId } from "./data/enemies";
+import { ENEMY_LIST, type SagaId } from "./data/enemies";
 import type { CharId } from "./data/characters";
 import type { ShopId } from "./data/shop";
 import { Keyboard, type Action } from "./input";
-import { loadBackground, render } from "./render/render";
+import { setMap } from "./render/maps";
+import { render } from "./render/render";
 import { loadSprites } from "./render/sprites";
 import { buy, loadSave, recordRun, refund, setMuted, type SaveData } from "./save";
 import { banish, lockOffer, choose, chooseScroll, chooseWish, closeChest, createWorld, reroll, skip, step, STEP, type Offer, type World } from "./sim/world";
@@ -118,8 +119,7 @@ export function SaiyajinSurvivors({ onExit }: { onExit: () => void }) {
       const zoom = Math.max(1, Math.min(2, window.innerWidth / 1000));
       const s = loadSave();
       worldRef.current = createWorld((Math.random() * 2 ** 32) >>> 0, { char: c, saga: g, shop: s.shop, nightmare: nm, view: { w: cv.width / zoom, h: cv.height / zoom } });
-      const ctx = cv.getContext("2d", { alpha: false })!;
-      loadBackground(ctx, SAGAS[g].background);
+      setMap(g);
       setChar(c);
       setSaga(g);
       setNightmare(nm);

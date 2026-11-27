@@ -136,6 +136,27 @@ function lineHit(w: World, slot: number, x1: number, y1: number, angle: number, 
   }
 }
 
+/** Raio fino num alvo (aleatório por padrão); atravessa tudo no caminho. Com alvo "mais
+ *  próximo", só o primeiro raio mira nele; os outros vão para alvos aleatórios. */
+function fireLances(w: World, slot: number, t: TechSlot, amount: number, area: number, crit: number) {
+  const p = w.player,
+    def = TECHNIQUES[t.id];
+  const volley = def.extra?.volley ?? 0;
+  for (let k = 0; k < amount; k++) {
+    const i = k === 0 ? pickTarget(w, def.extra?.target, "random", 560) : randomOnScreen(w);
+    let a = i >= 0 ? Math.atan2(w.ey[i] - p.y, w.ex[i] - p.x) : w.rng.range(0, TAU);
+    if (volley) a += w.rng.range(-0.035, 0.035);
+    const len = 560,
+      width = (volley ? 4 : 8) * area;
+    // os lasers saem da ponta do dedo, um pouco à frente do herói
+    const ox = p.x + (volley ? Math.cos(a) * 10 : 0),
+      oy = p.y + (volley ? Math.sin(a) * 10 - 4 : 0);
+    lineHit(w, slot, ox, oy, a, len, width, t.p.damage, t.p.knockback, t.p.hitCd, crit);
+    addZone(w, { kind: "lance", slot, x: ox, y: oy, angle: a, len, width, r: 0, life: t.p.duration, max: t.p.duration, anchored: false, color: def.color });
+  }
+  w.events.push("beam");
+}
+
 function fire(w: World, slot: number, t: TechSlot) {
   const s = w.stats,
     p = w.player,
@@ -195,17 +216,12 @@ function fire(w: World, slot: number, t: TechSlot) {
       return;
     }
     case "lance": {
-      // raio fino num alvo (aleatório por padrão); atravessa tudo no caminho. Com alvo "mais
-      // próximo", só o primeiro raio mira nele; os outros vão para alvos aleatórios.
-      for (let k = 0; k < amount; k++) {
-        const i = k === 0 ? pickTarget(w, def.extra?.target, "random", 560) : randomOnScreen(w);
-        const a = i >= 0 ? Math.atan2(w.ey[i] - p.y, w.ex[i] - p.x) : w.rng.range(0, TAU);
-        const len = 560,
-          width = 8 * area;
-        lineHit(w, slot, p.x, p.y, a, len, width, tp.damage, tp.knockback, tp.hitCd, crit);
-        addZone(w, { kind: "lance", slot, x: p.x, y: p.y, angle: a, len, width, r: 0, life: tp.duration, max: tp.duration, anchored: false, color: def.color });
+      // Com `volley`, cada disparo vira uma rajada de N lasers finos em sequência (Death Beam).
+      if (def.extra?.volley) {
+        t.burst = def.extra.volley - 1;
+        t.burstAcc = 0;
       }
-      w.events.push("beam");
+      fireLances(w, slot, t, amount, area, crit);
       return;
     }
     case "disc": {
@@ -409,7 +425,15 @@ export function updateTechs(w: World, dt: number) {
       forEachOrbit(w, t, p.x, p.y, w.t, (x, y, r) => circleHit(w, slot, x, y, r, t.p.damage, t.p.knockback, t.p.hitCd));
       continue;
     }
-    if (t.burst > 0) {
+    if (t.burst > 0 && def.kind === "lance") {
+      // rajada de lasers: `burst` = lasers que faltam, um a cada 0,09 s
+      t.burstAcc += dt;
+      if (t.burstAcc >= 0.09) {
+        t.burstAcc -= 0.09;
+        t.burst--;
+        fireLances(w, slot, t, Math.max(1, Math.round(t.p.amount + s.amount)), t.p.area * s.area, def.extra?.critBonus ?? 0);
+      }
+    } else if (t.burst > 0) {
       // Renzoku: um tiro (ou leque) a cada 0,07 s num inimigo aleatório da tela
       t.burst -= dt;
       t.burstAcc += dt;

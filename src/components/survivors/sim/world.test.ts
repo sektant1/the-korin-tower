@@ -29,10 +29,9 @@ function snapshot(w: World) {
   return JSON.stringify({ t: w.t.toFixed(3), x: w.player.x.toFixed(3), hp: w.player.hp.toFixed(3), lv: w.player.level, k: w.player.kills, n: w.enemyCount, techs: w.techs.map((t) => `${t.id}${t.level}`) });
 }
 
-test("curva de XP sobe por faixas", () => {
-  assert.equal(xpForLevel(1), 5);
-  assert.equal(xpForLevel(2), 12);
-  assert.ok(xpForLevel(20) > xpForLevel(19));
+test("curva de XP: começo barato e cada nível mais caro que o anterior", () => {
+  assert.ok(xpForLevel(1) <= 6);
+  for (let l = 1; l < 120; l++) assert.ok(xpForLevel(l + 1) > xpForLevel(l), `nível ${l}`);
   assert.ok(xpForLevel(41) - xpForLevel(40) > xpForLevel(21) - xpForLevel(20));
 });
 
@@ -47,11 +46,11 @@ test("mesma seed e mesmas entradas dão a mesma run", () => {
   assert.notEqual(snapshot(a), snapshot(c));
 });
 
-test("Goku começa com Kamehameha e mata, coleta XP e sobe de nível", () => {
+test("Goku começa com Ki Blast e mata, coleta XP e sobe de nível", () => {
   const w = createWorld(1);
   assert.deepEqual(
     w.techs.map((t) => t.id),
-    ["kamehameha"],
+    ["rajada"],
   );
   autoplay(w, 90);
   assert.ok(w.player.kills > 50, `kills ${w.player.kills}`);

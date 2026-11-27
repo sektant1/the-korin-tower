@@ -62,3 +62,14 @@ export const ICON = {
 
 /** Formata número para a interface (separador de milhar em inglês). */
 export const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+
+/** Cor fixa de cada tipo de carta (faixa, borda e pips). A cor própria da técnica/passiva fica só
+ *  no ícone, para o tipo ser reconhecível de relance. */
+export const TYPE_COLOR = {
+  tech: "#3aa8ff",
+  passive: "#4ad86a",
+  union: "#b46aff",
+  pact: "#ff3a4a",
+  item: "#ffb02a",
+  gold: "#ffd21f",
+} as const;

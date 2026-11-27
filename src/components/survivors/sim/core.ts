@@ -363,12 +363,11 @@ export const THIEF_AT = [150, 390, 630, 810];
 /* ---------- criação ---------- */
 
 export function xpForLevel(level: number) {
-  // começo rápido (+7 por nível até o 20), depois +13 até o 40 e +16 depois, com um degrau em cada faixa
-  if (level < 20) return 5 + (level - 1) * 7;
-  if (level < 40) return 240 + (level - 20) * 15;
-  const k = level - 40;
-  return 600 + k * 30 + k * k * 1.2; // depois do 40 cada nível pesa bem mais
-
+  // curva contínua: começo rápido (nível 5 em ~1 min) e cada nível pesa mais conforme a horda
+  // engrossa — a XP por minuto explode depois dos 5 min, então o custo cresce quase como L⁴.
+  // Alvo (bot, sem loja): ~nível 20 aos 5 min, ~45 aos 10, ~60 no chefe. Ver GDD §24.
+  const L = level;
+  return Math.round(3 + 2 * L + (0.0028 * L ** 4) / (1 + L / 30));
 }
 
 export function newWorld(seed: number, opts: RunOptions = {}): World {
@@ -1096,7 +1095,7 @@ export function chooseWish(w: World, index: number) {
       notice(w, "An extra life!");
       break;
     case "imortal":
-      w.immortal = 60;
+      w.immortal = Math.max(w.immortal, 60);
       notice(w, "Immortal for 60s!");
       break;
     case "rico":

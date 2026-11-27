@@ -8,6 +8,7 @@ import { MAX_BULLETS, MAX_ENEMIES, MAX_GEMS, MAX_PROJ, PLAYER_R, type World } fr
 import { forEachOrbit } from "../sim/techs";
 import { barrel, crate, disc, dragonBall, ghost, glow, orb, shadow } from "./art";
 import { consumeFx, drawFx, dust, flame } from "./fx";
+import { drawMap } from "./maps";
 import { drawSprite, hasSprite } from "./sprites";
 
 type Ctx = CanvasRenderingContext2D;
@@ -16,43 +17,6 @@ export interface View {
   zoom: number; // px de tela por unidade do mundo
   w: number; // tamanho do canvas em px
   h: number;
-}
-
-/* ---------- cenário em tile espelhado ---------- */
-
-let bgSrc = "";
-let bgPattern: CanvasPattern | null = null;
-let bgSize = 0;
-
-/** Carrega o cenário da saga e monta um tile 2x2 espelhado (as bordas casam em qualquer foto). */
-export function loadBackground(ctx: Ctx, src: string) {
-  if (src === bgSrc) return;
-  bgSrc = src;
-  bgPattern = null;
-  const img = new Image();
-  img.onload = () => {
-    if (bgSrc !== src) return;
-    const w = img.naturalWidth,
-      h = img.naturalHeight;
-    const c = document.createElement("canvas");
-    c.width = w * 2;
-    c.height = h * 2;
-    const g = c.getContext("2d")!;
-    for (let sx = 0; sx < 2; sx++)
-      for (let sy = 0; sy < 2; sy++) {
-        g.save();
-        g.translate(sx ? w * 2 : 0, sy ? h * 2 : 0);
-        g.scale(sx ? -1 : 1, sy ? -1 : 1);
-        g.drawImage(img, 0, 0);
-        g.restore();
-      }
-    // escurece: o cenário é fundo, a ação tem que saltar
-    g.fillStyle = "rgba(5, 3, 11, 0.6)";
-    g.fillRect(0, 0, c.width, c.height);
-    bgPattern = ctx.createPattern(c, "repeat");
-    bgSize = c.width;
-  };
-  img.src = src;
 }
 
 const GEM_COLORS = ["#3a86e8", "#2fbf6a", "#ff3355"];
@@ -216,13 +180,7 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.imageSmoothingEnabled = false;
-  if (bgPattern) {
-    // o padrão anda com a câmera (módulo do tamanho do tile para não perder precisão)
-    const m = bgSize * z;
-    bgPattern.setTransform(new DOMMatrix([z, 0, 0, z, ((ox % m) + m) % m, ((oy % m) + m) % m]));
-    ctx.fillStyle = bgPattern;
-  } else ctx.fillStyle = "#14301a";
-  ctx.fillRect(0, 0, view.w, view.h);
+  drawMap(ctx, camX, camY, view.w, view.h, z, ox, oy);
 
   ctx.setTransform(z, 0, 0, z, ox, oy);
   // área visível no mundo, para pular o que está fora
@@ -817,7 +775,19 @@ export function render(ctx: Ctx, w: World, view: View, alpha: number) {
     ctx.save();
     ctx.translate(zn.x, zn.y);
     ctx.rotate(zn.angle);
-    if (zn.kind === "lance") {
+    const t = w.techs[zn.slot];
+    if (zn.kind === "lance" && t && TECHNIQUES[t.id].extra?.volley) {
+      // laser fino e reto (Death Beam, Eye Laser): halo na cor, núcleo branco e brilho na ponta do dedo
+      ctx.globalAlpha = Math.min(1, k * 1.6);
+      ctx.globalCompositeOperation = "lighter";
+      ctx.fillStyle = zn.color;
+      ctx.fillRect(0, -zn.width * 0.75, zn.len, zn.width * 1.5);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, -Math.max(0.5, zn.width * 0.25), zn.len, Math.max(1, zn.width * 0.5));
+      const g = glow(zn.color, 10);
+      ctx.drawImage(g, -10, -10);
+      ctx.globalCompositeOperation = "source-over";
+    } else if (zn.kind === "lance") {
       // Makankosappo: linha fina com a espiral em volta
       ctx.globalAlpha = Math.min(1, k * 2);
       ctx.fillStyle = "#ffffff";

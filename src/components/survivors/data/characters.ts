@@ -32,7 +32,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   goku: {
     id: "goku",
     name: "Goku",
-    start: "kamehameha",
+    start: "rajada",
     passive: "Saiyan Blood: +10% XP",
     color: "#ff8a1f",
     hair: "#1a1a1a",
@@ -48,7 +48,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   vegeta: {
     id: "vegeta",
     name: "Vegeta",
-    start: "rajada",
+    start: "tiroElite",
     passive: "Pride: +1% damage per 10 kills (max +30%)",
     color: "#2b4bd8",
     hair: "#1a1a1a",
@@ -63,7 +63,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   gohan: {
     id: "gohan",
     name: "Gohan",
-    start: "masenko",
+    start: "comboMistico",
     passive: "Hidden Rage: up to +50% damage at low HP",
     color: "#6a3ad8",
     hair: "#1a1a1a",
@@ -78,7 +78,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   piccolo: {
     id: "piccolo",
     name: "Piccolo",
-    start: "makankosappo",
+    start: "laserOlhos",
     passive: "Regeneration: +0.5 HP/s",
     color: "#3aa83a",
     hair: "#f0f0f0",
@@ -90,7 +90,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   trunks: {
     id: "trunks",
     name: "Trunks",
-    start: "espada",
+    start: "busterCannon",
     passive: "Future Training: -13% cooldown",
     color: "#4a7ad8",
     hair: "#b898e8",
@@ -105,7 +105,7 @@ export const CHARACTERS: Record<CharId, CharDef> = {
   gotenks: {
     id: "gotenks",
     name: "Gotenks",
-    start: "fantasmas",
+    start: "chuteDinamite",
     passive: "Fusion: +1 projectile",
     color: "#d8a03a",
     hair: "#7a4ad8",

@@ -483,3 +483,28 @@ Revisão do §23:
 - O escudo no HUD mostra só as cargas e fica apagado quando está vazio. A pausa mostra até quanto ele recarrega.
 - A tela de fim de run mostra ladrões pegos, golpes bloqueados, carnes comidas e a melhor cadeia de tanques, quando houver.
 - Aviso no primeiro trio de tanques; brilho ao comer; "Thief" no bestiário.
+
+## 24. XP, técnicas iniciais, mapas e cartas mais claras (26/11/2026)
+
+- **Curva de XP contínua**: `xpForLevel(L) = round(3 + 2L + 0.0028·L⁴ / (1 + L/30))`. A XP por minuto
+  explode depois dos 5 min (a horda engrossa), então o custo cresce quase como L⁴. Bot sem loja (modo
+  deus): nível ~5 em 1 min, ~20 aos 5, ~45 aos 10 e ~60 no chefe (antes passava de 100). Com a loja
+  cheia, o bot mortal chega ao chefe no nível ~72–81 e vence.
+- **Técnicas básicas iniciais**: Goku agora começa com Ki Blast (o Kamehameha virou carta). Cada
+  desbloqueável começa com uma exclusiva fraca, de 8 níveis e sem evolução: Vegeta — Elite Ki Shot;
+  Gohan — Scholar's Combo; Piccolo — Eye Laser (2 lasers finos); Trunks — Buster Cannon (tiro grande
+  que atravessa); Gotenks — Dynamite Kick. Hercule e Vegito já tinham as suas. Masenko, Makankosappo,
+  Espada do Futuro e Fantasmas continuam como cartas para todos.
+- **Death Beam**: agora é uma rajada de 3 lasers finos e retos em sequência (`extra.volley`), com
+  desenho próprio. Antes era igual ao Dodon Ray. A evolução repete a rajada em 3 alvos.
+- **Mapas procedurais** (`render/maps.ts`) no lugar das fotos de fundo dentro da run. Namek tem campos,
+  lagos, árvores Ajisa e casas em domo; Cell Games tem planalto rochoso, crateras e o ringue com
+  pilares na largada; West City tem ruas, calçadas, parques, praças, domos, postes e carros; a nave do
+  Babidi tem placas com rebites, veios rosa, escotilhas, gosma e pilares. O mundo é cortado em
+  pedaços de 320 px em cache (LRU), gerados no máximo 6 por quadro. As fotos continuam nas cartas de
+  saga.
+- **Passivas**: a descrição diz a quem vale ("All techniques:", "Hero:", "Enemies:"), e a carta mostra
+  uma etiqueta por alvo. A passiva que evolui uma técnica mostra "Evolution key for X".
+- **Cores fixas por tipo de carta**: técnica azul, passiva verde, união roxa, pacto vermelho, item
+  âmbar e técnica dourada em dourado. A cor própria de cada técnica ou passiva fica só no ícone.
+- Desejo da imortalidade não encurta mais uma imortalidade maior (`Math.max`).

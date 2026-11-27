@@ -62,7 +62,21 @@ export type EvoTechId =
   | "doceSupremo"
   | "absorcaoTotal"
   | "zanzokenSupremo";
-export type ExclusiveTechId = "socoDinamite" | "espadaKi" | "finalFlash" | "bigBang" | "punhoDragao" | "kameDefinitivo" | "granadaLuz" | "domoCalor" | "socoMilagre";
+export type ExclusiveTechId =
+  | "tiroElite"
+  | "comboMistico"
+  | "laserOlhos"
+  | "busterCannon"
+  | "chuteDinamite"
+  | "socoDinamite"
+  | "espadaKi"
+  | "finalFlash"
+  | "bigBang"
+  | "punhoDragao"
+  | "kameDefinitivo"
+  | "granadaLuz"
+  | "domoCalor"
+  | "socoMilagre";
 /** Uniões: duas técnicas base viram uma só e liberam um espaço. */
 export type UnionTechId =
   | "paiEFilho"
@@ -124,6 +138,7 @@ export interface TechExtra {
   finalBlast?: boolean; // o redemoinho explode no fim
   rings?: number; // órbitas (Sokidan Galáctico)
   fireball?: boolean; // projétil vira bola de fogo grande que atravessa (Burning Attack)
+  volley?: number; // lança: cada disparo vira N lasers finos em sequência (Death Beam)
   /** Onde mira (feixe, lança, bomba). Padrão: feixe no mais próximo, lança e bomba num aleatório. */
   target?: "nearest" | "random" | "densest" | "strongest" | "facing";
 }
@@ -543,20 +558,20 @@ export const TECHNIQUES: Record<TechId, TechDef> = {
     id: "raioMorte",
     kind: "lance",
     name: "Death Beam",
-    desc: "Frieza's finger beam: fast, thin shots at random enemies.",
+    desc: "Frieza's finger: a burst of 3 thin lasers at a random enemy.",
     color: "#ff4ad8",
     max: 8,
-    base: { damage: 14, cooldown: 0.9, amount: 1, duration: 0.15, area: 0.6, hitCd: 0.3, knockback: 10 },
+    base: { damage: 6, cooldown: 1.2, amount: 1, duration: 0.1, area: 0.6, hitCd: 0.05, knockback: 6 },
     levels: [
-      { add: { amount: 1 }, text: "+1 beam" },
-      { add: { damage: 6 }, text: "+6 damage" },
-      { add: { cooldown: -0.15 }, text: "fires faster" },
-      { add: { amount: 1 }, text: "+1 beam" },
-      { add: { damage: 8 }, text: "+8 damage" },
-      { add: { amount: 1 }, text: "+1 beam" },
-      { add: { damage: 12, cooldown: -0.15 }, text: "+12 damage, faster" },
+      { add: { amount: 1 }, text: "+1 target" },
+      { add: { damage: 3 }, text: "+3 damage per laser" },
+      { add: { cooldown: -0.2 }, text: "fires faster" },
+      { add: { amount: 1 }, text: "+1 target" },
+      { add: { damage: 3 }, text: "+3 damage per laser" },
+      { add: { amount: 1 }, text: "+1 target" },
+      { add: { damage: 5, cooldown: -0.2 }, text: "+5 damage per laser, faster" },
     ],
-    extra: { critBonus: 0.15 },
+    extra: { critBonus: 0.15, volley: 3 },
     evolvesWith: "poseGinyu",
     evolvesTo: "raioMorteSupremo",
   }),
@@ -953,12 +968,12 @@ export const TECHNIQUES: Record<TechId, TechDef> = {
     kind: "lance",
     from: "raioMorte",
     name: "Death Beam Barrage",
-    desc: "A machine gun of death beams.",
+    desc: "Endless bursts of death lasers at several enemies.",
     color: "#ff2ad8",
     max: 1,
-    base: { damage: 48, cooldown: 0.35, amount: 3, duration: 0.15, area: 0.9, hitCd: 0.2, knockback: 20 },
+    base: { damage: 22, cooldown: 0.55, amount: 3, duration: 0.1, area: 0.9, hitCd: 0.05, knockback: 12 },
     levels: [],
-    extra: { critBonus: 0.35 },
+    extra: { critBonus: 0.35, volley: 3 },
   }),
   mafubaSupremo: T({
     id: "mafubaSupremo",
@@ -1059,6 +1074,105 @@ export const TECHNIQUES: Record<TechId, TechDef> = {
   }),
 
   /* ---------- exclusivas ---------- */
+  // Técnicas básicas iniciais: cada personagem desbloqueável começa com a sua (fraca, 8 níveis,
+  // sem evolução). As fortes (Final Flash, Granada de Luz…) aparecem depois como cartas.
+  tiroElite: T({
+    id: "tiroElite",
+    kind: "bolt",
+    owner: "vegeta",
+    name: "Elite Ki Shot",
+    desc: "Sharp ki shots that pierce one enemy and crit often.",
+    color: "#7a9aff",
+    max: 8,
+    base: { damage: 13, cooldown: 1.25, speed: 430, duration: 1.4, pierce: 1, knockback: 70 },
+    levels: [
+      { add: { amount: 1 }, text: "+1 shot" },
+      { add: { damage: 5 }, text: "+5 damage" },
+      { add: { cooldown: -0.2 }, text: "-0.2s cooldown" },
+      { add: { amount: 1 }, text: "+1 shot" },
+      { add: { pierce: 1 }, text: "+1 pierce" },
+      { add: { damage: 8 }, text: "+8 damage" },
+      { add: { amount: 1, damage: 6 }, text: "+1 shot, +6 damage" },
+    ],
+    extra: { critBonus: 0.1 },
+  }),
+  comboMistico: T({
+    id: "comboMistico",
+    kind: "punch",
+    owner: "gohan",
+    name: "Scholar's Combo",
+    desc: "Quick punches at the closest enemy.",
+    color: "#b08aff",
+    max: 8,
+    base: { damage: 9, cooldown: 0.5, area: 1.1, duration: 0.12, knockback: 90 },
+    levels: [
+      { add: { damage: 3 }, text: "+3 damage" },
+      { add: { area: 0.2 }, text: "+20% reach" },
+      { add: { cooldown: -0.08 }, text: "faster punches" },
+      { add: { damage: 4 }, text: "+4 damage" },
+      { add: { amount: 1 }, text: "also punches behind" },
+      { add: { area: 0.25 }, text: "+25% reach" },
+      { add: { damage: 7 }, text: "+7 damage" },
+    ],
+  }),
+  laserOlhos: T({
+    id: "laserOlhos",
+    kind: "lance",
+    owner: "piccolo",
+    name: "Eye Laser",
+    desc: "Two thin lasers from the eyes at the closest enemy.",
+    color: "#ff7a7a",
+    max: 8,
+    base: { damage: 8, cooldown: 1.3, amount: 1, duration: 0.1, area: 0.6, hitCd: 0.05, knockback: 10 },
+    levels: [
+      { add: { damage: 3 }, text: "+3 damage per laser" },
+      { add: { cooldown: -0.2 }, text: "fires faster" },
+      { add: { amount: 1 }, text: "+1 target" },
+      { add: { damage: 4 }, text: "+4 damage per laser" },
+      { add: { area: 0.4 }, text: "thicker lasers" },
+      { add: { cooldown: -0.2 }, text: "fires faster" },
+      { add: { damage: 6, amount: 1 }, text: "+6 damage, +1 target" },
+    ],
+    extra: { volley: 2, target: "nearest", critBonus: 0.05 },
+  }),
+  busterCannon: T({
+    id: "busterCannon",
+    kind: "bolt",
+    owner: "trunks",
+    name: "Buster Cannon",
+    desc: "A big, slow ki shot that plows through the horde.",
+    color: "#ffd07a",
+    max: 8,
+    base: { damage: 15, cooldown: 1.5, area: 1.5, speed: 300, duration: 1.8, pierce: 2, knockback: 110 },
+    levels: [
+      { add: { damage: 6 }, text: "+6 damage" },
+      { add: { pierce: 2 }, text: "+2 pierce" },
+      { add: { amount: 1 }, text: "+1 shot" },
+      { add: { area: 0.3 }, text: "bigger shot" },
+      { add: { cooldown: -0.3 }, text: "-0.3s cooldown" },
+      { add: { damage: 8, pierce: 2 }, text: "+8 damage, +2 pierce" },
+      { add: { amount: 1, damage: 8 }, text: "+1 shot, +8 damage" },
+    ],
+  }),
+  chuteDinamite: T({
+    id: "chuteDinamite",
+    kind: "punch",
+    owner: "gotenks",
+    name: "Dynamite Kick",
+    desc: "A flashy kick that knocks enemies far away.",
+    color: "#ffa04a",
+    max: 8,
+    base: { damage: 11, cooldown: 0.65, area: 1.2, duration: 0.14, knockback: 160 },
+    levels: [
+      { add: { damage: 4 }, text: "+4 damage" },
+      { add: { area: 0.2 }, text: "+20% reach" },
+      { add: { cooldown: -0.1 }, text: "faster kicks" },
+      { add: { damage: 5 }, text: "+5 damage" },
+      { add: { amount: 1 }, text: "also kicks behind" },
+      { add: { area: 0.25 }, text: "+25% reach" },
+      { add: { damage: 9 }, text: "+9 damage" },
+    ],
+  }),
   socoDinamite: T({
     id: "socoDinamite",
     kind: "punch",

@@ -11,7 +11,7 @@ import { TECHNIQUES, UNIONS, techParams, type TechDef, type TechParams } from ".
 import { WISHES } from "../data/wishes";
 import { MAX_SLOTS, UNION_LEVEL, offerName, offerText, type Offer, type World } from "../sim/core";
 import { fmtTime, type Hud, type SlotView } from "./hud";
-import { ICON, KIND_ICON, KIND_LABEL, fmt } from "./icons";
+import { ICON, KIND_ICON, KIND_LABEL, TYPE_COLOR, fmt } from "./icons";
 
 /* ---------- peças ---------- */
 
@@ -135,10 +135,21 @@ export function HudView({ hud }: { hud: Hud }) {
 
 /* ---------- cartas de nível ---------- */
 
+/** Cor do tipo de carta (padronizada: técnica azul, passiva verde, união roxa, pacto vermelho,
+ *  item âmbar; técnica dourada fica dourada). */
 function offerColor(o: Offer) {
+  if (o.type === "tech") return o.gold ? TYPE_COLOR.gold : TYPE_COLOR.tech;
+  if (o.type === "passive") return TYPE_COLOR.passive;
+  if (o.type === "union") return TYPE_COLOR.union;
+  if (o.type === "pact") return TYPE_COLOR.pact;
+  return TYPE_COLOR.item;
+}
+
+/** Cor própria do que a carta dá (só no ícone). */
+function identityColor(o: Offer) {
   if (o.type === "tech" || o.type === "union") return TECHNIQUES[o.id].color;
   if (o.type === "passive") return PASSIVES[o.id].color;
-  if (o.type === "pact") return "#ff2a4a";
+  if (o.type === "pact") return TYPE_COLOR.pact;
   if (o.type === "item") return ITEMS[o.id].color;
   return o.type === "senzu" ? "#5fd13a" : "#ffd21f";
 }
@@ -168,6 +179,11 @@ function hints(o: Offer, w: World): { icon: string; text: string; strong?: boole
   } else if (o.type === "passive") {
     const t = w.techs.find((s) => TECHNIQUES[s.id].evolvesWith === o.id);
     if (t) out.push({ icon: ICON.evolve, text: `Evolves ${TECHNIQUES[t.id].name}`, strong: true });
+    else {
+      // deixa claro que a passiva vale para tudo, e só *evolui* uma técnica específica
+      const base = Object.values(TECHNIQUES).find((d) => d.evolvesWith === o.id);
+      if (base) out.push({ icon: ICON.evolve, text: `Evolution key for ${base.name}` });
+    }
     for (const set of SETS) {
       if (!set.parts.includes(o.id)) continue;
       const have = set.parts.filter((id) => id === o.id || w.passives.some((p) => p.id === id)).length;
@@ -210,7 +226,8 @@ function techDiff(def: TechDef, from: number, to: number) {
 
 /** Efeito acumulado de uma passiva no nível `n`: multiplica os números da descrição. */
 function passiveAt(desc: string, n: number) {
-  return desc.replace(/([+-])(\d+(?:\.\d+)?)/g, (_, sign: string, num: string) => `${sign}${+(Number(num) * n).toFixed(2)}`);
+  return desc
+    .replace(/(All techniques|Hero|Enemies): /g, "").replace(/([+-])(\d+(?:\.\d+)?)/g, (_, sign: string, num: string) => `${sign}${+(Number(num) * n).toFixed(2)}`);
 }
 
 function StatLine({ label, before, after, show, better }: { label: string; before?: string; after: string; show?: boolean; better?: boolean }) {
@@ -261,7 +278,17 @@ function CardBody({ o, w }: { o: Offer; w: World }): ReactNode {
     const owned = w.passives.find((p) => p.id === o.id)?.level ?? 0;
     return (
       <>
-        <span className="ss-card-up">{def.desc}</span>
+        <span className="ss-card-up ss-scopes">
+          {def.desc.split(" · ").map((line) => {
+            const m = /^(All techniques|Hero|Enemies): (.*)$/.exec(line);
+            return (
+              <span key={line} className="ss-scope-line">
+                {m && <span className={`ss-scope ss-scope-${m[1] === "Hero" ? "hero" : m[1] === "Enemies" ? "foe" : "tech"}`}>{m[1] === "All techniques" ? "All techs" : m[1]}</span>}
+                {m ? m[2] : line}
+              </span>
+            );
+          })}
+        </span>
         {owned > 0 && (
           <span className="ss-cstats ss-cstats-total">
             <span className="ss-stat-cap">Total</span>
@@ -420,7 +447,7 @@ export function LevelUp({
               </span>
               <kbd className="ss-card-key">{i + 1}</kbd>
               {isLocked(o) && <span className="ss-card-lock">{ICON.lock}</span>}
-              <span className="ss-card-icon" style={{ color, borderColor: color }}>
+              <span className="ss-card-icon" style={{ color: identityColor(o), borderColor: identityColor(o) }}>
                 {offerIcon(o)}
               </span>
               <b className="ss-card-name">{offerName(o)}</b>
